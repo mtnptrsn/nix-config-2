@@ -113,14 +113,26 @@
     };
   };
 
+  # GPU and Vulkan support
+  hardware.graphics = {
+    enable = true;
+    enable32Bit = true;
+  };
+
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
-    vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
+    vim
     google-chrome
+    lutris
+    wine
+    winetricks
+    discord
+    _1password-gui
+    spotify
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
