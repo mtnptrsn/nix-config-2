@@ -108,6 +108,9 @@
   # Steam
   programs.steam.enable = true;
 
+  # GameMode — auto-tunes CPU/GPU when games are running
+  programs.gamemode.enable = true;
+
   # Zsh (user config in home.nix, system-level enable for /etc/shells)
   programs.zsh.enable = true;
 
@@ -137,6 +140,12 @@
 
   # Firmware and AMD microcode updates
   hardware.enableRedistributableFirmware = true;
+
+  # CPU governor — performance mode for desktop
+  powerManagement.cpuFreqGovernor = "performance";
+
+  # Zram compressed swap
+  zramSwap.enable = true;
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
