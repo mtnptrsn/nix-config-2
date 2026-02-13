@@ -12,6 +12,9 @@
     alacritty
     wowup-cf
     slack
+    geekbench
+    rqbit
+    vscode
     ripgrep
     fd
     nil
@@ -20,6 +23,8 @@
   ];
 
   programs.firefox.enable = true;
+
+  programs.mangohud.enable = true;
 
   programs.git = {
     enable = true;
@@ -100,6 +105,8 @@
     };
     "org/gnome/desktop/interface" = {
       enable-animations = false;
+      color-scheme = "prefer-dark";
+      gtk-theme = "Adwaita-dark";
     };
   };
 }
