@@ -14,6 +14,12 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
+  # Latest kernel for RDNA 4 (RX 9060 XT) support
+  boot.kernelPackages = pkgs.linuxPackages_latest;
+
+  # Unlock all AMD GPU power management features
+  boot.kernelParams = [ "amdgpu.ppfeaturemask=0xffffffff" ];
+
   networking.hostName = "nixos"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
@@ -115,6 +121,9 @@
     enable = true;
     enable32Bit = true;
   };
+
+  # Firmware and AMD microcode updates
+  hardware.enableRedistributableFirmware = true;
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
