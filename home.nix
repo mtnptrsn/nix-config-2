@@ -12,6 +12,11 @@
     alacritty
     wowup-cf
     slack
+    ripgrep
+    fd
+    nil
+    nodePackages.typescript-language-server
+    nodePackages.typescript
   ];
 
   programs.firefox.enable = true;
@@ -31,12 +36,29 @@
       oil-nvim
       nvim-web-devicons
       nvim-treesitter.withAllGrammars
+      plenary-nvim
+      telescope-nvim
+      telescope-fzf-native-nvim
+      nvim-lspconfig
+      vim-fugitive
     ];
-    initLua = ''
-      require("oil").setup()
-      vim.keymap.set("n", "-", "<CMD>Oil<CR>", { desc = "Open parent directory" })
+    extraLuaConfig = ''
+      vim.g.mapleader = ' '
 
-      vim.treesitter.start()
+      -- Telescope setup with fzf
+      require('telescope').setup {}
+      require('telescope').load_extension('fzf')
+
+      local builtin = require('telescope.builtin')
+      vim.keymap.set('n', '<leader>ff', builtin.find_files)
+      vim.keymap.set('n', '<leader>fg', builtin.live_grep)
+      vim.keymap.set('n', '<leader>fb', builtin.buffers)
+      vim.keymap.set('n', '<leader>fh', builtin.help_tags)
+
+      -- LSP setup
+      local lspconfig = require('lspconfig')
+      lspconfig.nil_ls.setup {}
+      lspconfig.ts_ls.setup {}
     '';
   };
 
