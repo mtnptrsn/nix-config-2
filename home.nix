@@ -99,6 +99,13 @@
     };
   };
 
+  services.devilspie2 = {
+    enable = true;
+    config = ''
+      maximize()
+    '';
+  };
+
   dconf.settings = {
     "org/gnome/desktop/peripherals/mouse" = {
       accel-profile = "flat";  # Disable GNOME acceleration; maccel handles it
