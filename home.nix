@@ -14,6 +14,7 @@
     slack
     geekbench
     rqbit
+    gnomeExtensions.hide-top-bar
     vscode
     ripgrep
     fd
@@ -107,6 +108,9 @@
   };
 
   dconf.settings = {
+    "org/gnome/shell" = {
+      enabled-extensions = [ "hidetopbar@mathieu.bidon.ca" ];
+    };
     "org/gnome/desktop/peripherals/mouse" = {
       accel-profile = "flat";  # Disable GNOME acceleration; maccel handles it
     };
