@@ -130,9 +130,6 @@
   environment.systemPackages = with pkgs; [
     vim
     google-chrome
-    lutris
-    wine
-    winetricks
     discord
     _1password-gui
     spotify
