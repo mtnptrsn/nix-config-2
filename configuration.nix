@@ -49,13 +49,13 @@
   services.xserver.displayManager.gdm.enable = true;
   services.xserver.desktopManager.gnome.enable = true;
 
-  # Display: 120Hz on HDMI-1
+  # Display: 1440p 144Hz on DP-1
   services.xserver.xrandrHeads = [
     {
-      output = "HDMI-1";
+      output = "DP-1";
       monitorConfig = ''
-        Modeline "2560x1440_120.00"  660.65  2560 2776 3064 3568  1440 1441 1444 1543  -HSync +Vsync
-        Option "PreferredMode" "2560x1440_120.00"
+        Option "PreferredMode" "2560x1440"
+        Option "TargetRefresh" "144"
       '';
     }
   ];
