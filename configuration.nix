@@ -2,7 +2,7 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, ... }:
+{ config, pkgs, lib, ... }:
 
 {
   imports =
@@ -88,13 +88,26 @@
     #media-session.enable = true;
   };
 
-  # Enable touchpad support (enabled default in most desktopManager).
-  # services.xserver.libinput.enable = true;
+  # Mouse sensitivity (scale: -1.0 slowest to 1.0 fastest)
+  programs.dconf.profiles.user.databases = [{
+    settings = {
+      "org/gnome/desktop/peripherals/mouse" = {
+        speed = lib.gvariant.mkDouble (-0.4);
+      };
+      "org/gnome/desktop/interface" = {
+        enable-animations = false;
+      };
+    };
+    locks = [
+      "/org/gnome/desktop/interface/enable-animations"
+    ];
+  }];
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.mtnptrsn = {
     isNormalUser = true;
     description = "Mårten Pettersson";
+    shell = pkgs.zsh;
     extraGroups = [ "networkmanager" "wheel" ];
     packages = with pkgs; [
     #  thunderbird
@@ -116,6 +129,70 @@
     };
   };
 
+  # Neovim
+  programs.neovim = {
+    enable = true;
+    defaultEditor = true;
+    viAlias = true;
+    vimAlias = true;
+    configure = {
+      packages.plugins = with pkgs.vimPlugins; {
+        start = [
+          oil-nvim
+          nvim-web-devicons
+          nvim-treesitter.withAllGrammars
+        ];
+      };
+      customRC = ''
+        lua << EOF
+        require("oil").setup()
+        vim.keymap.set("n", "-", "<CMD>Oil<CR>", { desc = "Open parent directory" })
+
+        vim.treesitter.start()
+        EOF
+      '';
+    };
+  };
+
+  # Tmux
+  programs.tmux = {
+    enable = true;
+    shortcut = "s";
+    baseIndex = 1;
+    plugins = with pkgs.tmuxPlugins; [ dracula ];
+    extraConfig = ''
+      set -g @dracula-plugins "cpu-usage ram-usage time"
+      set -g @dracula-refresh-rate 5
+      set -g @dracula-show-left-icon session
+      set -g @dracula-show-empty-plugins false
+      set -g @dracula-show-powerline false
+      set -g @dracula-military-time true
+      set -g @dracula-day-month true
+    '';
+  };
+
+  # Zsh
+  programs.zsh = {
+    enable = true;
+    autosuggestions.enable = true;
+    syntaxHighlighting.enable = true;
+    ohMyZsh = {
+      enable = true;
+      theme = "robbyrussell";
+      plugins = [ "git" "z" "sudo" "history" ];
+    };
+    shellAliases = {
+      ll = "ls -la";
+      nixswitch = "sudo nixos-rebuild switch --flake /home/mtnptrsn/nixos-config#nixos";
+      nixtest = "sudo nixos-rebuild test --flake /home/mtnptrsn/nixos-config#nixos";
+    };
+  };
+
+  # Fonts
+  fonts.packages = with pkgs; [
+    nerd-fonts.jetbrains-mono
+  ];
+
   # GPU and Vulkan support
   hardware.graphics = {
     enable = true;
@@ -128,11 +205,14 @@
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
-    vim
     google-chrome
     discord
     _1password-gui
     spotify
+    zoxide
+    alacritty
+    wowup-cf
+    slack
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
