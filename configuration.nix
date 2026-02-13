@@ -12,6 +12,7 @@
 
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
+  boot.loader.systemd-boot.configurationLimit = 10;
   boot.loader.efi.canTouchEfiVariables = true;
 
   # Latest kernel for RDNA 4 (RX 9060 XT) support
@@ -147,6 +148,9 @@
   # Zram compressed swap
   zramSwap.enable = true;
 
+  # SSD periodic TRIM
+  services.fstrim.enable = true;
+
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
@@ -178,5 +182,11 @@
   system.stateVersion = "25.11"; # Did you read the comment?
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  nix.settings.auto-optimise-store = true;
+  nix.gc = {
+    automatic = true;
+    dates = "weekly";
+    options = "--delete-older-than 30d";
+  };
 
 }

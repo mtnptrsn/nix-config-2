@@ -38,3 +38,7 @@ nix flake update
 - Keyboard: Swedish layout (`se`)
 - `nixpkgs.config.allowUnfree = true`
 - `system.stateVersion = "25.11"` — do not change without understanding migration implications
+
+## Git
+
+- Do not add `Co-Authored-By` lines to commit messages
