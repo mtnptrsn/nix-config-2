@@ -74,7 +74,7 @@
 
   dconf.settings = {
     "org/gnome/desktop/peripherals/mouse" = {
-      speed = -0.4;
+      accel-profile = "flat";  # Disable GNOME acceleration; maccel handles it
     };
     "org/gnome/desktop/interface" = {
       enable-animations = false;
