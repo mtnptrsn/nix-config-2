@@ -104,6 +104,9 @@
   # Install firefox.
   programs.firefox.enable = true;
 
+  # Steam
+  programs.steam.enable = true;
+
   # Git configuration.
   programs.git = {
     enable = true;
