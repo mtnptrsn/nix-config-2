@@ -27,8 +27,7 @@
     ripgrep
     fd
     statix
-    eslint_d
-    prettierd
+    nixfmt
   ];
 
   programs.firefox.enable = true;
