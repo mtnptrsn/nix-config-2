@@ -20,6 +20,7 @@
     fd
     statix
     eslint_d
+    prettierd
   ];
 
   programs.firefox.enable = true;
@@ -99,6 +100,27 @@
         javascriptreact = [ "eslint_d" ];
       };
       autoCmd.event = [ "BufWritePost" "BufReadPost" "InsertLeave" ];
+    };
+
+    plugins.conform-nvim = {
+      enable = true;
+      settings = {
+        formatters_by_ft = {
+          javascript = [ "prettierd" ];
+          javascriptreact = [ "prettierd" ];
+          typescript = [ "prettierd" ];
+          typescriptreact = [ "prettierd" ];
+          css = [ "prettierd" ];
+          html = [ "prettierd" ];
+          json = [ "prettierd" ];
+          yaml = [ "prettierd" ];
+          markdown = [ "prettierd" ];
+        };
+        format_on_save = {
+          timeout_ms = 500;
+          lsp_format = "fallback";
+        };
+      };
     };
 
     plugins.trouble = {
