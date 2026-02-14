@@ -46,3 +46,4 @@ nix flake update
 ## Git
 
 - Do not add `Co-Authored-By` lines to commit messages
+- When committing, separate changes into distinct commits by concern. Group related changes together and keep unrelated changes in separate commits.
