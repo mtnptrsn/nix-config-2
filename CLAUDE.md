@@ -43,6 +43,20 @@ nix flake update
 
 - Always apply configuration changes after editing by running `sudo nixos-rebuild switch --flake /home/mtnptrsn/nixos-config#nixos`
 
+## Formatting and Linting
+
+Before committing, always run the formatter and linter on all `.nix` files:
+
+```bash
+# Format all .nix files
+nix run nixpkgs#nixfmt -- *.nix
+
+# Lint all .nix files (check only)
+nix run nixpkgs#statix -- check .
+```
+
+Fix any issues before committing. For statix, auto-fix is available with `nix run nixpkgs#statix -- fix .`.
+
 ## Git
 
 - Do not add `Co-Authored-By` lines to commit messages
