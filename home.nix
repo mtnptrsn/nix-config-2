@@ -9,7 +9,6 @@
     _1password-gui
     spotify
     zoxide
-    alacritty
     wowup-cf
     slack
     geekbench
@@ -22,6 +21,49 @@
     eslint_d
     prettierd
   ];
+
+  programs.alacritty = {
+    enable = true;
+    settings.colors = {
+      primary = {
+        background = "#1e1e2e";
+        foreground = "#cdd6f4";
+        dim_foreground = "#cdd6f4";
+      };
+      cursor = {
+        text = "#1e1e2e";
+        cursor = "#f5e0dc";
+      };
+      selection = {
+        text = "CellForeground";
+        background = "#585b70";
+      };
+      search.matches = {
+        foreground = "#1e1e2e";
+        background = "#a6adc8";
+      };
+      normal = {
+        black   = "#45475a";
+        red     = "#f38ba8";
+        green   = "#a6e3a1";
+        yellow  = "#f9e2af";
+        blue    = "#89b4fa";
+        magenta = "#f5c2e7";
+        cyan    = "#94e2d5";
+        white   = "#bac2de";
+      };
+      bright = {
+        black   = "#585b70";
+        red     = "#f38ba8";
+        green   = "#a6e3a1";
+        yellow  = "#f9e2af";
+        blue    = "#89b4fa";
+        magenta = "#f5c2e7";
+        cyan    = "#94e2d5";
+        white   = "#a6adc8";
+      };
+    };
+  };
 
   programs.firefox.enable = true;
 
@@ -61,6 +103,11 @@
         },
       })
     '';
+
+    colorschemes.catppuccin = {
+      enable = true;
+      settings.flavour = "mocha";
+    };
 
     plugins.treesitter = {
       enable = true;
@@ -195,16 +242,7 @@
     enable = true;
     shortcut = "s";
     baseIndex = 1;
-    plugins = with pkgs.tmuxPlugins; [ dracula ];
-    extraConfig = ''
-      set -g @dracula-plugins "cpu-usage ram-usage time"
-      set -g @dracula-refresh-rate 5
-      set -g @dracula-show-left-icon session
-      set -g @dracula-show-empty-plugins false
-      set -g @dracula-show-powerline false
-      set -g @dracula-military-time true
-      set -g @dracula-day-month true
-    '';
+    plugins = with pkgs.tmuxPlugins; [ catppuccin ];
   };
 
   programs.zsh = {
