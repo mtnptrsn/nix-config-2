@@ -76,6 +76,13 @@
       };
     };
 
+    plugins.blink-cmp = {
+      enable = true;
+      settings.sources.default = [ "lsp" "path" "buffer" ];
+      settings.keymap."<Tab>" = [ "select_and_accept" "fallback" ];
+      settings.keymap."<CR>" = [ "select_and_accept" "fallback" ];
+    };
+
     plugins.lsp = {
       enable = true;
       servers.nil_ls.enable = true;
