@@ -260,6 +260,7 @@
           in
           ''
             cp ${libvscode-diff} $out/libvscode_diff_2.20.3.so
+            cp ${pkgs.gcc.cc.lib}/lib/libgomp.so.1 $out/libgomp.so.1
           '';
         doCheck = false;
       })
