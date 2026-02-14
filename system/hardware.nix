@@ -54,6 +54,11 @@
         exit 1
       fi
 
+      # Enable Smart Fan IV (auto-point) mode for all controlled fans
+      echo 5 > "$NCT/pwm1_enable"
+      echo 5 > "$NCT/pwm2_enable"
+      echo 5 > "$NCT/pwm3_enable"
+
       # CPU fan (PWM1) — responds to CPU temp (temp_sel=8)
       # Temps are in millidegrees, PWM 0-255
       echo 8 > "$NCT/pwm1_temp_sel"
