@@ -56,17 +56,6 @@
   services.xserver.displayManager.gdm.enable = true;
   services.xserver.desktopManager.gnome.enable = true;
 
-  # Display: 1440p 144Hz on DP-1
-  services.xserver.xrandrHeads = [
-    {
-      output = "DP-1";
-      monitorConfig = ''
-        Option "PreferredMode" "2560x1440"
-        Option "TargetRefresh" "144"
-      '';
-    }
-  ];
-
   # Configure keymap in X11
   services.xserver.xkb = {
     layout = "se";
