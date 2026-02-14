@@ -82,6 +82,13 @@
   # Enable sound with pipewire.
   services.pulseaudio.enable = false;
   security.rtkit.enable = true;
+  security.sudo.extraRules = [{
+    users = [ "mtnptrsn" ];
+    commands = [{
+      command = "/run/current-system/sw/bin/nixos-rebuild";
+      options = [ "NOPASSWD" ];
+    }];
+  }];
   services.pipewire = {
     enable = true;
     alsa.enable = true;
