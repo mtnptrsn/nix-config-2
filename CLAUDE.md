@@ -39,6 +39,10 @@ nix flake update
 - `nixpkgs.config.allowUnfree = true`
 - `system.stateVersion = "25.11"` — do not change without understanding migration implications
 
+## Workflow
+
+- Always apply configuration changes after editing by running `sudo nixos-rebuild switch --flake /home/mtnptrsn/nixos-config#nixos`
+
 ## Git
 
 - Do not add `Co-Authored-By` lines to commit messages
