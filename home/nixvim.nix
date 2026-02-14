@@ -7,6 +7,7 @@
     vimAlias = true;
     globals.mapleader = " ";
     opts = {
+      clipboard = "unnamedplus";
       signcolumn = "yes";
       number = true;
       relativenumber = true;
