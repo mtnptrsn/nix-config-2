@@ -33,7 +33,7 @@
             home-manager.backupFileExtension = "bak";
             home-manager.users.mtnptrsn = {
               imports = [
-                ./home.nix
+                ./home
                 nixvim.homeModules.nixvim
               ];
             };
