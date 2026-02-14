@@ -1,4 +1,5 @@
-_: {
+{ config, ... }:
+{
   services.devilspie2 = {
     enable = true;
     config = ''
@@ -19,8 +20,8 @@ _: {
       gtk-theme = "Adwaita-dark";
     };
     "org/gnome/desktop/background" = {
-      picture-uri = "file:///home/mtnptrsn/Pictures/wallpaper.jpg";
-      picture-uri-dark = "file:///home/mtnptrsn/Pictures/wallpaper.jpg";
+      picture-uri = "file://${config.home.homeDirectory}/Pictures/wallpaper.jpg";
+      picture-uri-dark = "file://${config.home.homeDirectory}/Pictures/wallpaper.jpg";
       picture-options = "zoom";
     };
   };
