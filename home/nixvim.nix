@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, lib, ... }:
 {
   programs.nixvim = {
     enable = true;
@@ -86,13 +86,16 @@
 
     plugins.lint = {
       enable = true;
-      lintersByFt = {
-        nix = [ "statix" ];
-        typescript = [ "eslint_d" ];
-        typescriptreact = [ "eslint_d" ];
-        javascript = [ "eslint_d" ];
-        javascriptreact = [ "eslint_d" ];
-      };
+      lintersByFt =
+        lib.genAttrs [
+          "typescript"
+          "typescriptreact"
+          "javascript"
+          "javascriptreact"
+        ] (_: [ "eslint_d" ])
+        // {
+          nix = [ "statix" ];
+        };
       autoCmd.event = [
         "BufWritePost"
         "BufReadPost"
@@ -103,17 +106,21 @@
     plugins.conform-nvim = {
       enable = true;
       settings = {
-        formatters_by_ft = {
-          javascript = [ "prettierd" ];
-          javascriptreact = [ "prettierd" ];
-          typescript = [ "prettierd" ];
-          typescriptreact = [ "prettierd" ];
-          css = [ "prettierd" ];
-          html = [ "prettierd" ];
-          json = [ "prettierd" ];
-          yaml = [ "prettierd" ];
-          markdown = [ "prettierd" ];
-        };
+        formatters_by_ft =
+          lib.genAttrs [
+            "javascript"
+            "javascriptreact"
+            "typescript"
+            "typescriptreact"
+            "css"
+            "html"
+            "json"
+            "yaml"
+            "markdown"
+          ] (_: [ "prettierd" ])
+          // {
+            nix = [ "nixfmt" ];
+          };
         format_on_save = {
           timeout_ms = 500;
           lsp_format = "fallback";
@@ -161,12 +168,6 @@
       }
       {
         key = "<leader>q";
-        action = "<cmd>bd<cr>";
-        mode = "n";
-        options.desc = "Close buffer";
-      }
-      {
-        key = "<leader>c";
         action = "<cmd>bd<cr>";
         mode = "n";
         options.desc = "Close buffer";
