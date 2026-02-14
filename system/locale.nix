@@ -1,5 +1,8 @@
-_:
+{ lib, ... }:
 
+let
+  sv = "sv_SE.UTF-8";
+in
 {
   # Timezone
   time.timeZone = "Europe/Stockholm";
@@ -7,17 +10,17 @@ _:
   # Internationalisation
   i18n.defaultLocale = "en_US.UTF-8";
 
-  i18n.extraLocaleSettings = {
-    LC_ADDRESS = "sv_SE.UTF-8";
-    LC_IDENTIFICATION = "sv_SE.UTF-8";
-    LC_MEASUREMENT = "sv_SE.UTF-8";
-    LC_MONETARY = "sv_SE.UTF-8";
-    LC_NAME = "sv_SE.UTF-8";
-    LC_NUMERIC = "sv_SE.UTF-8";
-    LC_PAPER = "sv_SE.UTF-8";
-    LC_TELEPHONE = "sv_SE.UTF-8";
-    LC_TIME = "sv_SE.UTF-8";
-  };
+  i18n.extraLocaleSettings = lib.genAttrs [
+    "LC_ADDRESS"
+    "LC_IDENTIFICATION"
+    "LC_MEASUREMENT"
+    "LC_MONETARY"
+    "LC_NAME"
+    "LC_NUMERIC"
+    "LC_PAPER"
+    "LC_TELEPHONE"
+    "LC_TIME"
+  ] (_: sv);
 
   # Keyboard layout
   services.xserver.xkb = {
