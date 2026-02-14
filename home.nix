@@ -300,5 +300,10 @@
       color-scheme = "prefer-dark";
       gtk-theme = "Adwaita-dark";
     };
+    "org/gnome/desktop/background" = {
+      picture-uri = "file:///home/mtnptrsn/Pictures/wallpaper.jpg";
+      picture-uri-dark = "file:///home/mtnptrsn/Pictures/wallpaper.jpg";
+      picture-options = "zoom";
+    };
   };
 }
