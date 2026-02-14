@@ -191,6 +191,16 @@
       { key = "<leader>q"; action = "<cmd>bd<cr>"; mode = "n"; options.desc = "Close buffer"; }
       { key = "<leader>c"; action = "<cmd>bd<cr>"; mode = "n"; options.desc = "Close buffer"; }
       { key = "<leader>gd"; action = "<cmd>CodeDiff<cr>"; mode = "n"; options.desc = "Toggle CodeDiff"; }
+      { key = "<leader>lr"; action.__raw = "vim.lsp.buf.rename"; mode = "n"; options.desc = "Rename symbol"; }
+      { key = "gp"; action.__raw = ''function()
+        local params = vim.lsp.util.make_position_params(0)
+        vim.lsp.buf_request(0, "textDocument/definition", params, function(err, result)
+          if err or not result then return end
+          local def = vim.islist(result) and result[1] or result
+          vim.lsp.util.preview_location(def, {})
+        end)
+      end''; mode = "n"; options.desc = "Peek definition"; }
+      { key = "gl"; action.__raw = "function() vim.diagnostic.open_float() end"; mode = "n"; options.desc = "Line diagnostics"; }
       { key = "Q"; action = "<cmd>qa<cr>"; mode = "n"; options.desc = "Quit neovim"; }
       { key = "H"; action.__raw = ''function()
         local ok, lifecycle = pcall(require, "codediff.ui.lifecycle")
@@ -240,6 +250,8 @@
         doCheck = false;
       })
     ];
+    plugins.lsp-signature.enable = true;
+    plugins.dressing.enable = true;
     plugins.nvim-autopairs.enable = true;
     plugins.fugitive.enable = true;
     plugins.web-devicons.enable = true;
