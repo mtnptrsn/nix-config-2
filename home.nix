@@ -354,9 +354,16 @@
 
   programs.tmux = {
     enable = true;
-    shortcut = "s";
+    prefix = "C-s";
     baseIndex = 1;
-    plugins = with pkgs.tmuxPlugins; [ catppuccin ];
+    plugins = with pkgs.tmuxPlugins; [
+      {
+        plugin = catppuccin;
+        extraConfig = ''
+          set -g @catppuccin_flavor "mocha"
+        '';
+      }
+    ];
   };
 
   programs.zsh = {
