@@ -134,7 +134,59 @@
       { key = "<leader>xx"; action = "<cmd>Trouble diagnostics toggle<cr>"; mode = "n"; options.desc = "Diagnostics"; }
       { key = "<leader>xd"; action = "<cmd>Trouble diagnostics toggle filter.buf=0<cr>"; mode = "n"; options.desc = "Buffer diagnostics"; }
       { key = "<leader>w"; action = "<cmd>w<cr>"; mode = "n"; options.desc = "Save buffer"; }
+      { key = "<leader>q"; action = "<cmd>bd<cr>"; mode = "n"; options.desc = "Close buffer"; }
+      { key = "<leader>c"; action = "<cmd>bd<cr>"; mode = "n"; options.desc = "Close buffer"; }
+      { key = "<leader>gd"; action = "<cmd>CodeDiff<cr>"; mode = "n"; options.desc = "Toggle CodeDiff"; }
+      { key = "Q"; action = "<cmd>qa<cr>"; mode = "n"; options.desc = "Quit neovim"; }
+      { key = "H"; action.__raw = ''function()
+        local ok, lifecycle = pcall(require, "codediff.ui.lifecycle")
+        if ok and lifecycle.get_session(vim.api.nvim_get_current_tabpage()) then
+          vim.cmd("wincmd h")
+        else
+          vim.cmd("BufferLineCyclePrev")
+        end
+      end''; mode = "n"; options.desc = "Previous buffer / window left"; }
+      { key = "L"; action.__raw = ''function()
+        local ok, lifecycle = pcall(require, "codediff.ui.lifecycle")
+        if ok and lifecycle.get_session(vim.api.nvim_get_current_tabpage()) then
+          vim.cmd("wincmd l")
+        else
+          vim.cmd("BufferLineCycleNext")
+        end
+      end''; mode = "n"; options.desc = "Next buffer / window right"; }
     ];
+    plugins.bufferline = {
+      enable = true;
+      settings.options = {
+        show_buffer_close_icons = false;
+        show_close_icon = false;
+        diagnostics = "nvim_lsp";
+      };
+    };
+    extraPlugins = [
+      pkgs.vimPlugins.nui-nvim
+      (pkgs.vimUtils.buildVimPlugin {
+        name = "codediff-nvim";
+        src = pkgs.fetchFromGitHub {
+          owner = "esmuellert";
+          repo = "codediff.nvim";
+          rev = "7e5cda21dab96901cbc4bf3b15828aa8c7b490a7";
+          hash = "sha256-uFUsBHEb4ewyh8NNsTsszWMZKmB9dOUFdvRg9zwfsVo=";
+        };
+        nativeBuildInputs = [ pkgs.autoPatchelfHook ];
+        buildInputs = [ pkgs.gcc.cc.lib ];
+        postInstall = let
+          libvscode-diff = pkgs.fetchurl {
+            url = "https://github.com/esmuellert/vscode-diff.nvim/releases/download/v2.20.3/libvscode_diff_linux_x64_2.20.3.so";
+            hash = "sha256-QaLhh2a3ljuDaOQ13n1Tk5YheggqGC4TGtTyk430QtY=";
+          };
+        in ''
+          cp ${libvscode-diff} $out/libvscode_diff_2.20.3.so
+        '';
+        doCheck = false;
+      })
+    ];
+    plugins.nvim-autopairs.enable = true;
     plugins.fugitive.enable = true;
     plugins.web-devicons.enable = true;
   };
