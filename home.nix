@@ -74,6 +74,11 @@
     enable = true;
     settings.user.name = "Mårten Pettersson";
     settings.user.email = "mtnptrsn@gmail.com";
+    extraConfig = {
+      init.defaultBranch = "main";
+      pull.rebase = true;
+      push.autoSetupRemote = true;
+    };
   };
 
   programs.nixvim = {
