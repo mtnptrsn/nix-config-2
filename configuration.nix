@@ -155,6 +155,9 @@
   # Zram compressed swap
   zramSwap.enable = true;
 
+  # Fan and temperature monitoring
+  environment.systemPackages = [ pkgs.lm_sensors ];
+
   # SSD periodic TRIM
   services.fstrim.enable = true;
 

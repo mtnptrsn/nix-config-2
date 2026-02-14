@@ -12,6 +12,7 @@
     wowup-cf
     slack
     geekbench
+    transmission_4-gtk
     rqbit
     gnomeExtensions.hide-top-bar
     vscode
