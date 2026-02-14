@@ -168,7 +168,7 @@
         options.desc = "Save buffer";
       }
       {
-        key = "<leader>q";
+        key = "<leader>c";
         action = "<cmd>bd<cr>";
         mode = "n";
         options.desc = "Close buffer";
