@@ -126,6 +126,13 @@
       settings.auto_close = true;
     };
 
+    plugins.no-neck-pain = {
+      enable = true;
+      settings.autocmds = {
+        enableOnVimEnter = true;
+        enableOnTabEnter = true;
+      };
+    };
     plugins.oil.enable = true;
     keymaps = [
       {
@@ -191,10 +198,28 @@
         options.desc = "Peek definition";
       }
       {
+        key = "gd";
+        action.__raw = "vim.lsp.buf.definition";
+        mode = "n";
+        options.desc = "Go to definition";
+      }
+      {
         key = "gl";
         action.__raw = "function() vim.diagnostic.open_float() end";
         mode = "n";
         options.desc = "Line diagnostics";
+      }
+      {
+        key = "<leader>un";
+        action = "<cmd>NoNeckPain<cr>";
+        mode = "n";
+        options.desc = "Toggle No Neck Pain";
+      }
+      {
+        key = "<leader>uw";
+        action = "<cmd>set wrap!<cr>";
+        mode = "n";
+        options.desc = "Toggle word wrap";
       }
       {
         key = "Q";
