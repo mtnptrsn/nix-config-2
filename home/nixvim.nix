@@ -210,6 +210,25 @@
         options.desc = "Line diagnostics";
       }
       {
+        key = "<leader>gf";
+        action.__raw = ''
+          function()
+                  for _, tp in ipairs(vim.api.nvim_list_tabpages()) do
+                    for _, win in ipairs(vim.api.nvim_tabpage_list_wins(tp)) do
+                      local buf = vim.api.nvim_win_get_buf(win)
+                      if vim.bo[buf].filetype == "fugitive" then
+                        vim.api.nvim_set_current_tabpage(tp)
+                        vim.cmd("tabclose")
+                        return
+                      end
+                    end
+                  end
+                  vim.cmd("tab Git")
+                end'';
+        mode = "n";
+        options.desc = "Toggle Fugitive tab";
+      }
+      {
         key = "<leader>un";
         action = "<cmd>NoNeckPain<cr>";
         mode = "n";
