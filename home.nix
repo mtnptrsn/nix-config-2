@@ -18,9 +18,8 @@
     vscode
     ripgrep
     fd
-    nil
-    nodePackages.typescript-language-server
-    nodePackages.typescript
+    statix
+    eslint_d
   ];
 
   programs.firefox.enable = true;
@@ -33,39 +32,75 @@
     settings.user.email = "mtnptrsn@gmail.com";
   };
 
-  programs.neovim = {
+  programs.nixvim = {
     enable = true;
     defaultEditor = true;
     viAlias = true;
     vimAlias = true;
-    plugins = with pkgs.vimPlugins; [
-      oil-nvim
-      nvim-web-devicons
-      nvim-treesitter.withAllGrammars
-      plenary-nvim
-      telescope-nvim
-      telescope-fzf-native-nvim
-      nvim-lspconfig
-      vim-fugitive
-    ];
-    extraLuaConfig = ''
-      vim.g.mapleader = ' '
+    globals.mapleader = " ";
+    opts.signcolumn = "yes";
 
-      -- Telescope setup with fzf
-      require('telescope').setup {}
-      require('telescope').load_extension('fzf')
-
-      local builtin = require('telescope.builtin')
-      vim.keymap.set('n', '<leader>ff', builtin.find_files)
-      vim.keymap.set('n', '<leader>fg', builtin.live_grep)
-      vim.keymap.set('n', '<leader>fb', builtin.buffers)
-      vim.keymap.set('n', '<leader>fh', builtin.help_tags)
-
-      -- LSP setup
-      local lspconfig = require('lspconfig')
-      lspconfig.nil_ls.setup {}
-      lspconfig.ts_ls.setup {}
+    extraConfigLua = ''
+      vim.diagnostic.config({
+        virtual_text = { spacing = 4, prefix = "●" },
+        signs = {
+          text = {
+            [vim.diagnostic.severity.ERROR] = "",
+            [vim.diagnostic.severity.WARN] = "",
+            [vim.diagnostic.severity.INFO] = "",
+            [vim.diagnostic.severity.HINT] = "",
+          },
+        },
+      })
     '';
+
+    plugins.treesitter = {
+      enable = true;
+      grammarPackages = pkgs.vimPlugins.nvim-treesitter.allGrammars;
+    };
+
+    plugins.telescope = {
+      enable = true;
+      extensions.fzf-native.enable = true;
+      keymaps = {
+        "<leader>ff" = "find_files";
+        "<leader>fw" = "live_grep";
+        "<leader>fb" = "buffers";
+      };
+    };
+
+    plugins.lsp = {
+      enable = true;
+      servers.nil_ls.enable = true;
+      servers.ts_ls.enable = true;
+    };
+
+    plugins.lint = {
+      enable = true;
+      lintersByFt = {
+        nix = [ "statix" ];
+        typescript = [ "eslint_d" ];
+        typescriptreact = [ "eslint_d" ];
+        javascript = [ "eslint_d" ];
+        javascriptreact = [ "eslint_d" ];
+      };
+      autoCmd.event = [ "BufWritePost" "BufReadPost" "InsertLeave" ];
+    };
+
+    plugins.trouble = {
+      enable = true;
+      settings.auto_close = true;
+    };
+
+    plugins.oil.enable = true;
+    keymaps = [
+      { key = "-"; action.__raw = "require('oil').open"; mode = "n"; options.desc = "Open parent directory"; }
+      { key = "<leader>xx"; action = "<cmd>Trouble diagnostics toggle<cr>"; mode = "n"; options.desc = "Diagnostics"; }
+      { key = "<leader>xd"; action = "<cmd>Trouble diagnostics toggle filter.buf=0<cr>"; mode = "n"; options.desc = "Buffer diagnostics"; }
+      { key = "<leader>w"; action = "<cmd>w<cr>"; mode = "n"; options.desc = "Save buffer"; }
+    ];
+    plugins.fugitive.enable = true;
+    plugins.web-devicons.enable = true;
   };
 
   programs.tmux = {

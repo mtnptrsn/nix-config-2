@@ -6,9 +6,13 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     maccel.url = "github:Gnarus-G/maccel";
+    nixvim = {
+      url = "github:nix-community/nixvim";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  outputs = { nixpkgs, home-manager, maccel, ... }: {
+  outputs = { nixpkgs, home-manager, maccel, nixvim, ... }: {
     nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
       modules = [
@@ -19,7 +23,12 @@
           home-manager.useGlobalPkgs = true;
           home-manager.useUserPackages = true;
           home-manager.backupFileExtension = "bak";
-          home-manager.users.mtnptrsn = import ./home.nix;
+          home-manager.users.mtnptrsn = {
+            imports = [
+              ./home.nix
+              nixvim.homeModules.nixvim
+            ];
+          };
         }
       ];
     };
