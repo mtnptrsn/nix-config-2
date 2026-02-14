@@ -38,7 +38,14 @@
     viAlias = true;
     vimAlias = true;
     globals.mapleader = " ";
-    opts.signcolumn = "yes";
+    opts = {
+      signcolumn = "yes";
+      number = true;
+      relativenumber = true;
+      shiftwidth = 2;
+      tabstop = 2;
+      expandtab = true;
+    };
 
     extraConfigLua = ''
       vim.diagnostic.config({
