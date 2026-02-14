@@ -44,24 +44,24 @@
         background = "#a6adc8";
       };
       normal = {
-        black   = "#45475a";
-        red     = "#f38ba8";
-        green   = "#a6e3a1";
-        yellow  = "#f9e2af";
-        blue    = "#89b4fa";
+        black = "#45475a";
+        red = "#f38ba8";
+        green = "#a6e3a1";
+        yellow = "#f9e2af";
+        blue = "#89b4fa";
         magenta = "#f5c2e7";
-        cyan    = "#94e2d5";
-        white   = "#bac2de";
+        cyan = "#94e2d5";
+        white = "#bac2de";
       };
       bright = {
-        black   = "#585b70";
-        red     = "#f38ba8";
-        green   = "#a6e3a1";
-        yellow  = "#f9e2af";
-        blue    = "#89b4fa";
+        black = "#585b70";
+        red = "#f38ba8";
+        green = "#a6e3a1";
+        yellow = "#f9e2af";
+        blue = "#89b4fa";
         magenta = "#f5c2e7";
-        cyan    = "#94e2d5";
-        white   = "#a6adc8";
+        cyan = "#94e2d5";
+        white = "#a6adc8";
       };
     };
   };
@@ -132,15 +132,30 @@
 
     plugins.luasnip = {
       enable = true;
-      fromVscode = [{ }];
+      fromVscode = [ { } ];
     };
     plugins.friendly-snippets.enable = true;
     plugins.blink-cmp = {
       enable = true;
-      settings.sources.default = [ "lsp" "path" "buffer" "snippets" ];
-      settings.keymap."<Tab>" = [ "select_and_accept" "snippet_forward" "fallback" ];
-      settings.keymap."<CR>" = [ "select_and_accept" "fallback" ];
-      settings.keymap."<S-Tab>" = [ "snippet_backward" "fallback" ];
+      settings.sources.default = [
+        "lsp"
+        "path"
+        "buffer"
+        "snippets"
+      ];
+      settings.keymap."<Tab>" = [
+        "select_and_accept"
+        "snippet_forward"
+        "fallback"
+      ];
+      settings.keymap."<CR>" = [
+        "select_and_accept"
+        "fallback"
+      ];
+      settings.keymap."<S-Tab>" = [
+        "snippet_backward"
+        "fallback"
+      ];
       settings.snippets.preset = "luasnip";
     };
 
@@ -159,7 +174,11 @@
         javascript = [ "eslint_d" ];
         javascriptreact = [ "eslint_d" ];
       };
-      autoCmd.event = [ "BufWritePost" "BufReadPost" "InsertLeave" ];
+      autoCmd.event = [
+        "BufWritePost"
+        "BufReadPost"
+        "InsertLeave"
+      ];
     };
 
     plugins.conform-nvim = {
@@ -190,40 +209,108 @@
 
     plugins.oil.enable = true;
     keymaps = [
-      { key = "-"; action.__raw = "require('oil').open"; mode = "n"; options.desc = "Open parent directory"; }
-      { key = "<leader>xx"; action = "<cmd>Trouble diagnostics toggle<cr>"; mode = "n"; options.desc = "Diagnostics"; }
-      { key = "<leader>xd"; action = "<cmd>Trouble diagnostics toggle filter.buf=0<cr>"; mode = "n"; options.desc = "Buffer diagnostics"; }
-      { key = "<leader>w"; action = "<cmd>w<cr>"; mode = "n"; options.desc = "Save buffer"; }
-      { key = "<leader>q"; action = "<cmd>bd<cr>"; mode = "n"; options.desc = "Close buffer"; }
-      { key = "<leader>c"; action = "<cmd>bd<cr>"; mode = "n"; options.desc = "Close buffer"; }
-      { key = "<leader>gd"; action = "<cmd>CodeDiff<cr>"; mode = "n"; options.desc = "Toggle CodeDiff"; }
-      { key = "<leader>lr"; action.__raw = "vim.lsp.buf.rename"; mode = "n"; options.desc = "Rename symbol"; }
-      { key = "gp"; action.__raw = ''function()
-        local params = vim.lsp.util.make_position_params(0)
-        vim.lsp.buf_request(0, "textDocument/definition", params, function(err, result)
-          if err or not result then return end
-          local def = vim.islist(result) and result[1] or result
-          vim.lsp.util.preview_location(def, {})
-        end)
-      end''; mode = "n"; options.desc = "Peek definition"; }
-      { key = "gl"; action.__raw = "function() vim.diagnostic.open_float() end"; mode = "n"; options.desc = "Line diagnostics"; }
-      { key = "Q"; action = "<cmd>qa<cr>"; mode = "n"; options.desc = "Quit neovim"; }
-      { key = "H"; action.__raw = ''function()
-        local ok, lifecycle = pcall(require, "codediff.ui.lifecycle")
-        if ok and lifecycle.get_session(vim.api.nvim_get_current_tabpage()) then
-          vim.cmd("wincmd h")
-        else
-          vim.cmd("BufferLineCyclePrev")
-        end
-      end''; mode = "n"; options.desc = "Previous buffer / window left"; }
-      { key = "L"; action.__raw = ''function()
-        local ok, lifecycle = pcall(require, "codediff.ui.lifecycle")
-        if ok and lifecycle.get_session(vim.api.nvim_get_current_tabpage()) then
-          vim.cmd("wincmd l")
-        else
-          vim.cmd("BufferLineCycleNext")
-        end
-      end''; mode = "n"; options.desc = "Next buffer / window right"; }
+      {
+        key = "-";
+        action.__raw = "require('oil').open";
+        mode = "n";
+        options.desc = "Open parent directory";
+      }
+      {
+        key = "<leader>xx";
+        action = "<cmd>Trouble diagnostics toggle<cr>";
+        mode = "n";
+        options.desc = "Diagnostics";
+      }
+      {
+        key = "<leader>xd";
+        action = "<cmd>Trouble diagnostics toggle filter.buf=0<cr>";
+        mode = "n";
+        options.desc = "Buffer diagnostics";
+      }
+      {
+        key = "<leader>w";
+        action = "<cmd>w<cr>";
+        mode = "n";
+        options.desc = "Save buffer";
+      }
+      {
+        key = "<leader>q";
+        action = "<cmd>bd<cr>";
+        mode = "n";
+        options.desc = "Close buffer";
+      }
+      {
+        key = "<leader>c";
+        action = "<cmd>bd<cr>";
+        mode = "n";
+        options.desc = "Close buffer";
+      }
+      {
+        key = "<leader>gd";
+        action = "<cmd>CodeDiff<cr>";
+        mode = "n";
+        options.desc = "Toggle CodeDiff";
+      }
+      {
+        key = "<leader>lr";
+        action.__raw = "vim.lsp.buf.rename";
+        mode = "n";
+        options.desc = "Rename symbol";
+      }
+      {
+        key = "gp";
+        action.__raw = ''
+          function()
+                  local params = vim.lsp.util.make_position_params(0)
+                  vim.lsp.buf_request(0, "textDocument/definition", params, function(err, result)
+                    if err or not result then return end
+                    local def = vim.islist(result) and result[1] or result
+                    vim.lsp.util.preview_location(def, {})
+                  end)
+                end'';
+        mode = "n";
+        options.desc = "Peek definition";
+      }
+      {
+        key = "gl";
+        action.__raw = "function() vim.diagnostic.open_float() end";
+        mode = "n";
+        options.desc = "Line diagnostics";
+      }
+      {
+        key = "Q";
+        action = "<cmd>qa<cr>";
+        mode = "n";
+        options.desc = "Quit neovim";
+      }
+      {
+        key = "H";
+        action.__raw = ''
+          function()
+                  local ok, lifecycle = pcall(require, "codediff.ui.lifecycle")
+                  if ok and lifecycle.get_session(vim.api.nvim_get_current_tabpage()) then
+                    vim.cmd("wincmd h")
+                  else
+                    vim.cmd("BufferLineCyclePrev")
+                  end
+                end'';
+        mode = "n";
+        options.desc = "Previous buffer / window left";
+      }
+      {
+        key = "L";
+        action.__raw = ''
+          function()
+                  local ok, lifecycle = pcall(require, "codediff.ui.lifecycle")
+                  if ok and lifecycle.get_session(vim.api.nvim_get_current_tabpage()) then
+                    vim.cmd("wincmd l")
+                  else
+                    vim.cmd("BufferLineCycleNext")
+                  end
+                end'';
+        mode = "n";
+        options.desc = "Next buffer / window right";
+      }
     ];
     plugins.bufferline = {
       enable = true;
@@ -245,14 +332,16 @@
         };
         nativeBuildInputs = [ pkgs.autoPatchelfHook ];
         buildInputs = [ pkgs.gcc.cc.lib ];
-        postInstall = let
-          libvscode-diff = pkgs.fetchurl {
-            url = "https://github.com/esmuellert/vscode-diff.nvim/releases/download/v2.20.3/libvscode_diff_linux_x64_2.20.3.so";
-            hash = "sha256-QaLhh2a3ljuDaOQ13n1Tk5YheggqGC4TGtTyk430QtY=";
-          };
-        in ''
-          cp ${libvscode-diff} $out/libvscode_diff_2.20.3.so
-        '';
+        postInstall =
+          let
+            libvscode-diff = pkgs.fetchurl {
+              url = "https://github.com/esmuellert/vscode-diff.nvim/releases/download/v2.20.3/libvscode_diff_linux_x64_2.20.3.so";
+              hash = "sha256-QaLhh2a3ljuDaOQ13n1Tk5YheggqGC4TGtTyk430QtY=";
+            };
+          in
+          ''
+            cp ${libvscode-diff} $out/libvscode_diff_2.20.3.so
+          '';
         doCheck = false;
       })
     ];
@@ -277,7 +366,12 @@
     oh-my-zsh = {
       enable = true;
       theme = "robbyrussell";
-      plugins = [ "git" "z" "sudo" "history" ];
+      plugins = [
+        "git"
+        "z"
+        "sudo"
+        "history"
+      ];
     };
     shellAliases = {
       ll = "ls -la";
@@ -298,7 +392,7 @@
       enabled-extensions = [ "hidetopbar@mathieu.bidon.ca" ];
     };
     "org/gnome/desktop/peripherals/mouse" = {
-      accel-profile = "flat";  # Disable GNOME acceleration; maccel handles it
+      accel-profile = "flat"; # Disable GNOME acceleration; maccel handles it
     };
     "org/gnome/desktop/interface" = {
       enable-animations = false;
