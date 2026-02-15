@@ -26,7 +26,7 @@
         nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
           modules = [
-            ./hardware-configuration.nix
+            ./hosts/${hostName}/hardware-configuration.nix
             ./system
             ./hosts/${hostName}
             home-manager.nixosModules.home-manager
