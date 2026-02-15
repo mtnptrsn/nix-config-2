@@ -246,6 +246,17 @@
         key = "<leader>yr";
         action.__raw = ''
           function()
+            local path = vim.fn.fnamemodify(vim.fn.expand("%"), ":.")
+            vim.fn.setreg("+", path)
+            vim.notify(path)
+          end'';
+        mode = "n";
+        options.desc = "Yank relative path";
+      }
+      {
+        key = "<leader>yr";
+        action.__raw = ''
+          function()
             local start_line = vim.fn.line("v")
             local end_line = vim.fn.line(".")
             if start_line > end_line then start_line, end_line = end_line, start_line end
