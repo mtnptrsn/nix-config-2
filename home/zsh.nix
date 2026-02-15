@@ -17,6 +17,7 @@ _: {
       ll = "ls -la";
       v = "nvim";
       p = "pnpm";
+      cv = "xclip -selection clipboard -o > /tmp/claude-response.md && nvim -R /tmp/claude-response.md && rm /tmp/claude-response.md";
     };
   };
 
