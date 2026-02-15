@@ -11,6 +11,9 @@
     "org/gnome/shell" = {
       enabled-extensions = [ "hidetopbar@mathieu.bidon.ca" ];
     };
+    "org/gnome/shell/extensions/hidetopbar" = {
+      enable-intellihide = false;
+    };
     "org/gnome/desktop/peripherals/mouse" = {
       accel-profile = "flat"; # Disable GNOME acceleration; maccel handles it
     };
