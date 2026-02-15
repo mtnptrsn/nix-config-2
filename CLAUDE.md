@@ -46,7 +46,9 @@ nix flake update
 
 ## Pre-commit Checks
 
-Before committing, always run the formatter, linter, and eval in parallel:
+**Cloud environments (e.g. Claude Code on the web):** The `nix` binary is not available. Skip all pre-commit checks below — do not attempt to run `nix run`, `nix eval`, `nix build`, or any other `nix` commands. Commits made from cloud environments will not have been validated with the formatter, linter, or eval.
+
+**Local environments (with Nix installed):** Before committing, always run the formatter, linter, and eval in parallel:
 
 ```bash
 # Format all .nix files
