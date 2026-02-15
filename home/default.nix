@@ -7,6 +7,7 @@
     ./zsh.nix
     ./tmux.nix
     ./gnome.nix
+    ./discord.nix
     ./packages.nix
     ./git.nix
   ];
