@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ls *)",
+      "Bash(sudo nixos-rebuild *)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:gist.github.com)",
+      "Bash(git status*)",
+      "Bash(git diff *)",
+      "Bash(git diff)",
+      "Bash(git log *)",
+      "Bash(nix run nixpkgs#nixfmt *)",
+      "Bash(nix run nixpkgs#statix *)",
+      "Bash(nix eval *)"
+    ]
+  }
+}
