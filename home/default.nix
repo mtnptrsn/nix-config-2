@@ -28,6 +28,7 @@
     fd
     statix
     nixfmt
+    mission-center
   ];
 
   programs.firefox.enable = true;
