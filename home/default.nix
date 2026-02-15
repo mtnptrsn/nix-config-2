@@ -18,6 +18,10 @@
   programs.chromium = {
     enable = true;
     package = pkgs.google-chrome;
+    extensions = [
+      "cjpalhdlnbpafiamejdnhcphjbkeiagm" # uBlock Origin
+      "fmkadmapgofadopljbjfkapdkoienihi" # React Developer Tools
+    ];
   };
 
   programs.mangohud.enable = true;
