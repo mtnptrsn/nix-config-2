@@ -40,13 +40,24 @@ nix flake update
 - `nixpkgs.config.allowUnfree = true`
 - `system.stateVersion = "25.11"` — do not change without understanding migration implications
 
+## Cloud Environment
+
+When running in a cloud environment (e.g., Claude Code on the web), `nix` is not available. In this case:
+
+- **Skip all commands** that require `nix`, `nixos-rebuild`, or any Nix binaries. This includes formatting (`nixfmt`), linting (`statix`), evaluation (`nix eval`), building, and applying configuration.
+- **Do not attempt** to install Nix or run Nix commands as a workaround.
+- **Note in PR descriptions** that the changes have not been validated with Nix tooling due to the cloud environment lacking Nix binaries.
+
+To detect this: check if `nix` is on `PATH` before running any Nix commands. If it is not available, skip those steps entirely.
+
 ## Workflow
 
 - Always apply configuration changes after editing by running `sudo nixos-rebuild switch --flake /home/mtnptrsn/nixos-config#<host>` (replace `<host>` with the target host name)
+- In cloud environments without Nix, skip this step (see [Cloud Environment](#cloud-environment))
 
 ## Pre-commit Checks
 
-Before committing, always run the formatter, linter, and eval in parallel:
+If `nix` is available, run the formatter, linter, and eval in parallel before committing:
 
 ```bash
 # Format all .nix files
@@ -61,6 +72,8 @@ nix eval /home/mtnptrsn/nixos-config#nixosConfigurations.work.config.system.buil
 ```
 
 Fix any issues before committing. For statix, auto-fix is available with `nix run nixpkgs#statix -- fix .`.
+
+If `nix` is **not** available (cloud environment), skip all pre-commit checks and note in the PR description that changes were not validated with Nix tooling.
 
 ## Git
 
