@@ -1,5 +1,8 @@
-{ pkgs, ... }:
+{ pkgs, lib, ... }:
 
+let
+  ffmpeg = lib.getExe pkgs.ffmpeg;
+in
 {
   home.packages = [
     (pkgs.writeShellScriptBin "record-screen" ''
@@ -23,7 +26,7 @@
 
         if [ -f "$WEBM_PATH" ]; then
           echo "Converting to MP4..."
-          ${pkgs.ffmpeg}/bin/ffmpeg -i "$WEBM_PATH" \
+          ${ffmpeg} -i "$WEBM_PATH" \
             -c:v libx264 -preset fast -crf 23 \
             -c:a aac -b:a 128k \
             -y -loglevel warning \
