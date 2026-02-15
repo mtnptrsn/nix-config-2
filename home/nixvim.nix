@@ -38,6 +38,7 @@
     plugins.treesitter = {
       enable = true;
       grammarPackages = pkgs.vimPlugins.nvim-treesitter.allGrammars;
+      settings.highlight.enable = true;
     };
 
     plugins.telescope = {
