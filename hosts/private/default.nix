@@ -1,5 +1,5 @@
 { pkgs, ... }:
 {
-  networking.hostName = "private";
+  networking.hostName = "mtnptrsn";
   environment.systemPackages = [ pkgs.cowsay ];
 }

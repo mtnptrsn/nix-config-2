@@ -1,5 +1,5 @@
 { pkgs, ... }:
 {
-  networking.hostName = "work";
+  networking.hostName = "mtnptrsn";
   environment.systemPackages = [ pkgs.lolcat ];
 }
