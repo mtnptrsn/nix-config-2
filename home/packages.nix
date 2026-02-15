@@ -19,5 +19,6 @@
     statix
     nixfmt
     mission-center
+    claude-code
   ];
 }
