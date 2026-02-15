@@ -15,6 +15,8 @@ _: {
     };
     shellAliases = {
       ll = "ls -la";
+      v = "nvim";
+      p = "pnpm";
     };
   };
 
