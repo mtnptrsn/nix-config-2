@@ -25,6 +25,12 @@
     }
   ];
 
+  # Graphical sudo askpass (for non-terminal contexts like Claude Code)
+  environment.variables.SUDO_ASKPASS = "${pkgs.ssh-askpass-fullscreen}/bin/ssh-askpass-fullscreen";
+  security.sudo.extraConfig = ''
+    Defaults env_keep += "SUDO_ASKPASS"
+  '';
+
   # Zsh (user config in home/, system-level enable for /etc/shells)
   programs.zsh.enable = true;
 }
