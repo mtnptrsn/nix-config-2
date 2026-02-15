@@ -16,4 +16,13 @@
   programs.firefox.enable = true;
 
   programs.mangohud.enable = true;
+
+  programs.claude-code = {
+    enable = true;
+    settings = {
+      effortLevel = "medium";
+      hooks = { };
+    };
+    skillsDir = ./claude/skills;
+  };
 }
