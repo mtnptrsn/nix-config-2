@@ -20,25 +20,36 @@
       nixvim,
       ...
     }:
+    let
+      mkHost =
+        hostName:
+        nixpkgs.lib.nixosSystem {
+          system = "x86_64-linux";
+          modules = [
+            ./hardware-configuration.nix
+            ./system
+            ./hosts/${hostName}
+            home-manager.nixosModules.home-manager
+            maccel.nixosModules.default
+            {
+              home-manager.useGlobalPkgs = true;
+              home-manager.useUserPackages = true;
+              home-manager.backupFileExtension = "bak";
+              home-manager.users.mtnptrsn = {
+                imports = [
+                  ./home
+                  ./hosts/${hostName}/home.nix
+                  nixvim.homeModules.nixvim
+                ];
+              };
+            }
+          ];
+        };
+    in
     {
-      nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
-        system = "x86_64-linux";
-        modules = [
-          ./configuration.nix
-          home-manager.nixosModules.home-manager
-          maccel.nixosModules.default
-          {
-            home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = true;
-            home-manager.backupFileExtension = "bak";
-            home-manager.users.mtnptrsn = {
-              imports = [
-                ./home
-                nixvim.homeModules.nixvim
-              ];
-            };
-          }
-        ];
+      nixosConfigurations = {
+        private = mkHost "private";
+        work = mkHost "work";
       };
     };
 }

@@ -1,4 +1,4 @@
-{ config, ... }:
+_:
 {
   programs.zsh = {
     enable = true;
@@ -16,8 +16,6 @@
     };
     shellAliases = {
       ll = "ls -la";
-      nixswitch = "sudo nixos-rebuild switch --flake ${config.home.homeDirectory}/nixos-config#nixos";
-      nixtest = "sudo nixos-rebuild test --flake ${config.home.homeDirectory}/nixos-config#nixos";
     };
   };
 
