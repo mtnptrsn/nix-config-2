@@ -1,13 +1,10 @@
-{ pkgs, lib, ... }:
+{ pkgs, ... }:
 
 let
-  ffmpeg = lib.getExe pkgs.ffmpeg;
-in
-{
-  home.packages = [
-    (pkgs.writeShellScriptBin "record-screen" ''
-      set -euo pipefail
-
+  record-screen = pkgs.writeShellApplication {
+    name = "record-screen";
+    runtimeInputs = [ pkgs.ffmpeg ];
+    text = ''
       VIDEOS_DIR="$HOME/Videos"
       mkdir -p "$VIDEOS_DIR"
 
@@ -26,7 +23,7 @@ in
 
         if [ -f "$WEBM_PATH" ]; then
           echo "Converting to MP4..."
-          ${ffmpeg} -i "$WEBM_PATH" \
+          ffmpeg -i "$WEBM_PATH" \
             -c:v libx264 -preset fast -crf 23 \
             -c:a aac -b:a 128k \
             -y -loglevel warning \
@@ -61,6 +58,11 @@ in
         echo "Make sure GNOME Shell is running and the Screencast D-Bus service is available."
         exit 1
       fi
-    '')
+    '';
+  };
+in
+{
+  home.packages = [
+    record-screen
   ];
 }
