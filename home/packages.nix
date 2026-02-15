@@ -2,7 +2,6 @@
 
 {
   home.packages = with pkgs; [
-    google-chrome
     discord
     _1password-gui
     spotify

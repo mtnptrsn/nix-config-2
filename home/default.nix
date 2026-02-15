@@ -1,4 +1,4 @@
-{ ... }:
+{ pkgs, ... }:
 
 {
   imports = [
@@ -14,6 +14,11 @@
   home.stateVersion = "25.11";
 
   programs.firefox.enable = true;
+
+  programs.chromium = {
+    enable = true;
+    package = pkgs.google-chrome;
+  };
 
   programs.mangohud.enable = true;
 
