@@ -8,6 +8,7 @@
     ./tmux.nix
     ./gnome.nix
     ./packages.nix
+    ./scripts.nix
     ./git.nix
   ];
 
