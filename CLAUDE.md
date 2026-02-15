@@ -44,7 +44,19 @@ nix flake update
 
 - Always apply configuration changes after editing by running `sudo nixos-rebuild switch --flake /home/mtnptrsn/nixos-config#<host>` (replace `<host>` with the target host name)
 
+## Cloud Environment
+
+When running in a cloud environment (e.g. Claude Code on the web), `nix` is not available. In this case:
+
+- **Skip all pre-commit checks** — do not run `nix run`, `nix eval`, `nix build`, or any other `nix` commands.
+- **Skip the workflow step** — do not attempt `nixos-rebuild` or any system-level commands.
+- **Note in PR descriptions** that changes have not been validated with Nix (no formatting, linting, or eval checks were run).
+
+To detect this, check whether `nix` is on `PATH` before running any Nix commands. If it is not available, proceed without validation.
+
 ## Pre-commit Checks
+
+These checks require `nix` to be available. **Skip this entire section in cloud environments where `nix` is not installed.**
 
 Before committing, always run the formatter, linter, and eval in parallel:
 
