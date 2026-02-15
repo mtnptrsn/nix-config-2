@@ -1,11 +1,9 @@
 { pkgs, ... }:
 
 {
-  # X11
-  services.xserver.enable = true;
-
   # GNOME Desktop Environment
   services.displayManager.gdm.enable = true;
+  services.displayManager.gdm.wayland = true;
   services.desktopManager.gnome.enable = true;
 
   # Printing
