@@ -42,12 +42,11 @@ nix flake update
 
 ## Workflow
 
-- After editing, verify the config evaluates before committing: `nix eval /home/mtnptrsn/nixos-config#nixosConfigurations.nixos.config.system.build.toplevel`
 - Always apply configuration changes after editing by running `sudo nixos-rebuild switch --flake /home/mtnptrsn/nixos-config#nixos`
 
-## Formatting and Linting
+## Pre-commit Checks
 
-Before committing, always run the formatter and linter on all `.nix` files:
+Before committing, always run the formatter, linter, and eval in parallel:
 
 ```bash
 # Format all .nix files
@@ -55,6 +54,9 @@ nix run nixpkgs#nixfmt -- **/*.nix
 
 # Lint all .nix files (check only)
 nix run nixpkgs#statix -- check .
+
+# Verify config evaluates
+nix eval /home/mtnptrsn/nixos-config#nixosConfigurations.nixos.config.system.build.toplevel
 ```
 
 Fix any issues before committing. For statix, auto-fix is available with `nix run nixpkgs#statix -- fix .`.
