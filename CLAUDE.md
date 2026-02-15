@@ -68,4 +68,4 @@ Fix any issues before committing. For statix, auto-fix is available with `nix ru
 
 - Do not add `Co-Authored-By` lines to commit messages
 - When committing, separate changes into distinct commits by concern. Group related changes together and keep unrelated changes in separate commits.
-- Do not use the GitHub CLI (`gh`). Git push/pull operations and PR creation are handled automatically by the cloud integration.
+- Do not use the GitHub CLI (`gh`) in cloud environments — git push/pull and PR creation are handled automatically by the cloud integration. Only use `gh` when it is available locally.
