@@ -243,6 +243,22 @@
         options.desc = "Toggle word wrap";
       }
       {
+        key = "<leader>yr";
+        action.__raw = ''
+          function()
+            local start_line = vim.fn.line("v")
+            local end_line = vim.fn.line(".")
+            if start_line > end_line then start_line, end_line = end_line, start_line end
+            local path = vim.fn.fnamemodify(vim.fn.expand("%"), ":.")
+            local ref = path .. ":" .. start_line .. "-" .. end_line
+            vim.fn.setreg("+", ref)
+            vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<Esc>", true, false, true), "n", false)
+            vim.notify(ref)
+          end'';
+        mode = "v";
+        options.desc = "Yank relative path with line range";
+      }
+      {
         key = "Q";
         action = "<cmd>qa<cr>";
         mode = "n";
