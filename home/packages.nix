@@ -21,5 +21,6 @@
     mission-center
     xclip
     gh
+    ffmpeg
   ];
 }
