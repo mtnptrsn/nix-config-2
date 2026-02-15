@@ -46,6 +46,8 @@ nix flake update
 
 ## Pre-commit Checks
 
+Skip these checks if the `nix` binary is not available (e.g., in cloud environments).
+
 Before committing, always run the formatter, linter, and eval in parallel:
 
 ```bash
@@ -66,3 +68,4 @@ Fix any issues before committing. For statix, auto-fix is available with `nix ru
 
 - Do not add `Co-Authored-By` lines to commit messages
 - When committing, separate changes into distinct commits by concern. Group related changes together and keep unrelated changes in separate commits.
+- Do not use the GitHub CLI (`gh`). Git push/pull operations and PR creation are handled automatically by the cloud integration.
