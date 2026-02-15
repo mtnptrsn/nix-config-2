@@ -20,5 +20,6 @@
     nixfmt
     mission-center
     xclip
+    gh
   ];
 }
