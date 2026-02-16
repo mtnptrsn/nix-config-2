@@ -7,6 +7,7 @@
     tmux.enable = true;
     gnome.enable = true;
     git.enable = true;
+    pr-dashboard.enable = true;
   };
 
   home.packages = with pkgs; [
