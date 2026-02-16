@@ -345,6 +345,35 @@
         doCheck = false;
       })
     ];
+    plugins.which-key = {
+      enable = true;
+      settings.spec = [
+        {
+          __unkeyed-1 = "<leader>f";
+          group = "Find";
+        }
+        {
+          __unkeyed-1 = "<leader>x";
+          group = "Diagnostics";
+        }
+        {
+          __unkeyed-1 = "<leader>g";
+          group = "Git";
+        }
+        {
+          __unkeyed-1 = "<leader>l";
+          group = "LSP";
+        }
+        {
+          __unkeyed-1 = "<leader>u";
+          group = "UI";
+        }
+        {
+          __unkeyed-1 = "<leader>y";
+          group = "Yank";
+        }
+      ];
+    };
     plugins.lsp-signature.enable = true;
     plugins.dressing.enable = true;
     plugins.nvim-autopairs.enable = true;
