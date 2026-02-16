@@ -29,6 +29,9 @@ in
         color-scheme = "prefer-dark";
         gtk-theme = "Adwaita-dark";
       };
+      "org/gnome/desktop/wm/keybindings" = {
+        close = [ "<Control>q" ];
+      };
       "org/gnome/desktop/background" = {
         picture-uri = "file://${config.home.homeDirectory}/Pictures/wallpaper.jpg";
         picture-uri-dark = "file://${config.home.homeDirectory}/Pictures/wallpaper.jpg";
