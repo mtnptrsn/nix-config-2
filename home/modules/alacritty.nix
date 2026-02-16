@@ -12,6 +12,7 @@ in
   config = lib.mkIf cfg.enable {
     programs.alacritty = {
       enable = true;
+      settings.font.size = 13.5;
       settings.colors = {
         primary = {
           background = "#1e1e2e";
