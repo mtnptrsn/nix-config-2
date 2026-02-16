@@ -12,6 +12,11 @@ in
   config = lib.mkIf cfg.enable {
     programs.firefox = {
       enable = true;
+      profiles.default = {
+        settings = {
+          "layout.css.prefers-color-scheme.content-override" = 0;
+        };
+      };
       policies.ExtensionSettings = {
         "@react-devtools" = {
           installation_mode = "force_installed";
