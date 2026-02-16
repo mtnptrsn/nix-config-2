@@ -62,12 +62,19 @@ in
           "$mod SHIFT, 9, movetoworkspace, 9"
         ];
 
+        windowrule = [
+          "match:class ^(Alacritty)$, workspace 1 silent"
+          "match:class ^(firefox)$, workspace 2 silent"
+          "match:class ^(Spotify)$, workspace 3 silent"
+          "match:class ^(1password)$, workspace 4 silent"
+        ];
+
         exec-once = [
           "waybar"
-          "alacritty -e tmux new-session -A -s main" # TODO: Open in first workspace
-          "firefox" # Open on second workspace
-          "spotify" # Open on 3rd workspace
-          "1password" # open on 4th workspace
+          "alacritty -e tmux new-session -A -s main"
+          "firefox"
+          "spotify"
+          "1password"
         ];
 
         bindm = [
