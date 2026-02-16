@@ -18,6 +18,7 @@ _: {
       v = "nvim";
       p = "pnpm";
       cv = "xclip -selection clipboard -o > /tmp/claude-response.md && nvim -R /tmp/claude-response.md && rm /tmp/claude-response.md";
+      ghpr = "GH_PAGER='nvim -R' gh search prs --review-requested=mtnptrsn --state=open";
     };
   };
 
