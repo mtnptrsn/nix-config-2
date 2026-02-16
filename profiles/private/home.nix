@@ -1,4 +1,5 @@
-_: {
+{ pkgs, ... }:
+{
   modules = {
     nixvim.enable = true;
     alacritty.enable = true;
@@ -6,8 +7,11 @@ _: {
     tmux.enable = true;
     gnome.enable = true;
     git.enable = true;
-    packages.enable = true;
   };
+
+  home.packages = with pkgs; [
+    wowup-cf
+  ];
 
   programs.git.settings.user.email = "mtnptrsn@gmail.com";
 
