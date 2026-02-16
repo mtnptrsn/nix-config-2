@@ -19,10 +19,5 @@
 
   programs.claude-code = {
     enable = true;
-    settings = {
-      effortLevel = "medium";
-      hooks = { };
-    };
-    skillsDir = ./claude/skills;
   };
 }
