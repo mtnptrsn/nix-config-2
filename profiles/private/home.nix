@@ -7,6 +7,7 @@
     tmux.enable = true;
     gnome.enable = true;
     git.enable = true;
+    firefox.enable = true;
   };
 
   home.packages = with pkgs; [
@@ -14,10 +15,6 @@
   ];
 
   programs.git.settings.user.email = "mtnptrsn@gmail.com";
-
-  programs.firefox.enable = true;
-
-  programs.mangohud.enable = true;
 
   programs.claude-code = {
     enable = true;

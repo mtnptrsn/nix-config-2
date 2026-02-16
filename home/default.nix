@@ -8,6 +8,7 @@
     ./modules/gnome.nix
     ./modules/git.nix
     ./modules/packages.nix
+    ./modules/firefox.nix
   ];
 
   home.stateVersion = "25.11";
