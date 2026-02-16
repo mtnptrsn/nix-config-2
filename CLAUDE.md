@@ -30,6 +30,10 @@ nix flake update
 - **home/** — User-level config via Home Manager. `default.nix` imports all opt-in modules and sets stateVersion. Modules in `home/modules/` use `modules.<name>.enable` with `mkEnableOption`/`mkIf` so profiles control what's active.
 - **home/modules/** — Opt-in home-manager modules: `nixvim.nix`, `alacritty.nix`, `zsh.nix`, `tmux.nix`, `gnome.nix`, `git.nix`, `packages.nix`.
 
+## Important: New Files Must Be Staged
+
+This is a Nix flake with a git-based source. Nix only sees files tracked by git. When creating a new file, you must `git add` it before running `nix eval` or `nixos-rebuild`, otherwise Nix will fail with a "path does not exist" error.
+
 ## Key Details
 
 - User account: `mtnptrsn` (wheel, networkmanager groups)
