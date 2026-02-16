@@ -20,9 +20,7 @@
 
   programs.claude-code = {
     enable = true;
-    memory.text = ''
-      This is the `private` host. When running NixOS rebuild or evaluating flake outputs, use `private` as the host name (e.g. `nixos-rebuild switch --flake ~/nixos-config#private`).
-    '';
+    memory.text = builtins.readFile ./claude-memory.md;
   };
 
   home.shellAliases = {
