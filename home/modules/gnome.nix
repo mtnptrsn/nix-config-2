@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  pkgs,
   ...
 }:
 let
@@ -10,14 +11,16 @@ in
   options.modules.gnome.enable = lib.mkEnableOption "gnome";
 
   config = lib.mkIf cfg.enable {
-    services.devilspie2 = {
-      enable = true;
-      config = ''
-        maximize()
-      '';
-    };
+    home.packages = with pkgs; [
+      gnomeExtensions.maximized-by-default-actually-reborn
+    ];
 
     dconf.settings = {
+      "org/gnome/shell" = {
+        enabled-extensions = [
+          "gnome-shell-extension-maximized-by-default@stiggimy.github.com"
+        ];
+      };
       "org/gnome/desktop/peripherals/mouse" = {
         accel-profile = "flat"; # Disable GNOME acceleration; maccel handles it
       };
