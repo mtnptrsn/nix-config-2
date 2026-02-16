@@ -10,10 +10,7 @@ Multi-machine NixOS desktop configuration using Nix flakes. Two hosts (`private`
 
 ```bash
 # Apply configuration changes (replace <host> with private or work)
-sudo nixos-rebuild switch --flake /home/mtnptrsn/nixos-config#<host>
-
-# Test without making permanent (doesn't update bootloader)
-sudo nixos-rebuild test --flake /home/mtnptrsn/nixos-config#<host>
+nixswitch
 
 # Build without activating (useful for checking if config compiles)
 nix build /home/mtnptrsn/nixos-config#nixosConfigurations.<host>.config.system.build.toplevel
