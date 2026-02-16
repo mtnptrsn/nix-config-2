@@ -7,6 +7,7 @@
     ./desktop.nix
     ./audio.nix
     ./hardware.nix
+    ./hyprland.nix
     ./users.nix
   ];
 

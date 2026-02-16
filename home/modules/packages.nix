@@ -21,6 +21,9 @@
     statix
     nixfmt
 
+    # launchers
+    wofi
+
     # utilities
     _1password-gui
     zoxide

@@ -8,6 +8,8 @@
     gnome.enable = true;
     git.enable = true;
     firefox.enable = true;
+    hyprland.enable = true;
+    waybar.enable = true;
   };
 
   home.packages = with pkgs; [
