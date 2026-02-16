@@ -26,9 +26,8 @@
         nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
           modules = [
-            ./hosts/${hostName}/hardware-configuration.nix
             ./system
-            ./hosts/${hostName}
+            ./profiles/${hostName}
             home-manager.nixosModules.home-manager
             maccel.nixosModules.default
             {
@@ -38,7 +37,7 @@
               home-manager.users.mtnptrsn = {
                 imports = [
                   ./home
-                  ./hosts/${hostName}/home.nix
+                  ./profiles/${hostName}/home.nix
                   nixvim.homeModules.nixvim
                 ];
               };
