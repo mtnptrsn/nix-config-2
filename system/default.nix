@@ -7,7 +7,6 @@
     ./desktop.nix
     ./audio.nix
     ./hardware.nix
-    ./gaming.nix
     ./users.nix
   ];
 
