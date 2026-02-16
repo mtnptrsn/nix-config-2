@@ -1,22 +1,31 @@
 { pkgs, ... }:
 {
   home.packages = with pkgs; [
+    # browsers
     google-chrome
+
+    # communication
     discord
-    _1password-gui
-    spotify
-    zoxide
     slack
-    geekbench
+
+    # media
+    spotify
     transmission_4-gtk
     rqbit
+
+    # development
     vscode
+    gh
     ripgrep
     fd
     statix
     nixfmt
-    mission-center
+
+    # utilities
+    _1password-gui
+    zoxide
     xclip
-    gh
+    mission-center
+    geekbench
   ];
 }
