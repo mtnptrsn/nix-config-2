@@ -187,6 +187,12 @@
         options.desc = "Rename symbol";
       }
       {
+        key = "<leader>lR";
+        action.__raw = "vim.lsp.buf.references";
+        mode = "n";
+        options.desc = "Show references";
+      }
+      {
         key = "gp";
         action.__raw = ''
           function()
