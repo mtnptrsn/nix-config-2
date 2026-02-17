@@ -1,6 +1,0 @@
-echo "Available scripts:"
-echo ""
-echo "  gwco <branch>            Create a git worktree for a branch"
-echo "  gwrm <branch>            Remove a git worktree and its branch"
-echo "  cwstart <description>    Create a worktree and start Claude with a task"
-echo "  help                     Show this help message"

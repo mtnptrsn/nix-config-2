@@ -29,14 +29,14 @@ nix flake update
 
 ## Scripts
 
-Custom scripts in `home/scripts/`, registered in `home/modules/packages.nix`:
+The `cw` command (defined in `home/scripts/cw.sh`, registered in `home/modules/packages.nix`) provides worktree-related subcommands:
 
-- **gwco** `<branch>` — Create a git worktree for a branch
-- **gwrm** `<branch>` — Remove a git worktree and its branch
-- **cwstart** `<description>` — Create a worktree and start Claude with a task
-- **help** — Show a list of all available scripts
+- **cw co** `<branch>` — Create a git worktree for a branch
+- **cw rm** `<branch>` — Remove a git worktree and its branch
+- **cw start** `<description>` — Create a worktree and start Claude with a task
+- **cw help** — Show available subcommands
 
-When scripts are added, removed, or changed, keep this section and `home/scripts/help.sh` in sync.
+When subcommands are added, removed, or changed, keep this section and the help output in `home/scripts/cw.sh` in sync.
 
 ## Key Details
 
