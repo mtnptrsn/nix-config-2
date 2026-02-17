@@ -11,6 +11,14 @@ description="$*"
 # Convert to branch name: lowercase, spaces to dashes, strip non-alphanumeric/dash
 branch="$(echo "$description" | tr '[:upper:]' '[:lower:]' | tr ' ' '-' | tr -cd 'a-z0-9-')"
 
+# Truncate to max git branch name length (must match gwco)
+MAX_LENGTH=255
+if [ ${#branch} -gt $MAX_LENGTH ]; then
+  branch="${branch:0:$MAX_LENGTH}"
+  branch="${branch%-}"
+  branch="${branch%.}"
+fi
+
 # Create worktree via gwco
 gwco "$branch"
 

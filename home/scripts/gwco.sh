@@ -7,6 +7,14 @@ fi
 
 branch="$1"
 
+# Truncate to max git branch name length (filesystem NAME_MAX)
+MAX_LENGTH=255
+if [ ${#branch} -gt $MAX_LENGTH ]; then
+  branch="${branch:0:$MAX_LENGTH}"
+  branch="${branch%-}"
+  branch="${branch%.}"
+fi
+
 # Resolve paths: worktree goes next to the repo root
 # e.g. if repo is at ~/Code/project/main, worktree is ~/Code/project/<branch>
 # Also handles being run from the bare repo directory itself
