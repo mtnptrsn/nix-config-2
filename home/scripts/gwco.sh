@@ -9,8 +9,12 @@ branch="$1"
 
 # Resolve paths: worktree goes next to the repo root
 # e.g. if repo is at ~/Code/project/main, worktree is ~/Code/project/<branch>
-repo_root="$(git rev-parse --show-toplevel)"
-parent_dir="$(dirname "$repo_root")"
+# Also handles being run from the bare repo directory itself
+if repo_root="$(git rev-parse --show-toplevel 2>/dev/null)"; then
+  parent_dir="$(dirname "$repo_root")"
+else
+  parent_dir="$(dirname "$(git rev-parse --git-common-dir)")"
+fi
 worktree_path="$parent_dir/$branch"
 
 # Fetch latest remote refs so the branch check is up to date
