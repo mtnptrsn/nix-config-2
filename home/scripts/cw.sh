@@ -32,13 +32,24 @@ cmd_create() {
   parent_dir="$(resolve_parent_dir)"
   local worktree_path="$parent_dir/$branch"
 
-  git fetch --prune
+  git worktree add -b "$branch" "$worktree_path"
 
-  if git show-ref --verify --quiet "refs/remotes/origin/$branch"; then
-    git worktree add "$worktree_path" "$branch"
-  else
-    git worktree add -b "$branch" "$worktree_path"
+  echo "Worktree created at $worktree_path"
+}
+
+cmd_checkout() {
+  if [ $# -ne 1 ]; then
+    echo "Usage: cw checkout <branch>" >&2
+    exit 1
   fi
+
+  local branch="$1"
+  local parent_dir
+  parent_dir="$(resolve_parent_dir)"
+  local worktree_path="$parent_dir/$branch"
+
+  git fetch --prune
+  git worktree add "$worktree_path" "$branch"
 
   echo "Worktree created at $worktree_path"
 }
@@ -85,7 +96,8 @@ cmd_help() {
   echo "Usage: cw <command> [args]"
   echo ""
   echo "Commands:"
-  echo "  create <branch>               Create a git worktree for a branch"
+  echo "  create <branch>               Create a worktree with a new branch"
+  echo "  checkout <branch>             Create a worktree for an existing branch"
   echo "  remove <branch>               Remove a git worktree and its branch"
   echo "  claude start <description>    Create a worktree and start Claude with a task"
   echo "  help                          Show this help message"
@@ -96,6 +108,7 @@ shift || true
 
 case "$command" in
   create) cmd_create "$@" ;;
+  checkout) cmd_checkout "$@" ;;
   remove) cmd_remove "$@" ;;
   claude)
     subcommand="${1:-}"
