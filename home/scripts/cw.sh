@@ -20,9 +20,9 @@ truncate_branch() {
   echo "$branch"
 }
 
-cmd_co() {
+cmd_create() {
   if [ $# -ne 1 ]; then
-    echo "Usage: cw co <branch>" >&2
+    echo "Usage: cw create <branch>" >&2
     exit 1
   fi
 
@@ -43,9 +43,9 @@ cmd_co() {
   echo "Worktree created at $worktree_path"
 }
 
-cmd_rm() {
+cmd_remove() {
   if [ $# -ne 1 ]; then
-    echo "Usage: cw rm <branch>" >&2
+    echo "Usage: cw remove <branch>" >&2
     exit 1
   fi
 
@@ -60,9 +60,9 @@ cmd_rm() {
   echo "Removed worktree and branch '$branch'"
 }
 
-cmd_start() {
+cmd_claude_start() {
   if [ $# -eq 0 ]; then
-    echo "Usage: cw start <task description>" >&2
+    echo "Usage: cw claude start <task description>" >&2
     exit 1
   fi
 
@@ -71,7 +71,7 @@ cmd_start() {
   branch="$(echo "$description" | tr '[:upper:]' '[:lower:]' | tr ' ' '-' | tr -cd 'a-z0-9-')"
   branch="$(truncate_branch "$branch")"
 
-  cmd_co "$branch"
+  cmd_create "$branch"
 
   local parent_dir
   parent_dir="$(resolve_parent_dir)"
@@ -85,20 +85,31 @@ cmd_help() {
   echo "Usage: cw <command> [args]"
   echo ""
   echo "Commands:"
-  echo "  co <branch>            Create a git worktree for a branch"
-  echo "  rm <branch>            Remove a git worktree and its branch"
-  echo "  start <description>    Create a worktree and start Claude with a task"
-  echo "  help                   Show this help message"
+  echo "  create <branch>               Create a git worktree for a branch"
+  echo "  remove <branch>               Remove a git worktree and its branch"
+  echo "  claude start <description>    Create a worktree and start Claude with a task"
+  echo "  help                          Show this help message"
 }
 
 command="${1:-help}"
 shift || true
 
 case "$command" in
-  co)    cmd_co "$@" ;;
-  rm)    cmd_rm "$@" ;;
-  start) cmd_start "$@" ;;
-  help)  cmd_help ;;
+  create) cmd_create "$@" ;;
+  remove) cmd_remove "$@" ;;
+  claude)
+    subcommand="${1:-}"
+    shift || true
+    case "$subcommand" in
+      start) cmd_claude_start "$@" ;;
+      *)
+        echo "Unknown claude subcommand: $subcommand" >&2
+        cmd_help >&2
+        exit 1
+        ;;
+    esac
+    ;;
+  help) cmd_help ;;
   *)
     echo "Unknown command: $command" >&2
     cmd_help >&2
