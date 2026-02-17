@@ -16,6 +16,10 @@ in
       prefix = "C-s";
       baseIndex = 1;
       extraConfig = ''
+        bind h select-pane -L
+        bind j select-pane -D
+        bind k select-pane -U
+        bind l select-pane -R
         set -gF status-right "#{E:@catppuccin_status_date_time}"
       '';
       plugins = with pkgs.tmuxPlugins; [
