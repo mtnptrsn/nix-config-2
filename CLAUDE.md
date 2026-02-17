@@ -27,6 +27,17 @@ nix flake update
 - **home/** — User-level config via Home Manager. `default.nix` imports all opt-in modules and sets stateVersion. Modules in `home/modules/` use `modules.<name>.enable` with `mkEnableOption`/`mkIf` so profiles control what's active.
 - **home/modules/** — Opt-in home-manager modules: `nixvim.nix`, `alacritty.nix`, `zsh.nix`, `tmux.nix`, `gnome.nix`, `git.nix`, `packages.nix`.
 
+## Scripts
+
+Custom scripts in `home/scripts/`, registered in `home/modules/packages.nix`:
+
+- **gwco** `<branch>` — Create a git worktree for a branch
+- **gwrm** `<branch>` — Remove a git worktree and its branch
+- **cwstart** `<description>` — Create a worktree and start Claude with a task
+- **help** — Show a list of all available scripts
+
+When scripts are added, removed, or changed, keep this section and `home/scripts/help.sh` in sync.
+
 ## Key Details
 
 - User account: `mtnptrsn` (wheel, networkmanager groups)
