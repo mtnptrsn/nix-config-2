@@ -29,14 +29,7 @@ nix flake update
 
 ## Scripts
 
-The `cw` command (defined in `home/scripts/cw.sh`, registered in `home/modules/packages.nix`) provides worktree-related subcommands:
-
-- **cw create** `<branch>` — Create a git worktree for a branch
-- **cw remove** `<branch>` — Remove a git worktree and its branch
-- **cw claude start** `<description>` — Create a worktree and start Claude with a task
-- **cw help** — Show available subcommands
-
-When subcommands are added, removed, or changed, keep this section and the help output in `home/scripts/cw.sh` in sync.
+The `cw` command (defined in `home/scripts/cw.sh`, registered in `home/modules/packages.nix`) provides worktree-related subcommands. Run `cw help` for usage.
 
 ## Key Details
 
