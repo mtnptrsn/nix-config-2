@@ -1,6 +1,12 @@
 { pkgs, ... }:
+let
+  gwco = pkgs.writeShellScriptBin "gwco" (builtins.readFile ../scripts/gwco.sh);
+in
 {
-  home.packages = with pkgs; [
+  home.packages = [
+    gwco
+  ]
+  ++ (with pkgs; [
     # browsers
     google-chrome
 
@@ -30,5 +36,5 @@
     xclip
     mission-center
     geekbench
-  ];
+  ]);
 }
