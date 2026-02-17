@@ -2,11 +2,13 @@
 let
   gwco = pkgs.writeShellScriptBin "gwco" (builtins.readFile ../scripts/gwco.sh);
   cwstart = pkgs.writeShellScriptBin "cwstart" (builtins.readFile ../scripts/cwstart.sh);
+  gwrm = pkgs.writeShellScriptBin "gwrm" (builtins.readFile ../scripts/gwrm.sh);
 in
 {
   home.packages = [
     gwco
     cwstart
+    gwrm
   ]
   ++ (with pkgs; [
     # browsers
