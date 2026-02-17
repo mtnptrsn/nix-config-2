@@ -1,10 +1,12 @@
 { pkgs, ... }:
 let
   gwco = pkgs.writeShellScriptBin "gwco" (builtins.readFile ../scripts/gwco.sh);
+  cwstart = pkgs.writeShellScriptBin "cwstart" (builtins.readFile ../scripts/cwstart.sh);
 in
 {
   home.packages = [
     gwco
+    cwstart
   ]
   ++ (with pkgs; [
     # browsers
