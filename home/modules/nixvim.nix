@@ -39,6 +39,21 @@ in
             },
           },
         })
+
+        vim.api.nvim_create_autocmd("BufWinEnter", {
+          pattern = "*",
+          callback = function()
+            if vim.bo.filetype == "fugitive" then
+              local buf = vim.api.nvim_get_current_buf()
+              local win = vim.api.nvim_get_current_win()
+              local tab = vim.api.nvim_win_get_tabpage(win)
+              -- If opened in an existing tab (not already its own tab), move to a new tab
+              if #vim.api.nvim_tabpage_list_wins(tab) > 1 then
+                vim.cmd("wincmd T")
+              end
+            end
+          end,
+        })
       '';
 
       colorschemes.catppuccin = {
