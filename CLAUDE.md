@@ -6,19 +6,6 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Multi-machine NixOS desktop configuration using Nix flakes. Two hosts (`private`, `work`) sharing a common base config, running GNOME on x86_64-linux with nixpkgs-unstable.
 
-## Common Commands
-
-```bash
-# Apply configuration changes (replace <host> with private or work)
-nixswitch
-
-# Build without activating (useful for checking if config compiles)
-nix build /home/mtnptrsn/nixos-config#nixosConfigurations.<host>.config.system.build.toplevel
-
-# Update nixpkgs input
-nix flake update
-```
-
 ## Architecture
 
 - **flake.nix** — Entry point. Inputs: nixpkgs-unstable, home-manager, maccel, nixvim. Defines a `mkHost` helper that assembles shared modules (system, profile, home-manager) per host. Outputs: `nixosConfigurations.private` and `nixosConfigurations.work`.
