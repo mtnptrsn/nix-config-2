@@ -73,18 +73,18 @@
       echo 95000 > "$NCT/pwm1_auto_point5_temp"
       echo 255   > "$NCT/pwm1_auto_point5_pwm"
 
-      # Case fans (PWM2-3) — respond to CPU temp (temp_sel=8)
+      # Case fans (PWM2-3) — respond to system temp (temp_sel=1)
       for pwm in 2 3; do
-        echo 8     > "$NCT/pwm''${pwm}_temp_sel"
-        echo 50000 > "$NCT/pwm''${pwm}_auto_point1_temp"
+        echo 1     > "$NCT/pwm''${pwm}_temp_sel"
+        echo 30000 > "$NCT/pwm''${pwm}_auto_point1_temp"
         echo 0     > "$NCT/pwm''${pwm}_auto_point1_pwm"
-        echo 60000 > "$NCT/pwm''${pwm}_auto_point2_temp"
-        echo 64    > "$NCT/pwm''${pwm}_auto_point2_pwm"
-        echo 75000 > "$NCT/pwm''${pwm}_auto_point3_temp"
-        echo 115   > "$NCT/pwm''${pwm}_auto_point3_pwm"
-        echo 85000 > "$NCT/pwm''${pwm}_auto_point4_temp"
-        echo 178   > "$NCT/pwm''${pwm}_auto_point4_pwm"
-        echo 95000 > "$NCT/pwm''${pwm}_auto_point5_temp"
+        echo 35000 > "$NCT/pwm''${pwm}_auto_point2_temp"
+        echo 80    > "$NCT/pwm''${pwm}_auto_point2_pwm"
+        echo 40000 > "$NCT/pwm''${pwm}_auto_point3_temp"
+        echo 140   > "$NCT/pwm''${pwm}_auto_point3_pwm"
+        echo 50000 > "$NCT/pwm''${pwm}_auto_point4_temp"
+        echo 200   > "$NCT/pwm''${pwm}_auto_point4_pwm"
+        echo 60000 > "$NCT/pwm''${pwm}_auto_point5_temp"
         echo 255   > "$NCT/pwm''${pwm}_auto_point5_pwm"
       done
     '';
