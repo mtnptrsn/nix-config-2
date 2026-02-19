@@ -1,6 +1,9 @@
 { pkgs, ... }:
 {
-  imports = [ ./hardware-configuration.nix ];
+  imports = [
+    ./hardware-configuration.nix
+    ./keyboard-remap.nix
+  ];
   networking.hostName = "mtnptrsn";
   environment.systemPackages = [ pkgs.cowsay ];
 
