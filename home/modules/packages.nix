@@ -7,9 +7,6 @@ in
     cw
   ]
   ++ (with pkgs; [
-    # browsers
-    google-chrome
-
     # communication
     discord
     slack
