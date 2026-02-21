@@ -30,6 +30,7 @@ in
         p = "pnpm";
         cv = "xclip -selection clipboard -o > /tmp/claude-response.md && nvim -R /tmp/claude-response.md && rm /tmp/claude-response.md";
         ghpr = "gh search prs --review-requested=mtnptrsn --state=open";
+        claude = "npx @anthropic-ai/claude-code";
       };
     };
 

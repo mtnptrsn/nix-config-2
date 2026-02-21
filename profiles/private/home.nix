@@ -18,9 +18,9 @@
 
   programs.git.settings.user.email = "mtnptrsn@gmail.com";
 
-  programs.claude-code = {
-    enable = true;
-    memory.text = builtins.readFile ./claude-memory.md;
-  };
+  # programs.claude-code = {
+  #   enable = true;
+  #   memory.text = builtins.readFile ./claude-memory.md;
+  # };
 
 }
