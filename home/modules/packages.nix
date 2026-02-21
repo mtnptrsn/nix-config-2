@@ -32,6 +32,7 @@ in
     wofi
 
     # utilities
+    parallel
     _1password-gui
     zoxide
     xclip
