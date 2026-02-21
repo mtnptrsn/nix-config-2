@@ -11,6 +11,7 @@
     ./modules/linux-packages.nix
     ./modules/firefox.nix
     ./modules/dictation.nix
+    ./modules/vscode.nix
   ];
 
   home.stateVersion = "25.11";

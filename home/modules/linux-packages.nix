@@ -24,9 +24,6 @@ in
       # game development
       godot_4
 
-      # development
-      vscode
-
       # launchers
       wofi
 
