@@ -203,12 +203,16 @@ in
           mode = "n";
           options.desc = "Close buffer";
         }
+      ]
+      ++ lib.optionals pkgs.stdenv.isLinux [
         {
           key = "<leader>gd";
           action = "<cmd>CodeDiff<cr>";
           mode = "n";
           options.desc = "Toggle CodeDiff";
         }
+      ]
+      ++ [
         {
           key = "<leader>lr";
           action.__raw = "vim.lsp.buf.rename";
@@ -350,6 +354,8 @@ in
       };
       extraPlugins = [
         pkgs.vimPlugins.nui-nvim
+      ]
+      ++ lib.optionals pkgs.stdenv.isLinux [
         (pkgs.vimUtils.buildVimPlugin {
           name = "codediff-nvim";
           src = pkgs.fetchFromGitHub {
