@@ -30,7 +30,7 @@ The `cw` command (defined in `home/scripts/cw.sh`, registered in `home/modules/p
 
 ## Workflow
 
-- Always apply configuration changes after editing by running `sudo nixos-rebuild switch --flake /home/mtnptrsn/nixos-config#<host>` (replace `<host>` with the target host name)
+- Always apply configuration changes after editing by running `sudo nixos-rebuild switch --flake .#<host>` (replace `<host>` with the target host name)
 
 ## Pre-commit Checks
 
@@ -46,8 +46,8 @@ nix run nixpkgs#nixfmt -- **/*.nix
 nix run nixpkgs#statix -- check .
 
 # Verify config evaluates (check all hosts)
-nix eval /home/mtnptrsn/nixos-config#nixosConfigurations.private.config.system.build.toplevel
-nix eval /home/mtnptrsn/nixos-config#nixosConfigurations.work.config.system.build.toplevel
+nix eval .#nixosConfigurations.private.config.system.build.toplevel
+nix eval .#nixosConfigurations.work.config.system.build.toplevel
 ```
 
 Fix any issues before committing. For statix, auto-fix is available with `nix run nixpkgs#statix -- fix .`.
