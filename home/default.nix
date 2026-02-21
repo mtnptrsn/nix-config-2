@@ -9,8 +9,6 @@
     ./modules/git.nix
     ./modules/packages.nix
     ./modules/firefox.nix
-    ./modules/hyprland.nix
-    ./modules/waybar.nix
     ./modules/dictation.nix
   ];
 

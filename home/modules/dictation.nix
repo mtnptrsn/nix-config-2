@@ -89,9 +89,5 @@ in
         Environment = "XKB_DEFAULT_LAYOUT=se";
       };
     };
-
-    wayland.windowManager.hyprland.settings.bind = lib.mkIf config.modules.hyprland.enable [
-      "CTRL SHIFT, D, exec, dictate"
-    ];
   };
 }

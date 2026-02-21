@@ -25,7 +25,6 @@ in
   # Keyboard layout
   services.xserver.xkb = {
     layout = "se";
-    variant = "";
   };
 
   # Console keymap

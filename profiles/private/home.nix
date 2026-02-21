@@ -8,8 +8,6 @@
     gnome.enable = true;
     git.enable = true;
     firefox.enable = true;
-    hyprland.enable = true;
-    waybar.enable = true;
     dictation.enable = true;
   };
 
@@ -18,10 +16,4 @@
   ];
 
   programs.git.settings.user.email = "mtnptrsn@gmail.com";
-
-  # programs.claude-code = {
-  #   enable = true;
-  #   memory.text = builtins.readFile ./claude-memory.md;
-  # };
-
 }
