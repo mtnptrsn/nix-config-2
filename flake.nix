@@ -33,7 +33,7 @@
         nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
           modules = [
-            ./system
+            ./nixos
             ./profiles/${hostName}
             home-manager.nixosModules.home-manager
             maccel.nixosModules.default

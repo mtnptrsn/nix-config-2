@@ -8,9 +8,9 @@ NixOS desktop configuration using Nix flakes. One host (`private`) running GNOME
 
 ## Architecture
 
-- **flake.nix** — Entry point. Inputs: nixpkgs-unstable, home-manager, maccel, nixvim. Defines a `mkHost` helper that assembles shared modules (system, profile, home-manager) per host. Outputs: `nixosConfigurations.private`.
+- **flake.nix** — Entry point. Inputs: nixpkgs-unstable, home-manager, maccel, nixvim. Defines a `mkHost` helper that assembles shared modules (nixos, profile, home-manager) per host. Outputs: `nixosConfigurations.private`.
 - **profiles/** — Per-host overrides. Each subdirectory (e.g., `private/`) contains a `default.nix` (hostname, system-level overrides, hardware-configuration import) and a `home.nix` (enables home-manager modules + per-host user config).
-- **system/** — System-level config via NixOS modules. `default.nix` is the entry point (networking, nixpkgs config, nix settings, stateVersion). Submodules: `boot.nix`, `locale.nix`, `desktop.nix`, `audio.nix`, `hardware.nix`, `users.nix`.
+- **nixos/** — System-level config via NixOS modules. `default.nix` is the entry point (networking, nixpkgs config, nix settings, stateVersion). Submodules: `boot.nix`, `locale.nix`, `desktop.nix`, `audio.nix`, `hardware.nix`, `users.nix`.
 - **home/** — User-level config via Home Manager. `default.nix` imports all opt-in modules and sets stateVersion. Modules in `home/modules/` use `modules.<name>.enable` with `mkEnableOption`/`mkIf` so profiles control what's active.
 - **home/modules/** — Opt-in home-manager modules: `nixvim.nix`, `alacritty.nix`, `zsh.nix`, `tmux.nix`, `gnome.nix`, `git.nix`, `packages.nix`, `firefox.nix`, `dictation.nix`.
 
