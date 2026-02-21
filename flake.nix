@@ -9,6 +9,7 @@
       url = "github:nix-darwin/nix-darwin/master";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    nix-homebrew.url = "github:zhaofengli/nix-homebrew";
     maccel.url = "github:Gnarus-G/maccel";
     nixvim = {
       url = "github:nix-community/nixvim";
@@ -21,6 +22,7 @@
       nixpkgs,
       home-manager,
       nix-darwin,
+      nix-homebrew,
       maccel,
       nixvim,
       ...
@@ -57,6 +59,7 @@
             ./darwin
             ./profiles/${hostName}
             home-manager.darwinModules.home-manager
+            nix-homebrew.darwinModules.nix-homebrew
             {
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
