@@ -26,6 +26,7 @@ in
     fd
     statix
     nixfmt
+    nodejs
 
     # launchers
     wofi
