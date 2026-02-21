@@ -8,6 +8,7 @@
     gnome.enable = true;
     git.enable = true;
     packages.enable = true;
+    vscode.enable = true;
     linux-packages.enable = true;
     firefox.enable = true;
     dictation.enable = true;

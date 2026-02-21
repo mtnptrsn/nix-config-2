@@ -9,6 +9,7 @@ _: {
     tmux.enable = true;
     git.enable = true;
     packages.enable = true;
+    vscode.enable = true;
   };
 
   programs.git.settings.user.email = "mtnptrsn@gmail.com";
