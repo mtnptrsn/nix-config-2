@@ -3,7 +3,7 @@ _: {
   home.homeDirectory = "/Users/mtnptrsn";
 
   modules = {
-    nixvim.enable = true;
+    nixvim.enable = false;
     alacritty.enable = true;
     zsh.enable = true;
     tmux.enable = true;
