@@ -48,7 +48,6 @@
     {
       nixosConfigurations = {
         private = mkHost "private";
-        work = mkHost "work";
       };
     };
 }
