@@ -13,6 +13,13 @@ in
     programs.alacritty = {
       enable = true;
       settings.font.size = 13.5;
+      settings.keyboard.bindings = [
+        {
+          key = "V";
+          mods = "Control";
+          action = "Paste";
+        }
+      ];
       settings.colors = {
         primary = {
           background = "#1e1e2e";

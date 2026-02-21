@@ -10,6 +10,7 @@
     firefox.enable = true;
     hyprland.enable = true;
     waybar.enable = true;
+    dictation.enable = true;
   };
 
   home.packages = with pkgs; [

@@ -29,5 +29,9 @@
     options = "--delete-older-than 30d";
   };
 
+  services.udev.extraRules = ''
+    KERNEL=="uinput", GROUP="input", MODE="0660"
+  '';
+
   system.stateVersion = "25.11";
 }

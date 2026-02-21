@@ -11,6 +11,7 @@
     ./modules/firefox.nix
     ./modules/hyprland.nix
     ./modules/waybar.nix
+    ./modules/dictation.nix
   ];
 
   home.stateVersion = "25.11";
