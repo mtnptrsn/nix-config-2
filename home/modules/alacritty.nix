@@ -12,6 +12,7 @@ in
   config = lib.mkIf cfg.enable {
     programs.alacritty = {
       enable = true;
+      settings.font.normal.family = "JetBrainsMono Nerd Font";
       settings.font.size = 13.5;
       settings.keyboard.bindings = [
         {
