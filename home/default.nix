@@ -8,6 +8,7 @@
     ./modules/gnome.nix
     ./modules/git.nix
     ./modules/packages.nix
+    ./modules/linux-packages.nix
     ./modules/firefox.nix
     ./modules/dictation.nix
   ];

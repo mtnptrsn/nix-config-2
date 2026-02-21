@@ -7,6 +7,8 @@
     tmux.enable = true;
     gnome.enable = true;
     git.enable = true;
+    packages.enable = true;
+    linux-packages.enable = true;
     firefox.enable = true;
     dictation.enable = true;
   };

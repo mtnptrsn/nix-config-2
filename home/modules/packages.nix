@@ -1,39 +1,32 @@
-{ pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 let
+  cfg = config.modules.packages;
   cw = pkgs.writeShellScriptBin "cw" (builtins.readFile ../scripts/cw.sh);
 in
 {
-  home.packages = [
-    cw
-  ]
-  ++ (with pkgs; [
-    # communication
-    discord
-    slack
+  options.modules.packages.enable = lib.mkEnableOption "packages";
 
-    # media
-    spotify
-    transmission_4-gtk
-    rqbit
+  config = lib.mkIf cfg.enable {
+    home.packages = [
+      cw
+    ]
+    ++ (with pkgs; [
+      # development
+      gh
+      ripgrep
+      fd
+      statix
+      nixfmt
+      nodejs
 
-    # development
-    vscode
-    gh
-    ripgrep
-    fd
-    statix
-    nixfmt
-    nodejs
-
-    # launchers
-    wofi
-
-    # utilities
-    parallel
-    _1password-gui
-    zoxide
-    xclip
-    mission-center
-    geekbench
-  ]);
+      # utilities
+      parallel
+      zoxide
+    ]);
+  };
 }
