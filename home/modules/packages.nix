@@ -26,6 +26,7 @@ in
       claude-code
 
       # utilities
+      jq
       parallel
       zoxide
     ]);
