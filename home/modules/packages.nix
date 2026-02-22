@@ -23,6 +23,7 @@ in
       statix
       nixfmt
       nodejs
+      pnpm
       claude-code
 
       # utilities
