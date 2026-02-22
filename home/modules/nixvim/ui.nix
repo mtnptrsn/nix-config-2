@@ -16,15 +16,6 @@
         };
       };
 
-      # Centers buffer content by adding padding columns on each side
-      plugins.no-neck-pain = {
-        enable = true;
-        settings.autocmds = {
-          enableOnVimEnter = true;
-          enableOnTabEnter = true;
-        };
-      };
-
       # File explorer that lets you edit the filesystem like a normal buffer
       plugins.oil.enable = true;
       # Structured list for navigating diagnostics, references, and search results
@@ -91,12 +82,6 @@
           action = "<cmd>Trouble diagnostics toggle filter.buf=0<cr>";
           mode = "n";
           options.desc = "Buffer diagnostics";
-        }
-        {
-          key = "<leader>un";
-          action = "<cmd>NoNeckPain<cr>";
-          mode = "n";
-          options.desc = "Toggle No Neck Pain";
         }
         {
           key = "<leader>uw";
