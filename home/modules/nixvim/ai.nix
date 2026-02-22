@@ -48,6 +48,22 @@
           mode = "n";
           options.desc = "99: Search";
         }
+        {
+          key = "<leader>ch";
+          action.__raw = ''
+            function()
+              local start_line = vim.fn.line("v")
+              local end_line = vim.fn.line(".")
+              if start_line > end_line then start_line, end_line = end_line, start_line end
+              local path = vim.fn.fnamemodify(vim.fn.expand("%"), ":.")
+              local ref = path .. ":" .. start_line .. "-" .. end_line
+              vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<Esc>", true, false, true), "n", false)
+              local pane = vim.fn.system("tmux split-window -h -l 80 -P 'claude; exec $SHELL'"):gsub("%s+", "")
+              vim.fn.system("(sleep 2 && tmux send-keys -t '" .. pane .. "' 'Regarding " .. ref .. ": ') &")
+            end'';
+          mode = "v";
+          options.desc = "Open Claude Code in tmux pane with selection context";
+        }
       ];
     };
   };
