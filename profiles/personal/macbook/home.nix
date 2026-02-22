@@ -3,14 +3,23 @@ _: {
   home.homeDirectory = "/Users/mtnptrsn";
 
   modules = {
+    # Development tools
     nixvim.enable = true;
+    vscode.enable = true;
+
+    # Terminal and shell
     alacritty.enable = true;
     zsh.enable = true;
     tmux.enable = true;
+
+    # Version control
     git.enable = true;
-    packages.enable = true;
-    vscode.enable = true;
+
+    # Applications
     firefox.enable = true;
+
+    # Package management
+    packages.enable = true;
   };
 
   programs.git.settings.user.email = "mtnptrsn@gmail.com";

@@ -1,18 +1,29 @@
 { pkgs, ... }:
 {
   modules = {
+    # Development tools
     nixvim.enable = true;
+    vscode.enable = true;
+    codediff.enable = true;
+
+    # Terminal and shell
     alacritty.enable = true;
     zsh.enable = true;
     tmux.enable = true;
+
+    # Desktop environment
     gnome.enable = true;
+
+    # Version control
     git.enable = true;
-    packages.enable = true;
-    vscode.enable = true;
-    linux-packages.enable = true;
+
+    # Applications
     firefox.enable = true;
     dictation.enable = true;
-    codediff.enable = true;
+
+    # Package management
+    packages.enable = true;
+    linux-packages.enable = true;
   };
 
   home.packages = with pkgs; [
