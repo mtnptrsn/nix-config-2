@@ -13,7 +13,8 @@ in
   environment.systemPackages = [ askpass ];
   environment.variables.SUDO_ASKPASS = "${askpass}/bin/askpass";
 
-  # Managed by the Determinate Nix installer
+  # Managed by the Determinate Nix installer.
+  # Must be false for nix-darwin to work with the Determinate Nix installer — do not change.
   nix.enable = false;
 
   system.primaryUser = "mtnptrsn";
@@ -37,7 +38,7 @@ in
       "spotify"
       "transmission"
     ];
-    onActivation.autoUpdate = false;
+    onActivation.autoUpdate = true;
   };
 
   system.stateVersion = 4;
