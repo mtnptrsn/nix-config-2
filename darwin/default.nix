@@ -39,6 +39,7 @@ in
       "transmission"
     ];
     onActivation.autoUpdate = true;
+    onActivation.cleanup = "uninstall";
   };
 
   system.defaults.dock = {
