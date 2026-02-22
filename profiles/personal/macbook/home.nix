@@ -10,6 +10,7 @@ _: {
     git.enable = true;
     packages.enable = true;
     vscode.enable = true;
+    firefox.enable = true;
   };
 
   programs.git.settings.user.email = "mtnptrsn@gmail.com";
