@@ -306,6 +306,27 @@ in
           mode = "v";
           options.desc = "Yank relative path with line range";
         }
+        # Open selected lines on the Git remote (e.g., GitHub) in a browser, pinned to the current commit
+        {
+          key = "<leader>go";
+          action.__raw = ''
+            function()
+              local start_line = vim.fn.line("v")
+              local end_line = vim.fn.line(".")
+              if start_line > end_line then start_line, end_line = end_line, start_line end
+              local remote = vim.fn.system("git -C " .. vim.fn.shellescape(vim.fn.fnamemodify(vim.fn.expand("%"), ":p:h")) .. " remote get-url origin"):gsub("%s+$", "")
+              local base = remote:gsub("^git@([^:]+):", "https://%1/"):gsub("%.git$", "")
+              local branch = vim.fn.system("git -C " .. vim.fn.shellescape(vim.fn.fnamemodify(vim.fn.expand("%"), ":p:h")) .. " rev-parse HEAD"):gsub("%s+$", "")
+              local root = vim.fn.system("git -C " .. vim.fn.shellescape(vim.fn.fnamemodify(vim.fn.expand("%"), ":p:h")) .. " rev-parse --show-toplevel"):gsub("%s+$", "")
+              local filepath = vim.fn.fnamemodify(vim.fn.expand("%"), ":p"):sub(#root + 2)
+              local url = base .. "/blob/" .. branch .. "/" .. filepath .. "#L" .. start_line .. "-L" .. end_line
+              vim.ui.open(url)
+              vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<Esc>", true, false, true), "n", false)
+              vim.notify(url)
+            end'';
+          mode = "v";
+          options.desc = "Open lines on remote";
+        }
         {
           key = "<leader>9v";
           action.__raw = "require('99').visual";
