@@ -9,16 +9,9 @@
       plugins.lint = {
         enable = true;
         # genAttrs assigns the same linter to all listed filetypes
-        lintersByFt =
-          lib.genAttrs [
-            "typescript"
-            "typescriptreact"
-            "javascript"
-            "javascriptreact"
-          ] (_: [ "eslint_d" ])
-          // {
-            nix = [ "statix" ];
-          };
+        lintersByFt = {
+          nix = [ "statix" ];
+        };
         autoCmd.event = [
           "BufWritePost"
           "BufReadPost"
