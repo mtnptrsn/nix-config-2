@@ -30,7 +30,14 @@ in
 
   homebrew = {
     enable = true;
-    casks = [ "macwhisper" ];
+    casks = [
+      "1password"
+      "discord"
+      "macwhisper"
+      "slack"
+      "spotify"
+      "transmission"
+    ];
     onActivation.autoUpdate = false;
   };
 
