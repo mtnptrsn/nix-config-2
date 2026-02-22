@@ -6,6 +6,21 @@
 }:
 let
   cfg = config.modules.dictation;
+  overlayPidfile = "/tmp/dictation-overlay.pid";
+
+  kill-overlay = ''
+    if [ -f "${overlayPidfile}" ]; then
+      kill "$(cat "${overlayPidfile}")" 2>/dev/null || true
+      rm -f "${overlayPidfile}"
+    fi
+  '';
+
+  show-overlay = text: ''
+    ${kill-overlay}
+    GDK_BACKEND=x11 ${pkgs.yad}/bin/yad --text="${text}" --no-buttons --undecorated --skip-taskbar --on-top --sticky --fixed --geometry=-20-20 &
+    echo $! >"${overlayPidfile}"
+  '';
+
   dictate = pkgs.writeShellScriptBin "dictate" ''
     set -euo pipefail
 
@@ -21,6 +36,7 @@ let
     if [ -f "$PIDFILE" ]; then
       pid=$(cat "$PIDFILE")
       rm -f "$PIDFILE"
+      ${show-overlay "Dictation: Processing"}
       ${pkgs.sox}/bin/play -qn synth 0.15 sine 440 pad 0 0.85 repeat - vol 0.1 2>/dev/null &
       LOADING_PID=$!
       sleep 1
@@ -30,6 +46,7 @@ let
       text=$(${pkgs.whisper-cpp}/bin/whisper-cli -m "$MODEL" -f "$WAVFILE" -np -nt 2>/dev/null | sed 's/^[[:space:]]*//' | tr -d '\n')
 
       kill $LOADING_PID 2>/dev/null || true
+      ${kill-overlay}
       ${pkgs.sox}/bin/play -qn synth 0.15 sine 880 vol 0.1 2>/dev/null &
 
       echo -n "$text" | ${pkgs.wl-clipboard}/bin/wl-copy
@@ -39,6 +56,23 @@ let
       ${pkgs.sox}/bin/play -qn synth 0.1 sine 880 vol 0.1 2>/dev/null &
       ${pkgs.sox}/bin/rec -r 16000 -c 1 -b 16 "$WAVFILE" &
       echo $! >"$PIDFILE"
+      ${show-overlay "Dictation: Recording"}
+    fi
+  '';
+
+  dictate-cancel = pkgs.writeShellScriptBin "dictate-cancel" ''
+    set -euo pipefail
+
+    PIDFILE=/tmp/dictation.pid
+    WAVFILE=/tmp/dictation.wav
+
+    if [ -f "$PIDFILE" ]; then
+      pid=$(cat "$PIDFILE")
+      rm -f "$PIDFILE"
+      kill "$pid" 2>/dev/null || true
+      rm -f "$WAVFILE"
+      ${kill-overlay}
+      ${pkgs.sox}/bin/play -qn synth 0.3 sine 200 vol 0.1 2>/dev/null &
     fi
   '';
 in
@@ -48,24 +82,32 @@ in
   config = lib.mkIf cfg.enable {
     home.packages = [
       dictate
+      dictate-cancel
     ]
     ++ (with pkgs; [
       whisper-cpp
       sox
       ydotool
       wl-clipboard
+      yad
     ]);
 
     dconf.settings = lib.mkIf config.modules.gnome.enable {
       "org/gnome/settings-daemon/plugins/media-keys" = {
         custom-keybindings = [
           "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/dictation/"
+          "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/dictation-cancel/"
         ];
       };
       "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/dictation" = {
         name = "Toggle dictation";
         command = "${dictate}/bin/dictate";
         binding = "<Control><Shift>d";
+      };
+      "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/dictation-cancel" = {
+        name = "Cancel dictation";
+        command = "${dictate-cancel}/bin/dictate-cancel";
+        binding = "<Control><Shift>x";
       };
     };
 
