@@ -23,6 +23,7 @@ in
       statix
       nixfmt
       nodejs
+      claude-code
 
       # utilities
       parallel
