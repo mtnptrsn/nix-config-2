@@ -1,7 +1,7 @@
 { ... }:
 {
   imports = [
-    ./modules/nixvim.nix
+    ./modules/nixvim
     ./modules/alacritty.nix
     ./modules/zsh.nix
     ./modules/tmux.nix
