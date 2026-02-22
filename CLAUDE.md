@@ -4,12 +4,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Overview
 
-NixOS desktop configuration using Nix flakes. One host (`private`) running GNOME on x86_64-linux with nixpkgs-unstable.
+NixOS desktop configuration using Nix flakes. Hosts: `personal-desktop` (GNOME on x86_64-linux) and `personal-macbook` (aarch64-darwin). Uses nixpkgs-unstable.
 
 ## Architecture
 
-- **flake.nix** — Entry point. Inputs: nixpkgs-unstable, home-manager, maccel, nixvim. Defines a `mkHost` helper that assembles shared modules (nixos, profile, home-manager) per host. Outputs: `nixosConfigurations.private`.
-- **profiles/** — Per-host overrides. Each subdirectory (e.g., `private/`) contains a `default.nix` (hostname, system-level overrides, hardware-configuration import) and a `home.nix` (enables home-manager modules + per-host user config).
+- **flake.nix** — Entry point. Inputs: nixpkgs-unstable, home-manager, nix-darwin, nix-homebrew, maccel, nixvim. Defines `mkHost` and `mkDarwinHost` helpers that assemble shared modules per host. Outputs: `nixosConfigurations.personal-desktop`, `darwinConfigurations.personal-macbook`.
+- **profiles/** — Per-host overrides in a nested `<category>/<device>/` structure (e.g., `personal/desktop/`, `personal/macbook/`). Each contains a `default.nix` (hostname, system-level overrides) and a `home.nix` (enables home-manager modules + per-host user config).
 - **nixos/** — System-level config via NixOS modules. `default.nix` is the entry point (networking, nixpkgs config, nix settings, stateVersion). Submodules: `boot.nix`, `locale.nix`, `desktop.nix`, `audio.nix`, `hardware.nix`, `users.nix`.
 - **home/** — User-level config via Home Manager. `default.nix` imports all opt-in modules and sets stateVersion. Modules in `home/modules/` use `modules.<name>.enable` with `mkEnableOption`/`mkIf` so profiles control what's active.
 - **home/modules/** — Opt-in home-manager modules: `nixvim.nix`, `alacritty.nix`, `zsh.nix`, `tmux.nix`, `gnome.nix`, `git.nix`, `packages.nix`, `firefox.nix`, `dictation.nix`.
@@ -42,7 +42,7 @@ Before committing, always run the formatter, linter, and eval in parallel:
 parallel --halt now,fail=1 ::: \
   'nixfmt **/*.nix' \
   'statix check .' \
-  'nix eval .#nixosConfigurations.private.config.system.build.toplevel'
+  'nix eval .#nixosConfigurations.personal-desktop.config.system.build.toplevel'
 ```
 
 Fix any issues before committing. For statix, auto-fix is available with `statix fix .`.

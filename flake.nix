@@ -77,11 +77,11 @@
     in
     {
       nixosConfigurations = {
-        private = mkHost "private";
+        personal-desktop = mkHost "personal/desktop";
       };
 
       darwinConfigurations = {
-        private-macbook = mkDarwinHost "private-macbook";
+        personal-macbook = mkDarwinHost "personal/macbook";
       };
     };
 }
