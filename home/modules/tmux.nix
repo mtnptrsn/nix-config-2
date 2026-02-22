@@ -22,11 +22,16 @@ in
         bind k select-pane -U
         bind l select-pane -R
 
+        # Open new panes/windows in the current directory
+        bind '"' split-window -v -c "#{pane_current_path}"
+        bind % split-window -h -c "#{pane_current_path}"
+        bind c new-window -c "#{pane_current_path}"
+
         # Pane resizing (HJKL)
-        bind H resize-pane -L 5
-        bind J resize-pane -D 5
-        bind K resize-pane -U 5
-        bind L resize-pane -R 5
+        bind H resize-pane -L 15
+        bind J resize-pane -D 15
+        bind K resize-pane -U 15
+        bind L resize-pane -R 15
 
         # Pane borders
         set -g pane-border-lines heavy
