@@ -12,6 +12,7 @@
     linux-packages.enable = true;
     firefox.enable = true;
     dictation.enable = true;
+    codediff.enable = true;
   };
 
   home.packages = with pkgs; [

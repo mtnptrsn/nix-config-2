@@ -12,6 +12,7 @@
     ./modules/firefox.nix
     ./modules/dictation.nix
     ./modules/vscode.nix
+    ./modules/codediff.nix
   ];
 
   home.stateVersion = "25.11";
