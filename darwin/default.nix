@@ -33,7 +33,6 @@ in
     casks = [
       "1password"
       "discord"
-      "macwhisper"
       "slack"
       "spotify"
       "transmission"
