@@ -6,6 +6,7 @@
 {
   config = lib.mkIf config.modules.nixvim.enable {
     programs.nixvim = {
+      # Show open buffers as tabs along the top of the editor
       plugins.bufferline = {
         enable = true;
         settings.options = {
@@ -15,6 +16,7 @@
         };
       };
 
+      # Centers buffer content by adding padding columns on each side
       plugins.no-neck-pain = {
         enable = true;
         settings.autocmds = {
@@ -23,17 +25,22 @@
         };
       };
 
+      # File explorer that lets you edit the filesystem like a normal buffer
       plugins.oil.enable = true;
+      # Structured list for navigating diagnostics, references, and search results
       plugins.trouble = {
         enable = true;
         settings.auto_close = true;
       };
+      # Enhances vim.ui.select and vim.ui.input with prettier floating windows
       plugins.dressing.enable = true;
       plugins.nvim-autopairs.enable = true;
       plugins.web-devicons.enable = true;
 
+      # Show available keybindings in a popup as you type leader sequences
       plugins.which-key = {
         enable = true;
+        # Register leader key group labels in the which-key popup; __unkeyed-N is nixvim's positional arg convention
         settings.spec = [
           {
             __unkeyed-1 = "<leader>f";
@@ -99,6 +106,7 @@
         }
         {
           key = "H";
+          # In a codediff session, navigate between diff panes instead of cycling buffers
           action.__raw = ''
             function()
                     local ok, lifecycle = pcall(require, "codediff.ui.lifecycle")
@@ -113,6 +121,7 @@
         }
         {
           key = "L";
+          # In a codediff session, navigate between diff panes instead of cycling buffers
           action.__raw = ''
             function()
                     local ok, lifecycle = pcall(require, "codediff.ui.lifecycle")

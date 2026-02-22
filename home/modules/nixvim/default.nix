@@ -30,7 +30,9 @@ in
       vimAlias = true;
       globals.mapleader = " ";
       opts = {
+        # Sync yank/paste with system clipboard
         clipboard = "unnamedplus";
+        # Always show to prevent layout shift when diagnostics appear
         signcolumn = "yes";
         number = true;
         relativenumber = true;
@@ -39,6 +41,7 @@ in
         expandtab = true;
       };
 
+      # Replace default diagnostic signs with nerd font icons
       extraConfigLua = ''
         vim.diagnostic.config({
           virtual_text = { spacing = 4, prefix = "●" },

@@ -12,6 +12,7 @@
         grammarPackages = pkgs.vimPlugins.nvim-treesitter.allGrammars;
         settings.highlight = {
           enable = true;
+          # Fugitive needs legacy vim regex highlighting alongside treesitter
           additional_vim_regex_highlighting = [ "fugitive" ];
         };
       };

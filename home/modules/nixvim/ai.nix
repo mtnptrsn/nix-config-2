@@ -7,6 +7,7 @@
 {
   config = lib.mkIf config.modules.nixvim.enable {
     programs.nixvim = {
+      # AI assistant plugin using Claude as the backend
       extraConfigLua = ''
         local _99 = require("99")
         _99.setup({
@@ -15,7 +16,7 @@
       '';
 
       extraPlugins = [
-        pkgs.vimPlugins.nui-nvim
+        pkgs.vimPlugins.nui-nvim # Required dependency for the 99 plugin's UI
         (pkgs.vimUtils.buildVimPlugin {
           pname = "99";
           version = "2025-02-22";

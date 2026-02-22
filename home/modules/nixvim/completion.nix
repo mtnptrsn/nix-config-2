@@ -8,8 +8,10 @@
     programs.nixvim = {
       plugins.luasnip = {
         enable = true;
+        # Load VS Code-style snippets from friendly-snippets
         fromVscode = [ { } ];
       };
+      # Community-maintained snippet collection (JS, Python, Rust, etc.)
       plugins.friendly-snippets.enable = true;
       plugins.blink-cmp = {
         enable = true;
@@ -19,6 +21,7 @@
           "buffer"
           "snippets"
         ];
+        # Each key tries actions in order, falling through if unavailable
         settings.keymap."<Tab>" = [
           "select_and_accept"
           "snippet_forward"

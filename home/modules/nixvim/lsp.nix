@@ -12,6 +12,7 @@
         servers.ts_ls.enable = true;
       };
 
+      # Shows function parameter hints while typing arguments
       plugins.lsp-signature.enable = true;
 
       keymaps = [
@@ -27,6 +28,7 @@
           mode = "n";
           options.desc = "Show references";
         }
+        # Show definition in a floating preview without leaving current position
         {
           key = "gp";
           action.__raw = ''
