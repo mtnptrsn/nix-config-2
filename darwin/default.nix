@@ -41,5 +41,17 @@ in
     onActivation.autoUpdate = true;
   };
 
+  system.defaults.dock = {
+    autohide = true;
+    launchanim = false; # Disable app launch animations
+    expose-animation-duration = 0.0; # Disable Mission Control animations
+  };
+
+  system.defaults.NSGlobalDomain = {
+    "com.apple.swipescrolldirection" = false;
+    NSAutomaticWindowAnimationsEnabled = false; # Disable window animations
+    NSWindowResizeTime = 0.001; # Speed up window resize animations (minimum value)
+  };
+
   system.stateVersion = 4;
 }
