@@ -22,30 +22,30 @@ curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix 
 
 This gives you Nix with flakes enabled out of the box.
 
-### NixOS (personal-desktop)
+### NixOS
 
 1. Copy your `hardware-configuration.nix` into the profile:
 
    ```bash
-   cp /etc/nixos/hardware-configuration.nix profiles/personal/desktop/nixos/
+   cp /etc/nixos/hardware-configuration.nix profiles/<category>/<device>/nixos/
    ```
 
 2. Apply:
 
    ```bash
-   sudo nixos-rebuild switch --flake .#personal-desktop
+   sudo nixos-rebuild switch --flake .#<host>
    ```
 
-### macOS (personal-macbook / office-macbook)
+### macOS
 
 1. Bootstrap nix-darwin (first time only):
 
    ```bash
-   nix run nix-darwin -- switch --flake .#personal-macbook
+   sudo nix run nix-darwin -- switch --flake .#<host>
    ```
 
 2. For subsequent rebuilds:
 
    ```bash
-   darwin-rebuild switch --flake .#personal-macbook
+   sudo darwin-rebuild switch --flake .#<host>
    ```
