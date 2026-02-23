@@ -82,6 +82,7 @@
 
       darwinConfigurations = {
         personal-macbook = mkDarwinHost "personal/macbook";
+        office-macbook = mkDarwinHost "office/macbook";
       };
     };
 }
