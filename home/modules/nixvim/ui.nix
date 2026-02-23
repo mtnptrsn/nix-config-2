@@ -17,7 +17,10 @@
       };
 
       # File explorer that lets you edit the filesystem like a normal buffer
-      plugins.oil.enable = true;
+      plugins.oil = {
+        enable = true;
+        settings.view_options.show_hidden = true;
+      };
       # Structured list for navigating diagnostics, references, and search results
       plugins.trouble = {
         enable = true;
