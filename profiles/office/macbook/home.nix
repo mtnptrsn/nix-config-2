@@ -17,6 +17,7 @@ _: {
 
     # AI tools
     claude.enable = true;
+    claude.create-pr.enable = true;
 
     # Applications
     firefox.enable = true;
