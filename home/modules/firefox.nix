@@ -15,6 +15,7 @@ in
       profiles.default = {
         settings = {
           "layout.css.prefers-color-scheme.content-override" = 0;
+          "layout.frame_rate" = 144;
         };
       };
       policies.ExtensionSettings = {
