@@ -3,6 +3,9 @@ let
   askpass = pkgs.writeShellScriptBin "askpass" ''
     osascript -e 'Tell application "System Events" to display dialog "Password for sudo:" with hidden answer default answer ""' -e 'text returned of result'
   '';
+  sudo-askpass = pkgs.writeShellScriptBin "sudo" ''
+    exec /usr/bin/sudo -A "$@"
+  '';
 in
 {
   nixpkgs.hostPlatform = "aarch64-darwin";
@@ -10,7 +13,10 @@ in
 
   fonts.packages = [ pkgs.nerd-fonts.jetbrains-mono ];
 
-  environment.systemPackages = [ askpass ];
+  environment.systemPackages = [
+    askpass
+    sudo-askpass
+  ];
   environment.variables.SUDO_ASKPASS = "${askpass}/bin/askpass";
 
   nix.settings.experimental-features = [
