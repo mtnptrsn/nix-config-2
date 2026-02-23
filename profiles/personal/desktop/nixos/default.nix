@@ -6,6 +6,9 @@
   ];
 
   networking.hostName = "mtnptrsn";
+  networking.extraHosts = ''
+    127.0.0.1 local.finch3d.com
+  '';
   environment.systemPackages = [ pkgs.cowsay ];
 
   # Gaming
