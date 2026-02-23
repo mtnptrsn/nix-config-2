@@ -13,9 +13,10 @@ in
   environment.systemPackages = [ askpass ];
   environment.variables.SUDO_ASKPASS = "${askpass}/bin/askpass";
 
-  # Managed by the Determinate Nix installer.
-  # Must be false for nix-darwin to work with the Determinate Nix installer — do not change.
-  nix.enable = false;
+  nix.settings.experimental-features = [
+    "nix-command"
+    "flakes"
+  ];
 
   system.primaryUser = "mtnptrsn";
 
