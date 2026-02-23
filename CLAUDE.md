@@ -21,7 +21,7 @@ The `cw` command (defined in `home/scripts/cw.sh`, registered in `home/modules/p
 ## Key Details
 
 - User account: `mtnptrsn` (wheel, networkmanager groups)
-- Desktop: GNOME with GDM, X11
+- Desktop: GNOME with GDM, Wayland
 - Audio: PipeWire (with PulseAudio/ALSA compat)
 - Locale: en_US.UTF-8 default, Swedish (sv_SE.UTF-8) for LC_* categories
 - Keyboard: Swedish layout (`se`)
