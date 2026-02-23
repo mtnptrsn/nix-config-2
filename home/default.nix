@@ -13,6 +13,7 @@
     ./modules/dictation.nix
     ./modules/vscode.nix
     ./modules/codediff.nix
+    ./modules/claude
   ];
 
   home.stateVersion = "25.11";

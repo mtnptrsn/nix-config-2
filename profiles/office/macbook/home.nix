@@ -15,6 +15,9 @@ _: {
     # Version control
     git.enable = true;
 
+    # AI tools
+    claude.enable = true;
+
     # Applications
     firefox.enable = true;
 
