@@ -30,6 +30,7 @@ The `cw` command (defined in `home/scripts/cw.sh`, registered in `home/modules/p
 
 ## Workflow
 
+- Always stage new files with `git add` before running nix builds, since the flake only sees tracked files in a git repo.
 - Always apply configuration changes after editing by running `sudo nixos-rebuild switch --flake .#<host>` (replace `<host>` with the target host name)
 
 ## Pre-commit Checks
