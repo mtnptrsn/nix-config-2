@@ -38,6 +38,10 @@ in
         set -g pane-border-style "fg=colour8"
         set -g pane-active-border-style "fg=colour4"
 
+        # Dim inactive panes
+        set -g window-style "dim"
+        set -g window-active-style "nodim"
+
         # Status bar
         set -gF status-right "#{E:@catppuccin_status_date_time}"
       '';
