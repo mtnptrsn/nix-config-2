@@ -20,6 +20,7 @@
     # Applications
     firefox.enable = true;
     dictation.enable = true;
+    homeassistant.enable = true;
 
     # Package management
     packages.enable = true;
