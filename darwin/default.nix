@@ -64,9 +64,6 @@ in
     NSAutomaticWindowAnimationsEnabled = false;
     NSWindowResizeTime = 0.001;
   };
-  system.defaults.universalaccess.reduceMotion = true;
-  system.defaults.finder.DisableAllAnimations = true;
-
   # Input
   system.defaults.NSGlobalDomain."com.apple.swipescrolldirection" = false;
 
