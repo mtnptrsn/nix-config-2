@@ -44,7 +44,7 @@
               home-manager.users.mtnptrsn = {
                 imports = [
                   ./home
-                  ./profiles/${hostName}/home.nix
+                  ./profiles/${hostName}/home
                   nixvim.homeModules.nixvim
                 ];
               };
@@ -67,7 +67,7 @@
               home-manager.users.mtnptrsn = {
                 imports = [
                   ./home
-                  ./profiles/${hostName}/home.nix
+                  ./profiles/${hostName}/home
                   nixvim.homeModules.nixvim
                 ];
               };

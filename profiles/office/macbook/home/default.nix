@@ -17,7 +17,8 @@ _: {
 
     # AI tools
     claude.enable = true;
-    claude.create-pr.enable = true;
+    claude.skills.create-pr = import ./claude/create-pr-skill.nix;
+    claude.claudeMd = import ./claude/claude-md.nix;
 
     # Applications
     firefox.enable = true;
