@@ -21,7 +21,12 @@
     # Applications
     firefox.enable = true;
     dictation.enable = true;
-    homeassistant.enable = true;
+    homeassistant = {
+      enable = true;
+      url = "http://192.168.1.92:8123";
+      # Safe since HA is on local network only, not exposed externally
+      token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiIzMjE0ZTJiYmVhNTk0ZWNmYTQ3MWQwZDRhY2RkYzkzOCIsImlhdCI6MTc3MTk2Nzk2NSwiZXhwIjoyMDg3MzI3OTY1fQ.LQmc4zbSZ8GBVtqwDlbZQNIJJoI4QLXIDV_7Yx29XfM";
+    };
 
     # Package management
     packages.enable = true;
