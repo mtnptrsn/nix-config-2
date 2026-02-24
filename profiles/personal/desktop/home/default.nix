@@ -2,6 +2,7 @@
 {
   modules = {
     # Development tools
+    claude.enable = true;
     nixvim.enable = true;
     vscode.enable = true;
     codediff.enable = true;
