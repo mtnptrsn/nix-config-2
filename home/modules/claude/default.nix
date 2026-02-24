@@ -36,15 +36,22 @@ in
         ".claude/CLAUDE.md".text = cfg.claudeMd;
       }
       # Merge (//) with the skill files built below.
-      // lib.mapAttrs' (
-        # mapAttrs' transforms an attrset into a different attrset.
-        # nameValuePair remaps each skill (e.g. "commit" -> content)
-        # into a home.file entry (e.g. ".claude/skills/commit/SKILL.md" -> { text = content; }).
-        name: content: lib.nameValuePair ".claude/skills/${name}/SKILL.md" { text = content; }
-      ) (
-        # Start with the built-in commit skill, then merge (//) profile-provided
-        # skills on top - so profiles can override the commit skill if needed.
-        { commit = import ./skills/commit.nix; } // cfg.skills
-      );
+      //
+        lib.mapAttrs'
+          (
+            # mapAttrs' transforms an attrset into a different attrset.
+            # nameValuePair remaps each skill (e.g. "commit" -> content)
+            # into a home.file entry (e.g. ".claude/skills/commit/SKILL.md" -> { text = content; }).
+            name: content: lib.nameValuePair ".claude/skills/${name}/SKILL.md" { text = content; }
+          )
+          (
+            # Start with the built-in commit skill, then merge (//) profile-provided
+            # skills on top - so profiles can override the commit skill if needed.
+            {
+              commit = import ./skills/commit.nix;
+              review = import ./skills/review.nix;
+            }
+            // cfg.skills
+          );
   };
 }
