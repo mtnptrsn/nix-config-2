@@ -14,4 +14,9 @@
   - When running validation scripts (typecheck, lint, test, etc.), run them in parallel using `nix run nixpkgs#parallel`
   - Never use em dashes (—). Use hyphens (-) or other punctuation instead.
   - Use practical, plain language. Avoid pretentious or overly formal words (e.g., "consolidate", "leverage", "utilize", "facilitate"). Prefer simpler alternatives.
+
+  # Git
+
+  - Use semantic commit messages: `feat(scope): description`, `fix(scope): description`, `refactor(scope): description`, etc.
+  - Never add a Co-Authored-By line to commit messages.
 ''
