@@ -10,5 +10,6 @@
     "1password"
     "slack"
     "spotify"
+    "discord"
   ];
 }
