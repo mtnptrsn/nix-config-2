@@ -20,10 +20,16 @@
           options.desc = "Close buffer";
         }
         {
-          key = "Q";
-          action = "<cmd>qa<cr>";
+          key = "<leader>q";
+          action = "<cmd>confirm q<cr>";
           mode = "n";
-          options.desc = "Quit neovim";
+          options.desc = "Quit window";
+        }
+        {
+          key = "<leader>Q";
+          action = "<cmd>confirm qall<cr>";
+          mode = "n";
+          options.desc = "Exit neovim";
         }
         {
           key = "<leader>yr";
