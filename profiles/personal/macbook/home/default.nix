@@ -12,6 +12,10 @@ _: {
     zsh.enable = true;
     tmux.enable = true;
 
+    # AI tools
+    claude.enable = true;
+    claude.claudeMd = import ./claude/claude-md.nix;
+
     # Version control
     git.enable = true;
 

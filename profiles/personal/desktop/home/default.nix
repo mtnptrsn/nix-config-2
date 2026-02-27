@@ -3,6 +3,7 @@
   modules = {
     # Development tools
     claude.enable = true;
+    claude.claudeMd = import ./claude/claude-md.nix;
     nixvim.enable = true;
     vscode.enable = true;
     codediff.enable = true;
