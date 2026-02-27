@@ -3,9 +3,6 @@ let
   askpass = pkgs.writeShellScriptBin "askpass" ''
     osascript -e 'Tell application "System Events" to display dialog "Password for sudo:" with hidden answer default answer ""' -e 'text returned of result'
   '';
-  sudo-askpass = pkgs.writeShellScriptBin "sudo" ''
-    exec /usr/bin/sudo -A "$@"
-  '';
 in
 {
   # Nix
@@ -25,7 +22,6 @@ in
   # Sudo askpass (GUI password prompt)
   environment.systemPackages = [
     askpass
-    sudo-askpass
   ];
   environment.variables.SUDO_ASKPASS = "${askpass}/bin/askpass";
 

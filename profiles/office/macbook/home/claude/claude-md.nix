@@ -14,6 +14,7 @@
   - When running validation scripts (typecheck, lint, test, etc.), run them in parallel using `nix run nixpkgs#parallel`
   - Never use em dashes (—). Use hyphens (-) or other punctuation instead.
   - Use practical, plain language. Avoid pretentious or overly formal words (e.g., "consolidate", "leverage", "utilize", "facilitate"). Prefer simpler alternatives.
+  - Use `sudo -A` instead of `sudo` to get a GUI password prompt
 
   # Git
 
