@@ -16,6 +16,9 @@ in
       prefix = "C-s";
       baseIndex = 1;
       extraConfig = ''
+        # Vi keybindings in copy mode
+        set-window-option -g mode-keys vi
+
         # Pane navigation (hjkl)
         bind h select-pane -L
         bind j select-pane -D
