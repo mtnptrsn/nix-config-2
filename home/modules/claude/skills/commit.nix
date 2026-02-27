@@ -22,18 +22,13 @@
 
   ## Validation
 
-  First, read `package.json` in the project root to check for any of the following validation scripts: `typecheck`, `type-check`, `lint`, `check`, `validate`.
+  Check for a validation workflow in the project (e.g., linters, type checkers, formatters, test suites). Look at project config files, scripts, CI configs, or CLAUDE.md for guidance on what checks to run.
 
-  If any exist, run them in parallel before committing using `nix run nixpkgs#parallel`. Determine the package manager: `pnpm` if `pnpm-lock.yaml` exists, `yarn` if `yarn.lock` exists, otherwise `npm`. For monorepos with `--filter` support, use `pnpm typecheck --filter <package>` and `pnpm lint --filter <package>` style invocations.
-
-  Example with two scripts found:
-  ```
-  nix run nixpkgs#parallel ::: "pnpm typecheck" "pnpm lint"
-  ```
+  If validation steps exist, run them before committing. If the `parallel` binary is available, run independent checks in parallel.
 
   If validation fails, fix the issues and re-validate before committing. If you cannot fix the issues, report them to the user instead of committing.
 
-  If no validation scripts are found, skip validation and proceed directly to committing.
+  If no validation steps are found, skip validation and proceed directly to committing.
 
   ## Your task
 
