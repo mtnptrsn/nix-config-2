@@ -7,6 +7,9 @@
 let
   cfg = config.modules.dictation;
   overlayPidfile = "/tmp/dictation-overlay.pid";
+  modelDir = "$HOME/.local/share/whisper";
+  modelPath = "${modelDir}/ggml-large-v3.bin";
+  modelUrl = "https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-large-v3.bin";
 
   kill-overlay = ''
     if [ -f "${overlayPidfile}" ]; then
@@ -21,16 +24,31 @@ let
     echo $! >"${overlayPidfile}"
   '';
 
+  dictate-download-model = pkgs.writeShellScriptBin "dictate-download-model" ''
+    set -euo pipefail
+    MODEL_DIR="${modelDir}"
+    MODEL_PATH="${modelPath}"
+    MODEL_URL="${modelUrl}"
+    if [ -f "$MODEL_PATH" ]; then
+      echo "Model already exists at $MODEL_PATH"
+      exit 0
+    fi
+    mkdir -p "$MODEL_DIR"
+    echo "Downloading whisper model to $MODEL_PATH..."
+    ${pkgs.curl}/bin/curl -L -o "$MODEL_PATH" "$MODEL_URL"
+    echo "Done."
+  '';
+
   dictate = pkgs.writeShellScriptBin "dictate" ''
     set -euo pipefail
 
     PIDFILE=/tmp/dictation.pid
     WAVFILE=/tmp/dictation.wav
-    MODEL="''${WHISPER_MODEL:-$HOME/.local/share/whisper/ggml-small.bin}"
+    MODEL_PATH="${modelPath}"
 
-    if [ ! -f "$MODEL" ]; then
-      echo "Whisper model not found at $MODEL" >&2
-      exit 1
+    if [ ! -f "$MODEL_PATH" ]; then
+      mkdir -p "${modelDir}"
+      ${pkgs.curl}/bin/curl -L -o "$MODEL_PATH" "${modelUrl}"
     fi
 
     if [ -f "$PIDFILE" ]; then
@@ -43,7 +61,8 @@ let
       kill "$pid" 2>/dev/null || true
       sleep 0.2
 
-      text=$(${pkgs.whisper-cpp}/bin/whisper-cli -m "$MODEL" -f "$WAVFILE" -np -nt 2>/dev/null | sed 's/^[[:space:]]*//' | tr -d '\n')
+      text=$(${pkgs.whisper-cpp-vulkan}/bin/whisper-cli -m "$MODEL_PATH" -f "$WAVFILE" --language auto --no-timestamps -np 2>/dev/null)
+      text="''${text#"''${text%%[![:space:]]*}"}"
 
       kill $LOADING_PID 2>/dev/null || true
       ${kill-overlay}
@@ -83,9 +102,9 @@ in
     home.packages = [
       dictate
       dictate-cancel
+      dictate-download-model
     ]
     ++ (with pkgs; [
-      whisper-cpp
       sox
       ydotool
       wl-clipboard
@@ -110,16 +129,6 @@ in
         binding = "<Control><Shift>x";
       };
     };
-
-    home.activation.downloadWhisperModel = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-      model_dir="$HOME/.local/share/whisper"
-      model_file="$model_dir/ggml-small.bin"
-      if [ ! -f "$model_file" ]; then
-        echo "Downloading whisper small model..."
-        mkdir -p "$model_dir"
-        ${pkgs.whisper-cpp}/bin/whisper-cpp-download-ggml-model small "$model_dir"
-      fi
-    '';
 
     systemd.user.services.ydotoold = {
       Unit.Description = "ydotool daemon";
