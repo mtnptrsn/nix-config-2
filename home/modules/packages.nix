@@ -28,6 +28,7 @@ in
 
       # utilities
       jq
+      nmap
       parallel
       zoxide
     ]);
