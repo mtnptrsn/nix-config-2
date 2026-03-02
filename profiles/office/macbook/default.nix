@@ -8,6 +8,7 @@
 
   homebrew.casks = lib.mkForce [
     "1password"
+    "google-chrome"
     "slack"
     "spotify"
     "discord"
