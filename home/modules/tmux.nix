@@ -36,6 +36,9 @@ in
         bind K resize-pane -U 15
         bind L resize-pane -R 15
 
+        # 4-pane grid layout
+        bind g split-window -h -c "#{pane_current_path}" \; split-window -v -c "#{pane_current_path}" \; select-pane -t 1 \; split-window -v -c "#{pane_current_path}" \; select-layout tiled
+
         # Pane borders
         set -g pane-border-lines heavy
         set -g pane-border-style "fg=colour8"
