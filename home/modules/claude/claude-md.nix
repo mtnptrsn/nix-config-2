@@ -1,7 +1,7 @@
 # Shared base for ~/.claude/CLAUDE.md across all profiles.
 # Profile-specific content is concatenated after this by the module.
 ''
-  This file has two sections. "Base" applies to all machines and is shared across profiles. "Profile" is appended per host by Nix and contains machine- or project-specific instructions.
+  This file has two sections. "Base" applies to all machines and is shared across profiles. "Profile" is appended per host by Nix and contains machine-specific instructions.
 
   # Base
 
