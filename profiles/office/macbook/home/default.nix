@@ -27,5 +27,4 @@ _: {
     packages.enable = true;
   };
 
-  programs.git.settings.user.email = "marten.pettersson@finch3d.com";
 }

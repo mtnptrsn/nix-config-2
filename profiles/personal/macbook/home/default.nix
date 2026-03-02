@@ -26,5 +26,4 @@ _: {
     packages.enable = true;
   };
 
-  programs.git.settings.user.email = "mtnptrsn@gmail.com";
 }

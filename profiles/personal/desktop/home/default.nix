@@ -38,5 +38,4 @@
     wowup-cf
   ];
 
-  programs.git.settings.user.email = "mtnptrsn@gmail.com";
 }
