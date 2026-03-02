@@ -2,7 +2,7 @@
 # as a CLAUDE.md variant when working in this repo.
 ''
 
-  # Profile-specific
+  # Profile
 
   ## Nix
 

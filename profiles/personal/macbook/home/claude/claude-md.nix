@@ -2,7 +2,7 @@
 # Appended to ~/.claude/CLAUDE.md by the claude module.
 ''
 
-  # Profile-specific
+  # Profile
 
   ## Nix
 
