@@ -46,7 +46,7 @@
       # Temps are in millidegrees, PWM 0-255
       echo 8 > "$NCT/pwm2_temp_sel"
       echo 50000 > "$NCT/pwm2_auto_point1_temp"
-      echo 0     > "$NCT/pwm2_auto_point1_pwm"
+      echo 30    > "$NCT/pwm2_auto_point1_pwm"
       echo 60000 > "$NCT/pwm2_auto_point2_temp"
       echo 64    > "$NCT/pwm2_auto_point2_pwm"
       echo 75000 > "$NCT/pwm2_auto_point3_temp"
@@ -60,7 +60,7 @@
       for pwm in 1 3; do
         echo 1     > "$NCT/pwm''${pwm}_temp_sel"
         echo 30000 > "$NCT/pwm''${pwm}_auto_point1_temp"
-        echo 0     > "$NCT/pwm''${pwm}_auto_point1_pwm"
+        echo 30    > "$NCT/pwm''${pwm}_auto_point1_pwm"
         echo 35000 > "$NCT/pwm''${pwm}_auto_point2_temp"
         echo 80    > "$NCT/pwm''${pwm}_auto_point2_pwm"
         echo 40000 > "$NCT/pwm''${pwm}_auto_point3_temp"
