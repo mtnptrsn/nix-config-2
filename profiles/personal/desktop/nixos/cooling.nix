@@ -8,25 +8,18 @@
 { pkgs, ... }:
 {
   # Fan control — silent curve via nct6799 Super I/O auto-points
-  # TODO: The BIOS firmware periodically re-applies its own fan curve,
-  # overriding the values set here. As a workaround we re-apply the curve
-  # every 30s via a systemd timer. Needs a proper fix.
+  # BIOS fan control is disabled (set to full speed / ignore in UEFI setup),
+  # so we only need to apply the curve once at boot.
   boot.kernelModules = [ "nct6775" ];
   environment.systemPackages = [ pkgs.lm_sensors ];
-  systemd.timers.fan-curve = {
-    description = "Re-apply fan curve periodically";
-    wantedBy = [ "timers.target" ];
-    after = [ "systemd-modules-load.service" ];
-    timerConfig = {
-      OnBootSec = "5s";
-      OnUnitActiveSec = "30s";
-    };
-  };
 
   systemd.services.fan-curve = {
     description = "Set silent fan curve on nct6799";
+    wantedBy = [ "multi-user.target" ];
+    after = [ "systemd-modules-load.service" ];
     serviceConfig = {
       Type = "oneshot";
+      RemainAfterExit = true;
     };
     script = ''
       set +e # nct6799 writes can transiently fail; don't abort on errors
