@@ -41,7 +41,7 @@ in
       "discord"
       "slack"
       "spotify"
-      "transmission"
+      "dbeaver-community"
     ];
     onActivation.autoUpdate = true;
     onActivation.cleanup = "uninstall";
