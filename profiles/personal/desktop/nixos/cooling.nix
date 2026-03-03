@@ -8,19 +8,23 @@
 { pkgs, ... }:
 {
   # Fan control — silent curve via nct6799 Super I/O auto-points
-  # BIOS fan control is disabled (set to full speed / ignore in UEFI setup),
-  # so we only need to apply the curve once at boot.
+  # BIOS fan control is disabled (set to full speed / ignore in UEFI setup).
+  # A timer reapplies the curve every 10 s to guard against resets.
   boot.kernelModules = [ "nct6775" ];
   environment.systemPackages = [ pkgs.lm_sensors ];
 
+  systemd.timers.fan-curve = {
+    wantedBy = [ "timers.target" ];
+    timerConfig = {
+      OnBootSec = "0";
+      OnUnitActiveSec = "10s";
+    };
+  };
+
   systemd.services.fan-curve = {
     description = "Set silent fan curve on nct6799";
-    wantedBy = [ "multi-user.target" ];
     after = [ "systemd-modules-load.service" ];
-    serviceConfig = {
-      Type = "oneshot";
-      RemainAfterExit = true;
-    };
+    serviceConfig.Type = "oneshot";
     script = ''
       set +e # nct6799 writes can transiently fail; don't abort on errors
 
