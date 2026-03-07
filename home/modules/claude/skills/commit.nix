@@ -8,32 +8,38 @@
 
   ## Context
 
-  - Current git status: !`git status`
-  - Current git diff (staged and unstaged changes): !`git diff HEAD`
   - Current branch: !`git branch --show-current`
   - Recent commits: !`git log --oneline -10`
+  - Uncommitted changes: !`git status`
+  - Diff (staged and unstaged): !`git diff HEAD`
 
-  ## Rules
+  ## Commit style
 
   - Use semantic commit messages: `feat(scope): description`, `fix(scope): description`, `refactor(scope): description`, etc.
   - Never add a Co-Authored-By line to commit messages.
+  - If the scope is unclear, ask the user.
   - Separate changes into distinct commits by concern. Group related changes together and keep unrelated changes in separate commits. If all changes are related, a single commit is fine.
-  - Do not commit files that likely contain secrets (.env, credentials, etc.).
 
-  ## Validation
+  ## Steps
 
-  Check for a validation workflow in the project (e.g., linters, type checkers, formatters, test suites). Look at project config files, scripts, CI configs, or CLAUDE.md for guidance on what checks to run.
+  ### 1. Analyze changes and discover validation
 
-  If validation steps exist, run them before committing. If the `parallel` binary is available, run independent checks in parallel.
+  Use the Task tool to launch these agents in parallel:
 
-  If validation fails, fix the issues and re-validate before committing. If you cannot fix the issues, report them to the user instead of committing.
+  1. **Analyze changes** - Look at the diff and determine how to group the changes into commits by concern.
+  2. **Discover validation** - Find all available validation methods in the project (linters, type checkers, formatters, test suites) by checking project config files, scripts, CI configs, and CLAUDE.md. Return a list of what's available, but do not run anything yet.
 
-  If no validation steps are found, skip validation and proceed directly to committing.
+  ### 2. Select and run validation
 
-  ## Your task
+  Use AskUserQuestion with multiSelect to present the discovered validation options and let the user pick which ones to run. Include a "Skip all" option. Only run the checks the user selects.
 
-  1. Analyze the changes and determine how to group them into commits (by concern).
-  2. Run validation if applicable (see above).
-  3. Stage and commit the changes using semantic commit messages.
-  4. Show the result with `git status` and `git log --oneline -5`.
+  If validation failed, fix the issues and re-validate. If you cannot fix the issues, report them to the user instead of committing.
+
+  ### 3. Stage and commit
+
+  Stage and commit the changes using semantic commit messages.
+
+  ### 4. Show result
+
+  Show the result with `git status` and `git log --oneline -5`.
 ''

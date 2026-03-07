@@ -3,59 +3,72 @@
 ''
   ---
   name: review
-  description: Review local code changes. Use when the user asks to review, review changes, or do a code review.
+  description: Review local code changes. Use when the user asks to review, check, or critique their current changes.
   ---
 
   ## Context
 
   - Current branch: !`git branch --show-current`
-  - Recent commits on this branch: !`git log --oneline -10`
+  - Default branch candidates: !`git branch --list main master 2>/dev/null`
   - Uncommitted changes: !`git status --short`
+  - Staged changes: !`git diff --cached --stat 2>/dev/null; true`
+  - Unstaged changes: !`git diff --stat 2>/dev/null; true`
+
+  ## Tone and style
+
+  - Keep language normal - not too formal, not too casual
+  - Be direct and constructive
 
   ## Steps
 
-  ### 1. Determine what to review
+  ### 1. Determine review scope
 
-  - If the user specifies files, commits, or a range - review that.
-  - If there are uncommitted changes (staged or unstaged), review those using `git diff HEAD`.
-  - If the working tree is clean, review the commits on the current branch that diverge from the base branch (typically `main` or `master`) using `git diff main...HEAD` and `git log main..HEAD`.
-  - If nothing to review, tell the user.
+  Determine the default branch from the candidates above (main or master, whichever exists). Then run `git branch --merged HEAD --no-merged <default>` (excluding the current branch) to find intermediate branches.
 
-  ### 2. Read the full diff
+  Use AskUserQuestion to ask:
 
-  Get the complete diff for the scope determined above. For each changed file, also read surrounding context if the diff alone is not enough to understand the change.
+  - If an intermediate branch was found, ask which branch to compare against. Offer the intermediate branch (closest parent) and the default branch as options. If no intermediate branch was found, skip this question and use the default branch.
+  - If there are uncommitted changes (staged or unstaged), ask whether to include those in the review.
 
-  ### 3. Review the changes
+  After the user confirms, gather the full diff for the chosen scope:
+  - Run `git log <base>..HEAD --oneline` to get commits
+  - Run `git diff <base>...HEAD` to get the branch diff
+  - If including staged changes, run `git diff --cached`
+  - If including unstaged changes, run `git diff`
 
-  Focus on things that actually matter:
+  ### 2. Ask which review perspectives to include
 
-  - **Bugs and logic errors** - incorrect conditions, off-by-one errors, null/undefined access, wrong variable used, missing return statements
-  - **Edge cases** - unhandled inputs, boundary conditions, race conditions, empty/nil states
-  - **Security** - injection vulnerabilities, exposed secrets, unsafe deserialization, missing auth checks
-  - **Performance** - unnecessary allocations in hot paths, O(n^2) where O(n) is possible, missing indexes
-  - **Readability** - misleading names, confusing control flow, code that will trip up the next reader
+  Use AskUserQuestion with a single multi-select question asking which review perspectives to run. The options are:
 
-  Skip:
-  - Style and formatting nitpicks (that's what formatters are for)
-  - Generic best practices that don't apply to the specific change
-  - Suggestions that would make the code more "robust" without a realistic failure scenario
+  - **Correctness & Logic** - Bugs, edge cases, error handling gaps, race conditions, resource leaks, broken control flow
+  - **Design & Maintainability** - Poor abstractions, tight coupling, unnecessary complexity, misleading names, pattern violations
+  - **Security & Data Handling** - Injection vectors, hardcoded secrets, auth gaps, unvalidated input, information leakage
+  - **Duplication & Reuse** - Existing functions, utilities, or helpers that overlap with newly introduced code
 
-  ### 4. Output
+  ### 3. Spawn parallel review agents
 
-  For each finding, include:
-  - The file and relevant line(s)
-  - What the issue is (1-2 sentences)
-  - Why it matters
-  - A suggested fix (code snippet if helpful)
+  Use the Task tool to launch one agent per selected perspective in a single message.
 
-  Group findings by severity:
-  - **Must fix** - bugs, security issues, data loss risks
-  - **Should fix** - logic gaps, meaningful readability problems
-  - **Consider** - minor improvements worth thinking about
+  Each agent must:
+  - Read relevant source files for surrounding context when the diff alone is not enough
+  - Assign a confidence score (1-10) per finding and only report findings with confidence >= 7
+  - Provide file:line, a one-line summary, and a brief explanation with a suggested fix for each finding
 
-  If there are no findings, say so. Don't invent issues.
+  ### 4. Synthesize findings
 
-  ### 5. Summary
+  After all agents return, deduplicate overlapping findings and classify each by severity:
 
-  End with a short overall assessment: what the changes do, whether they look good, and any high-level concerns.
+  - **Critical** - likely bug, security vulnerability, or data loss risk
+  - **Important** - design issue, missing edge case, maintainability concern
+  - **Minor** - small improvement suggestion
+
+  ### 5. Output
+
+  Output findings grouped by severity. For each finding, include:
+
+  - file:line reference
+  - One-line summary
+  - Brief explanation with suggested fix
+
+  Omit empty severity sections. If there are no findings, say so plainly.
 ''

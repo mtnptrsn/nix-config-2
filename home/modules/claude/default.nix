@@ -46,6 +46,7 @@ in
           # skills on top - so profiles can override the commit skill if needed.
           {
             commit = import ./skills/commit.nix;
+            draft-pr = import ./skills/draft-pr.nix;
             review = import ./skills/review.nix;
             sync-skills = import ./skills/sync-skills.nix;
           }
