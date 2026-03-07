@@ -47,6 +47,7 @@ in
           {
             commit = import ./skills/commit.nix;
             review = import ./skills/review.nix;
+            sync-skills = import ./skills/sync-skills.nix;
           }
           // cfg.skills
         );
