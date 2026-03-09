@@ -18,6 +18,7 @@ in
       extraConfig = ''
         # Vi keybindings in copy mode
         set-window-option -g mode-keys vi
+        bind-key -T copy-mode-vi y send-keys -X copy-pipe-and-cancel "pbcopy"
 
         # Pane navigation (hjkl)
         bind h select-pane -L
