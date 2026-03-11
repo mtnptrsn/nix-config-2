@@ -11,6 +11,7 @@
     };
     nix-homebrew.url = "github:zhaofengli/nix-homebrew";
     maccel.url = "github:Gnarus-G/maccel";
+    claude-code.url = "github:sadjow/claude-code-nix";
     nixvim = {
       url = "github:nix-community/nixvim";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -24,6 +25,7 @@
       nix-darwin,
       nix-homebrew,
       maccel,
+      claude-code,
       nixvim,
       ...
     }:
@@ -38,6 +40,7 @@
             home-manager.nixosModules.home-manager
             maccel.nixosModules.default
             {
+              nixpkgs.overlays = [ claude-code.overlays.default ];
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
               home-manager.backupFileExtension = "bak";
@@ -61,6 +64,7 @@
             home-manager.darwinModules.home-manager
             nix-homebrew.darwinModules.nix-homebrew
             {
+              nixpkgs.overlays = [ claude-code.overlays.default ];
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
               home-manager.backupFileExtension = "bak";
