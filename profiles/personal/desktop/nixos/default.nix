@@ -3,6 +3,7 @@
   imports = [
     ./hardware-configuration.nix
     ./cooling.nix
+    ./virtualization.nix
   ];
 
   networking.hostName = "mtnptrsn";
