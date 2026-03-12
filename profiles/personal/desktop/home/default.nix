@@ -39,4 +39,15 @@
     wowup-cf
   ];
 
+  xdg.desktopEntries.battle-net = {
+    name = "Battle.net";
+    exec = "steam steam://rungameid/0";
+    icon = ./battle-net.png;
+    comment = "Battle.net via Steam";
+    categories = [ "Game" ];
+    settings = {
+      StartupWMClass = "steam_app_0";
+    };
+  };
+
 }

@@ -15,6 +15,14 @@ in
       gnomeExtensions.maximized-by-default-actually-reborn
     ];
 
+    gtk = {
+      enable = true;
+      iconTheme = {
+        name = "Adwaita";
+        package = pkgs.adwaita-icon-theme;
+      };
+    };
+
     dconf.settings = {
       "org/gnome/shell" = {
         enabled-extensions = [
