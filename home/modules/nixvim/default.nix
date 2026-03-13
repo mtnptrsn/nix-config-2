@@ -39,6 +39,9 @@ in
         shiftwidth = 2;
         tabstop = 2;
         expandtab = true;
+        foldmethod = "expr";
+        foldexpr = "v:lua.vim.treesitter.foldexpr()";
+        foldlevel = 99;
       };
 
       # Replace default diagnostic signs with nerd font icons
