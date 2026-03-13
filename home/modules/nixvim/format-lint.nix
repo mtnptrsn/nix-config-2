@@ -19,6 +19,11 @@
         ];
       };
 
+      userCommands.Format = {
+        command.__raw = ''function() require("conform").format({ lsp_format = "fallback" }) end'';
+        desc = "Format buffer";
+      };
+
       plugins.conform-nvim = {
         enable = true;
         settings = {

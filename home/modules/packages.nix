@@ -22,6 +22,7 @@ in
       fd
       statix
       nixfmt
+      prettierd
       nodejs
       pnpm
       claude-code
