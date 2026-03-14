@@ -15,6 +15,7 @@
     ./modules/vscode.nix
     ./modules/codediff.nix
     ./modules/claude
+    ./modules/tea
   ];
 
   home.stateVersion = "25.11";

@@ -29,6 +29,9 @@
       token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiIzMjE0ZTJiYmVhNTk0ZWNmYTQ3MWQwZDRhY2RkYzkzOCIsImlhdCI6MTc3MTk2Nzk2NSwiZXhwIjoyMDg3MzI3OTY1fQ.LQmc4zbSZ8GBVtqwDlbZQNIJJoI4QLXIDV_7Yx29XfM";
     };
 
+    # Notes
+    tea.enable = true;
+
     # Package management
     packages.enable = true;
     linux-packages.enable = true;
