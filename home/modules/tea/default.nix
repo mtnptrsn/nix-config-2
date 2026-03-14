@@ -7,7 +7,7 @@
 let
   cfg = config.modules.tea;
   teaScript = builtins.replaceStrings [ "@notesDir@" ] [ cfg.notesDir ] (builtins.readFile ./tea.py);
-  tea = pkgs.writers.writePython3Bin "tea" { } teaScript;
+  tea = pkgs.writers.writePython3Bin "tea" { libraries = [ pkgs.python3Packages.typer ]; } teaScript;
 in
 {
   options.modules.tea = {

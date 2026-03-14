@@ -1,8 +1,9 @@
-import argparse
 import os
 import sys
 from datetime import date
 from pathlib import Path
+
+import typer
 
 NOTES_DIR = os.path.expanduser("@notesDir@")
 
@@ -32,75 +33,6 @@ def create_daily_note(filepath, context):
     filepath.write_text(f"{frontmatter}\n## Tasks\n\n- [ ] \n")
 
 
-def cmd_day(args):
-    filepath = daily_filepath(args.context)
-
-    if not filepath.exists():
-        create_daily_note(filepath, args.context)
-
-    os.execvp("nvim", ["nvim", str(filepath)])
-
-
-def cmd_day_add(args):
-    tasks = [t.strip() for t in args.task.split(",") if t.strip()]
-    if not tasks:
-        print("Error: no tasks provided", file=sys.stderr)
-        sys.exit(1)
-
-    filepath = daily_filepath(args.context)
-
-    if not filepath.exists():
-        create_daily_note(filepath, args.context)
-        content = filepath.read_text()
-        content = content.replace(
-            "- [ ] \n", "".join(f"- [ ] {t}\n" for t in tasks)
-        )
-        filepath.write_text(content)
-        for t in tasks:
-            print(f"Added: {t}")
-        return
-
-    lines = filepath.read_text().splitlines(keepends=True)
-
-    tasks_idx = None
-    for i, line in enumerate(lines):
-        if line.rstrip() == "## Tasks":
-            tasks_idx = i
-            break
-
-    if tasks_idx is None:
-        print("Error: ## Tasks section not found", file=sys.stderr)
-        sys.exit(1)
-
-    last_task_idx = None
-    for i in range(tasks_idx + 1, len(lines)):
-        stripped = lines[i].rstrip()
-        if stripped == "- [ ]" or stripped == "- [x]":
-            # Empty placeholder, skip
-            continue
-        elif stripped.startswith("- [ ] ") or stripped.startswith("- [x] "):
-            last_task_idx = i
-        elif stripped.startswith("## "):
-            break
-
-    new_lines = [f"- [ ] {t}\n" for t in tasks]
-
-    if last_task_idx is not None:
-        for j, nl in enumerate(new_lines):
-            lines.insert(last_task_idx + 1 + j, nl)
-    else:
-        # Insert after the blank line following ## Tasks, or right after it
-        insert_at = tasks_idx + 1
-        if insert_at < len(lines) and lines[insert_at].strip() == "":
-            insert_at += 1
-        for j, nl in enumerate(new_lines):
-            lines.insert(insert_at + j, nl)
-
-    filepath.write_text("".join(lines))
-    for t in tasks:
-        print(f"Added: {t}")
-
-
 def project_dir():
     return Path(NOTES_DIR) / "projects"
 
@@ -117,25 +49,14 @@ def create_project_note(filepath, name):
     )
 
 
-def cmd_project(args):
-    filepath = project_filepath(args.name)
-
-    if not filepath.exists():
-        create_project_note(filepath, args.name)
-
-    os.execvp("nvim", ["nvim", str(filepath)])
-
-
-def cmd_project_add(args):
-    tasks = [t.strip() for t in args.task.split(",") if t.strip()]
+def add_tasks_to_file(filepath, task_str, create_fn):
+    tasks = [t.strip() for t in task_str.split(",") if t.strip()]
     if not tasks:
         print("Error: no tasks provided", file=sys.stderr)
         sys.exit(1)
 
-    filepath = project_filepath(args.name)
-
     if not filepath.exists():
-        create_project_note(filepath, args.name)
+        create_fn(filepath)
         content = filepath.read_text()
         content = content.replace(
             "- [ ] \n", "".join(f"- [ ] {t}\n" for t in tasks)
@@ -184,74 +105,96 @@ def cmd_project_add(args):
         print(f"Added: {t}")
 
 
-def cmd_projects(_args):
+def list_projects():
     pdir = project_dir()
     if not pdir.exists():
         print("No projects yet.")
-        return
+        return []
 
     files = sorted(pdir.glob("*.md"))
     if not files:
         print("No projects yet.")
-        return
+        return []
 
     for f in files:
         print(f.stem)
+    return [f.stem for f in files]
 
 
-def cmd_open(_args):
+app = typer.Typer(invoke_without_command=True)
+project_app = typer.Typer(invoke_without_command=True)
+app.add_typer(project_app, name="project")
+
+
+@app.callback(invoke_without_command=True)
+def default(
+    ctx: typer.Context,
+    context: str = typer.Option(None, "-c", "--context", help="Notes context"),
+):
+    ctx.ensure_object(dict)
+    if ctx.obj.get("context") is None and context is not None:
+        ctx.obj["context"] = context
+    elif "context" not in ctx.obj:
+        ctx.obj["context"] = context
+
+    if ctx.invoked_subcommand is None:
+        filepath = daily_filepath(ctx.obj["context"])
+        if not filepath.exists():
+            create_daily_note(filepath, ctx.obj["context"])
+        os.execvp("nvim", ["nvim", str(filepath)])
+
+
+@app.command()
+def add(
+    ctx: typer.Context,
+    task: str = typer.Argument(help="Task description"),
+    context: str = typer.Option(None, "-c", "--context", help="Notes context"),
+):
+    ctx.ensure_object(dict)
+    c = context if context is not None else ctx.obj.get("context")
+    filepath = daily_filepath(c)
+    add_tasks_to_file(filepath, task, lambda fp: create_daily_note(fp, c))
+
+
+@app.command("open")
+def open_cmd():
     Path(NOTES_DIR).mkdir(parents=True, exist_ok=True)
     os.execvp("nvim", ["nvim", NOTES_DIR])
 
 
+@app.command()
+def projects():
+    list_projects()
+
+
+@project_app.callback(invoke_without_command=True)
+def project_default(
+    ctx: typer.Context,
+    name: str = typer.Argument(help="Project name"),
+):
+    ctx.ensure_object(dict)
+    ctx.obj["project_name"] = name
+
+    if ctx.invoked_subcommand is None:
+        filepath = project_filepath(name)
+        if not filepath.exists():
+            create_project_note(filepath, name)
+        os.execvp("nvim", ["nvim", str(filepath)])
+
+
+@project_app.command("add")
+def project_add(
+    ctx: typer.Context,
+    task: str = typer.Argument(help="Task description"),
+):
+    ctx.ensure_object(dict)
+    name = ctx.obj["project_name"]
+    filepath = project_filepath(name)
+    add_tasks_to_file(filepath, task, lambda fp: create_project_note(fp, name))
+
+
 def main():
-    parser = argparse.ArgumentParser(
-        prog="tea", description="Daily notes tool"
-    )
-    parser.add_argument(
-        "-c", "--context", help="Notes context"
-    )
-    subparsers = parser.add_subparsers(dest="command")
-
-    add_parser = subparsers.add_parser(
-        "add", help="Add a task to today's daily note"
-    )
-    add_parser.add_argument(
-        "-c", "--context", help="Notes context"
-    )
-    add_parser.add_argument("task", help="Task description")
-
-    subparsers.add_parser("open", help="Open notes directory")
-
-    subparsers.add_parser("projects", help="List all projects")
-    subparsers.add_parser("project", help="Open or manage a project")
-
-    args, remaining = parser.parse_known_args()
-
-    if args.command == "add":
-        cmd_day_add(args)
-    elif args.command == "open":
-        cmd_open(args)
-    elif args.command == "projects":
-        cmd_projects(args)
-    elif args.command == "project":
-        if not remaining:
-            print("Usage: tea project <name> [add <task>]", file=sys.stderr)
-            sys.exit(1)
-        name = remaining[0]
-        if len(remaining) >= 3 and remaining[1] == "add":
-            task_str = " ".join(remaining[2:])
-            args.name = name
-            args.task = task_str
-            cmd_project_add(args)
-        elif len(remaining) == 1:
-            args.name = name
-            cmd_project(args)
-        else:
-            print("Usage: tea project <name> [add <task>]", file=sys.stderr)
-            sys.exit(1)
-    else:
-        cmd_day(args)
+    app()
 
 
 if __name__ == "__main__":

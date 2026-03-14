@@ -6,6 +6,7 @@ pkgs.mkShell {
   packages = [
     (pkgs.python3.withPackages (ps: [
       ps.pytest
+      ps.typer
     ]))
   ];
 }
