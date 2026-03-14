@@ -130,3 +130,123 @@ class TestDayAdd:
         done_idx = lines.index("- [x] done task")
         new_idx = lines.index("- [ ] new task")
         assert new_idx == done_idx + 1
+
+    # Comma-separated input creates multiple tasks in a new file.
+    def test_comma_separated_new_file(self, notes_dir, mock_today):
+        tea.cmd_day_add(make_args(context=None, task="clean bathroom, clean bedroom"))
+        path = notes_dir / "daily" / "2026" / "03" / "2026-03-14.md"
+        content = path.read_text()
+        assert "- [ ] clean bathroom\n" in content
+        assert "- [ ] clean bedroom\n" in content
+        assert "- [ ] \n" not in content
+
+    # Comma-separated input creates multiple tasks in an existing file in order.
+    def test_comma_separated_existing_file(self, notes_dir, mock_today):
+        path = notes_dir / "daily" / "2026" / "03" / "2026-03-14.md"
+        path.parent.mkdir(parents=True)
+        path.write_text(
+            "---\ntitle: 2026-03-14\n---\n\n## Tasks\n\n- [ ] existing task\n"
+        )
+        tea.cmd_day_add(make_args(context=None, task="task a, task b"))
+        lines = path.read_text().splitlines()
+        existing_idx = lines.index("- [ ] existing task")
+        a_idx = lines.index("- [ ] task a")
+        b_idx = lines.index("- [ ] task b")
+        assert a_idx == existing_idx + 1
+        assert b_idx == existing_idx + 2
+
+    # Whitespace around commas is trimmed.
+    def test_comma_whitespace_trimmed(self, notes_dir, mock_today):
+        tea.cmd_day_add(make_args(context=None, task="  foo ,  bar  , baz  "))
+        path = notes_dir / "daily" / "2026" / "03" / "2026-03-14.md"
+        content = path.read_text()
+        assert "- [ ] foo\n" in content
+        assert "- [ ] bar\n" in content
+        assert "- [ ] baz\n" in content
+
+
+class TestProjectFilepath:
+    # Builds the correct path under projects directory.
+    def test_basic(self, notes_dir):
+        result = tea.project_filepath("api-migration")
+        assert result == notes_dir / "projects" / "api-migration.md"
+        assert result.parent.is_dir()
+
+
+class TestCreateProjectNote:
+    # Writes frontmatter, tasks, and notes sections.
+    def test_basic(self, notes_dir):
+        path = notes_dir / "project.md"
+        tea.create_project_note(path, "home-server")
+        content = path.read_text()
+        assert content == (
+            "---\ntitle: home-server\n---\n\n"
+            "## Tasks\n\n- [ ] \n\n"
+            "## Notes\n\n"
+        )
+
+
+class TestProjectAdd:
+    # Creates a new project file and adds the task.
+    def test_new_project(self, notes_dir):
+        tea.cmd_project_add(make_args(name="myproj", task="first thing"))
+        path = notes_dir / "projects" / "myproj.md"
+        content = path.read_text()
+        assert "- [ ] first thing\n" in content
+        assert "- [ ] \n" not in content
+
+    # Appends to an existing project file.
+    def test_existing_project(self, notes_dir):
+        path = notes_dir / "projects" / "myproj.md"
+        path.parent.mkdir(parents=True)
+        path.write_text(
+            "---\ntitle: myproj\n---\n\n## Tasks\n\n- [ ] existing\n\n## Notes\n\n"
+        )
+        tea.cmd_project_add(make_args(name="myproj", task="new thing"))
+        lines = path.read_text().splitlines()
+        existing_idx = lines.index("- [ ] existing")
+        new_idx = lines.index("- [ ] new thing")
+        assert new_idx == existing_idx + 1
+
+    # Comma-separated tasks all get added.
+    def test_comma_separated(self, notes_dir):
+        tea.cmd_project_add(make_args(name="myproj", task="a, b, c"))
+        path = notes_dir / "projects" / "myproj.md"
+        content = path.read_text()
+        assert "- [ ] a\n" in content
+        assert "- [ ] b\n" in content
+        assert "- [ ] c\n" in content
+
+    # Exits with code 1 if no ## Tasks section.
+    def test_no_tasks_header(self, notes_dir):
+        path = notes_dir / "projects" / "myproj.md"
+        path.parent.mkdir(parents=True)
+        path.write_text("---\ntitle: myproj\n---\n\nSome content\n")
+        with pytest.raises(SystemExit, match="1"):
+            tea.cmd_project_add(make_args(name="myproj", task="a task"))
+
+
+class TestProjects:
+    # Lists project names when projects exist.
+    def test_lists_projects(self, notes_dir, capsys):
+        pdir = notes_dir / "projects"
+        pdir.mkdir(parents=True)
+        (pdir / "alpha.md").write_text("test")
+        (pdir / "beta.md").write_text("test")
+        tea.cmd_projects(make_args())
+        output = capsys.readouterr().out
+        assert "alpha\n" in output
+        assert "beta\n" in output
+
+    # Prints message when no projects directory exists.
+    def test_no_projects_dir(self, notes_dir, capsys):
+        tea.cmd_projects(make_args())
+        output = capsys.readouterr().out
+        assert "No projects yet." in output
+
+    # Prints message when projects directory is empty.
+    def test_empty_projects_dir(self, notes_dir, capsys):
+        (notes_dir / "projects").mkdir(parents=True)
+        tea.cmd_projects(make_args())
+        output = capsys.readouterr().out
+        assert "No projects yet." in output
