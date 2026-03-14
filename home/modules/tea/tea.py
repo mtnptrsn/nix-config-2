@@ -100,7 +100,7 @@ def add_tasks_to_content(content, task_str):
     return "".join(lines)
 
 
-def add_tasks_to_file(filepath, task_str, create_fn):
+def add_tasks_to_file(filepath, task_str, create_fn, quiet=False):
     tasks = [t.strip() for t in task_str.split(",") if t.strip()]
     if not tasks:
         print("Error: no tasks provided", file=sys.stderr)
@@ -112,8 +112,9 @@ def add_tasks_to_file(filepath, task_str, create_fn):
     content = filepath.read_text()
     new_content = add_tasks_to_content(content, task_str)
     filepath.write_text(new_content)
-    for t in tasks:
-        print(f"Added: {t}")
+    if not quiet:
+        for t in tasks:
+            print(f"Added: {t}")
 
 
 def list_projects():
@@ -175,11 +176,20 @@ def add(
         "-o",
         help="Print resulting content to stdout",
     ),
+    buffer_path: str = typer.Option(
+        None,
+        "--buffer-path",
+        "-b",
+        help="Current buffer path; buffer mode if matching daily note",
+    ),
 ):
     ctx.ensure_object(dict)
     c = context if context is not None else ctx.obj.get("context")
     filepath = daily_filepath(c)
-    if print_content:
+    use_buffer = print_content or (
+        buffer_path is not None and str(filepath) == buffer_path
+    )
+    if use_buffer:
         stdin_content = sys.stdin.read()
         if stdin_content.strip():
             existing = stdin_content
@@ -196,7 +206,12 @@ def add(
         result = add_tasks_to_content(existing, task)
         print(result, end="")
     else:
-        add_tasks_to_file(filepath, task, lambda fp: create_daily_note(fp, c))
+        add_tasks_to_file(
+            filepath,
+            task,
+            lambda fp: create_daily_note(fp, c),
+            quiet=buffer_path is not None,
+        )
 
 
 @app.command("open")

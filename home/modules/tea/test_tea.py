@@ -240,6 +240,36 @@ class TestAddPrintContent:
         assert "- [ ] existing\n" in result.output
 
 
+class TestAddBufferPath:
+    # Uses buffer mode (stdout) when buffer path matches daily note.
+    def test_buffer_mode_when_matching(self, notes_dir, mock_today):
+        from typer.testing import CliRunner
+
+        original = "---\ntitle: 2026-03-14\n---\n\n## Tasks\n\n- [ ] existing\n"
+        daily_path = str(tea.daily_filepath(None))
+        runner = CliRunner()
+        result = runner.invoke(
+            tea.app, ["add", "-b", daily_path, "new task"], input=original
+        )
+        assert result.exit_code == 0
+        assert "- [ ] new task\n" in result.output
+        assert "- [ ] existing\n" in result.output
+        assert not tea.daily_filepath(None).exists()
+
+    # Uses file mode (writes to disk) when buffer path does not match.
+    def test_file_mode_when_not_matching(self, notes_dir, mock_today):
+        from typer.testing import CliRunner
+
+        runner = CliRunner()
+        result = runner.invoke(
+            tea.app, ["add", "-b", "/some/other/file.md", "new task"], input=""
+        )
+        assert result.exit_code == 0
+        filepath = tea.daily_filepath(None)
+        assert filepath.exists()
+        assert "- [ ] new task\n" in filepath.read_text()
+
+
 class TestProjectFilepath:
     # Builds the correct path under projects directory.
     def test_basic(self, notes_dir):

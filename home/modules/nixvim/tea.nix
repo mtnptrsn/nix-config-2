@@ -27,19 +27,23 @@
             function()
               vim.ui.input({ prompt = "Task: " }, function(input)
                 if input == nil or input == "" then return end
+                local buf_path = vim.api.nvim_buf_get_name(0)
                 local buf_content = table.concat(
                   vim.api.nvim_buf_get_lines(0, 0, -1, false), "\n"
                 ) .. "\n"
-                local output = vim.fn.system(
-                  "tea add -o " .. vim.fn.shellescape(input),
-                  buf_content
-                )
+                local cmd = "tea add -b " .. vim.fn.shellescape(buf_path)
+                  .. " " .. vim.fn.shellescape(input)
+                local output = vim.fn.system(cmd, buf_content)
                 if vim.v.shell_error ~= 0 then
                   vim.notify("tea add failed: " .. output, vim.log.levels.ERROR)
                   return
                 end
-                local new_lines = vim.split(output:gsub("%s+$", ""), "\n", { plain = true })
-                vim.api.nvim_buf_set_lines(0, 0, -1, false, new_lines)
+                if output ~= "" then
+                  local new_lines = vim.split(output:gsub("%s+$", ""), "\n", { plain = true })
+                  vim.api.nvim_buf_set_lines(0, 0, -1, false, new_lines)
+                else
+                  vim.cmd("checktime")
+                end
                 vim.notify("Added: " .. input, vim.log.levels.INFO)
               end)
             end'';
