@@ -8,5 +8,6 @@ pkgs.mkShell {
       ps.pytest
       ps.typer
     ]))
+    pkgs.ruff
   ];
 }

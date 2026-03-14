@@ -43,7 +43,9 @@ Before committing, always run the formatter, linter, and eval in parallel:
 parallel --halt now,fail=1 ::: \
   'nixfmt **/*.nix' \
   'statix check .' \
-  'for cfg in $(nix eval --raw ".#nixosConfigurations" --apply "x: builtins.concatStringsSep \" \" (builtins.attrNames x)"); do nix eval .#nixosConfigurations.$cfg.config.system.build.toplevel; done'
+  'for cfg in $(nix eval --raw ".#nixosConfigurations" --apply "x: builtins.concatStringsSep \" \" (builtins.attrNames x)"); do nix eval .#nixosConfigurations.$cfg.config.system.build.toplevel; done' \
+  'ruff check home/modules/tea/' \
+  'ruff format --check home/modules/tea/'
 ```
 
 Fix any issues before committing. For statix, auto-fix is available with `statix fix .`.

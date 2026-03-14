@@ -40,15 +40,7 @@ class TestCreateDailyNote:
         path = notes_dir / "note.md"
         tea.create_daily_note(path, None)
         content = path.read_text()
-        assert content == (
-            "---\n"
-            "title: 2026-03-14\n"
-            "---\n"
-            "\n"
-            "## Tasks\n"
-            "\n"
-            "- [ ] \n"
-        )
+        assert content == ("---\ntitle: 2026-03-14\n---\n\n## Tasks\n\n- [ ] \n")
 
     # Includes a context field in the frontmatter when a context is given.
     def test_with_context(self, notes_dir, mock_today):
@@ -62,7 +54,9 @@ class TestDayAdd:
     # When no file exists yet, creates it and replaces the empty placeholder with the task.
     def test_new_file(self, notes_dir, mock_today):
         filepath = tea.daily_filepath(None)
-        tea.add_tasks_to_file(filepath, "buy milk", lambda fp: tea.create_daily_note(fp, None))
+        tea.add_tasks_to_file(
+            filepath, "buy milk", lambda fp: tea.create_daily_note(fp, None)
+        )
         path = notes_dir / "daily" / "2026" / "03" / "2026-03-14.md"
         content = path.read_text()
         assert "- [ ] buy milk\n" in content
@@ -75,7 +69,9 @@ class TestDayAdd:
         path.write_text(
             "---\ntitle: 2026-03-14\n---\n\n## Tasks\n\n- [ ] existing task\n"
         )
-        tea.add_tasks_to_file(path, "new task", lambda fp: tea.create_daily_note(fp, None))
+        tea.add_tasks_to_file(
+            path, "new task", lambda fp: tea.create_daily_note(fp, None)
+        )
         lines = path.read_text().splitlines()
         existing_idx = lines.index("- [ ] existing task")
         new_idx = lines.index("- [ ] new task")
@@ -87,14 +83,18 @@ class TestDayAdd:
         path.parent.mkdir(parents=True)
         path.write_text("---\ntitle: 2026-03-14\n---\n\nSome content\n")
         with pytest.raises(SystemExit, match="1"):
-            tea.add_tasks_to_file(path, "a task", lambda fp: tea.create_daily_note(fp, None))
+            tea.add_tasks_to_file(
+                path, "a task", lambda fp: tea.create_daily_note(fp, None)
+            )
 
     # Inserts after the blank line following ## Tasks when there are no tasks yet.
     def test_existing_file_empty_tasks_section(self, notes_dir, mock_today):
         path = notes_dir / "daily" / "2026" / "03" / "2026-03-14.md"
         path.parent.mkdir(parents=True)
         path.write_text("---\ntitle: 2026-03-14\n---\n\n## Tasks\n\n")
-        tea.add_tasks_to_file(path, "first task", lambda fp: tea.create_daily_note(fp, None))
+        tea.add_tasks_to_file(
+            path, "first task", lambda fp: tea.create_daily_note(fp, None)
+        )
         lines = path.read_text().splitlines()
         tasks_idx = lines.index("## Tasks")
         assert lines[tasks_idx + 2] == "- [ ] first task"
@@ -106,7 +106,9 @@ class TestDayAdd:
         path.write_text(
             "---\ntitle: 2026-03-14\n---\n\n## Tasks\n\n- [ ] real task\n- [ ]\n"
         )
-        tea.add_tasks_to_file(path, "another task", lambda fp: tea.create_daily_note(fp, None))
+        tea.add_tasks_to_file(
+            path, "another task", lambda fp: tea.create_daily_note(fp, None)
+        )
         lines = path.read_text().splitlines()
         real_idx = lines.index("- [ ] real task")
         new_idx = lines.index("- [ ] another task")
@@ -116,10 +118,10 @@ class TestDayAdd:
     def test_after_checked_task(self, notes_dir, mock_today):
         path = notes_dir / "daily" / "2026" / "03" / "2026-03-14.md"
         path.parent.mkdir(parents=True)
-        path.write_text(
-            "---\ntitle: 2026-03-14\n---\n\n## Tasks\n\n- [x] done task\n"
+        path.write_text("---\ntitle: 2026-03-14\n---\n\n## Tasks\n\n- [x] done task\n")
+        tea.add_tasks_to_file(
+            path, "new task", lambda fp: tea.create_daily_note(fp, None)
         )
-        tea.add_tasks_to_file(path, "new task", lambda fp: tea.create_daily_note(fp, None))
         lines = path.read_text().splitlines()
         done_idx = lines.index("- [x] done task")
         new_idx = lines.index("- [ ] new task")
@@ -128,7 +130,11 @@ class TestDayAdd:
     # Comma-separated input creates multiple tasks in a new file.
     def test_comma_separated_new_file(self, notes_dir, mock_today):
         filepath = tea.daily_filepath(None)
-        tea.add_tasks_to_file(filepath, "clean bathroom, clean bedroom", lambda fp: tea.create_daily_note(fp, None))
+        tea.add_tasks_to_file(
+            filepath,
+            "clean bathroom, clean bedroom",
+            lambda fp: tea.create_daily_note(fp, None),
+        )
         path = notes_dir / "daily" / "2026" / "03" / "2026-03-14.md"
         content = path.read_text()
         assert "- [ ] clean bathroom\n" in content
@@ -142,7 +148,9 @@ class TestDayAdd:
         path.write_text(
             "---\ntitle: 2026-03-14\n---\n\n## Tasks\n\n- [ ] existing task\n"
         )
-        tea.add_tasks_to_file(path, "task a, task b", lambda fp: tea.create_daily_note(fp, None))
+        tea.add_tasks_to_file(
+            path, "task a, task b", lambda fp: tea.create_daily_note(fp, None)
+        )
         lines = path.read_text().splitlines()
         existing_idx = lines.index("- [ ] existing task")
         a_idx = lines.index("- [ ] task a")
@@ -153,7 +161,11 @@ class TestDayAdd:
     # Whitespace around commas is trimmed.
     def test_comma_whitespace_trimmed(self, notes_dir, mock_today):
         filepath = tea.daily_filepath(None)
-        tea.add_tasks_to_file(filepath, "  foo ,  bar  , baz  ", lambda fp: tea.create_daily_note(fp, None))
+        tea.add_tasks_to_file(
+            filepath,
+            "  foo ,  bar  , baz  ",
+            lambda fp: tea.create_daily_note(fp, None),
+        )
         path = notes_dir / "daily" / "2026" / "03" / "2026-03-14.md"
         content = path.read_text()
         assert "- [ ] foo\n" in content
@@ -176,9 +188,7 @@ class TestCreateProjectNote:
         tea.create_project_note(path, "home-server")
         content = path.read_text()
         assert content == (
-            "---\ntitle: home-server\n---\n\n"
-            "## Tasks\n\n- [ ] \n\n"
-            "## Notes\n\n"
+            "---\ntitle: home-server\n---\n\n## Tasks\n\n- [ ] \n\n## Notes\n\n"
         )
 
 
@@ -186,7 +196,9 @@ class TestProjectAdd:
     # Creates a new project file and adds the task.
     def test_new_project(self, notes_dir):
         filepath = tea.project_filepath("myproj")
-        tea.add_tasks_to_file(filepath, "first thing", lambda fp: tea.create_project_note(fp, "myproj"))
+        tea.add_tasks_to_file(
+            filepath, "first thing", lambda fp: tea.create_project_note(fp, "myproj")
+        )
         path = notes_dir / "projects" / "myproj.md"
         content = path.read_text()
         assert "- [ ] first thing\n" in content
@@ -199,7 +211,9 @@ class TestProjectAdd:
         path.write_text(
             "---\ntitle: myproj\n---\n\n## Tasks\n\n- [ ] existing\n\n## Notes\n\n"
         )
-        tea.add_tasks_to_file(path, "new thing", lambda fp: tea.create_project_note(fp, "myproj"))
+        tea.add_tasks_to_file(
+            path, "new thing", lambda fp: tea.create_project_note(fp, "myproj")
+        )
         lines = path.read_text().splitlines()
         existing_idx = lines.index("- [ ] existing")
         new_idx = lines.index("- [ ] new thing")
@@ -208,7 +222,9 @@ class TestProjectAdd:
     # Comma-separated tasks all get added.
     def test_comma_separated(self, notes_dir):
         filepath = tea.project_filepath("myproj")
-        tea.add_tasks_to_file(filepath, "a, b, c", lambda fp: tea.create_project_note(fp, "myproj"))
+        tea.add_tasks_to_file(
+            filepath, "a, b, c", lambda fp: tea.create_project_note(fp, "myproj")
+        )
         path = notes_dir / "projects" / "myproj.md"
         content = path.read_text()
         assert "- [ ] a\n" in content
@@ -221,7 +237,9 @@ class TestProjectAdd:
         path.parent.mkdir(parents=True)
         path.write_text("---\ntitle: myproj\n---\n\nSome content\n")
         with pytest.raises(SystemExit, match="1"):
-            tea.add_tasks_to_file(path, "a task", lambda fp: tea.create_project_note(fp, "myproj"))
+            tea.add_tasks_to_file(
+                path, "a task", lambda fp: tea.create_project_note(fp, "myproj")
+            )
 
 
 class TestProjects:

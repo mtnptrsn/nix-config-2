@@ -58,9 +58,7 @@ def add_tasks_to_file(filepath, task_str, create_fn):
     if not filepath.exists():
         create_fn(filepath)
         content = filepath.read_text()
-        content = content.replace(
-            "- [ ] \n", "".join(f"- [ ] {t}\n" for t in tasks)
-        )
+        content = content.replace("- [ ] \n", "".join(f"- [ ] {t}\n" for t in tasks))
         filepath.write_text(content)
         for t in tasks:
             print(f"Added: {t}")
