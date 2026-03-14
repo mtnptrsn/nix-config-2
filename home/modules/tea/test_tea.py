@@ -40,7 +40,9 @@ class TestCreateDailyNote:
         path = notes_dir / "note.md"
         tea.create_daily_note(path, None)
         content = path.read_text()
-        assert content == ("---\ntitle: 2026-03-14\n---\n\n## Tasks\n\n- [ ] \n")
+        assert content == (
+            "---\ntitle: 2026-03-14\n---\n\n## Tasks\n\n- [ ] \n\n## Notes\n\n"
+        )
 
     # Includes a context field in the frontmatter when a context is given.
     def test_with_context(self, notes_dir, mock_today):
