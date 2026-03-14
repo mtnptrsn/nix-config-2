@@ -2,10 +2,8 @@
 
 ## Testing
 
-Enter the dev shell, then run pytest:
+From the repo root (inside `nix-shell`):
 
 ```bash
-cd home/modules/tea
-nix-shell
-pytest test_tea.py -v
+just tea-test
 ```

@@ -25,6 +25,7 @@ in
       prettierd
       nodejs
       pnpm
+      just
       claude-code
 
       # utilities

@@ -28,6 +28,10 @@ The `cw` command (defined in `home/scripts/cw.sh`, registered in `home/modules/p
 - `nixpkgs.config.allowUnfree = true`
 - `system.stateVersion = "25.11"` — do not change without understanding migration implications
 
+## Dev Shell
+
+A `shell.nix` at the repo root provides all development dependencies (just, nixfmt, statix, ruff, parallel, python with pytest/typer). Always use `nix-shell` when running just recipes or any tooling in this repo.
+
 ## Workflow
 
 - Always stage new files with `git add` before running nix builds, since the flake only sees tracked files in a git repo.
@@ -37,16 +41,5 @@ The `cw` command (defined in `home/scripts/cw.sh`, registered in `home/modules/p
 
 Skip these checks if the `nix` binary is not available (e.g., in cloud environments).
 
-Before committing, always run the formatter, linter, and eval in parallel:
-
-```bash
-parallel --halt now,fail=1 ::: \
-  'nixfmt **/*.nix' \
-  'statix check .' \
-  'for cfg in $(nix eval --raw ".#nixosConfigurations" --apply "x: builtins.concatStringsSep \" \" (builtins.attrNames x)"); do nix eval .#nixosConfigurations.$cfg.config.system.build.toplevel; done' \
-  'ruff check home/modules/tea/' \
-  'ruff format --check home/modules/tea/'
-```
-
-Fix any issues before committing. For statix, auto-fix is available with `statix fix .`.
+Before committing, run `nix-shell --run "just check"` to execute all checks (formatting, linting, eval, tea checks) in parallel. Run `nix-shell --run "just fix"` to auto-fix what's possible. See `just --list` for all available recipes.
 
