@@ -9,6 +9,7 @@ import tea
 @pytest.fixture()
 def notes_dir(tmp_path, monkeypatch):
     monkeypatch.setattr(tea, "NOTES_DIR", str(tmp_path))
+    monkeypatch.setattr(tea, "DEFAULT_CONTEXT", None)
     return tmp_path
 
 
@@ -175,6 +176,70 @@ class TestDayAdd:
         assert "- [ ] baz\n" in content
 
 
+class TestAddTasksToContent:
+    # Returns content with task replacing the empty placeholder for new file content.
+    def test_new_file_content(self):
+        content = "---\ntitle: 2026-03-14\n---\n\n## Tasks\n\n- [ ] \n\n## Notes\n\n"
+        result = tea.add_tasks_to_content(content, "buy milk")
+        assert "- [ ] buy milk\n" in result
+        assert "- [ ] \n" not in result
+
+    # Returns None when content is None.
+    def test_none_content(self):
+        result = tea.add_tasks_to_content(None, "buy milk")
+        assert result is None
+
+    # Inserts task after existing tasks.
+    def test_existing_tasks(self):
+        content = "---\ntitle: 2026-03-14\n---\n\n## Tasks\n\n- [ ] existing task\n"
+        result = tea.add_tasks_to_content(content, "new task")
+        lines = result.splitlines()
+        existing_idx = lines.index("- [ ] existing task")
+        new_idx = lines.index("- [ ] new task")
+        assert new_idx == existing_idx + 1
+
+    # Handles comma-separated tasks.
+    def test_comma_separated(self):
+        content = "---\ntitle: 2026-03-14\n---\n\n## Tasks\n\n- [ ] \n\n## Notes\n\n"
+        result = tea.add_tasks_to_content(content, "task a, task b")
+        assert "- [ ] task a\n" in result
+        assert "- [ ] task b\n" in result
+        assert "- [ ] \n" not in result
+
+    # Exits with code 1 if no ## Tasks section.
+    def test_no_tasks_header(self):
+        content = "---\ntitle: 2026-03-14\n---\n\nSome content\n"
+        with pytest.raises(SystemExit, match="1"):
+            tea.add_tasks_to_content(content, "a task")
+
+
+class TestAddPrintContent:
+    # Outputs full file content to stdout without writing to disk for new file.
+    def test_new_file(self, notes_dir, mock_today):
+        from typer.testing import CliRunner
+
+        runner = CliRunner()
+        result = runner.invoke(tea.app, ["add", "-o", "buy milk"], input="")
+        assert result.exit_code == 0
+        assert "- [ ] buy milk\n" in result.output
+        assert "## Tasks" in result.output
+        # File should not exist on disk
+        filepath = tea.daily_filepath(None)
+        assert not filepath.exists()
+
+    # Reads existing content from stdin and adds task without modifying disk.
+    def test_existing_file(self, notes_dir, mock_today):
+        from typer.testing import CliRunner
+
+        original = "---\ntitle: 2026-03-14\n---\n\n## Tasks\n\n- [ ] existing\n"
+
+        runner = CliRunner()
+        result = runner.invoke(tea.app, ["add", "-o", "new task"], input=original)
+        assert result.exit_code == 0
+        assert "- [ ] new task\n" in result.output
+        assert "- [ ] existing\n" in result.output
+
+
 class TestProjectFilepath:
     # Builds the correct path under projects directory.
     def test_basic(self, notes_dir):
@@ -242,6 +307,34 @@ class TestProjectAdd:
             tea.add_tasks_to_file(
                 path, "a task", lambda fp: tea.create_project_note(fp, "myproj")
             )
+
+
+class TestToggleContent:
+    # Toggles unchecked to checked.
+    def test_unchecked_to_checked(self):
+        result = tea.toggle_content("- [ ] buy milk\n")
+        assert result == "- [x] buy milk\n"
+
+    # Toggles checked to unchecked.
+    def test_checked_to_unchecked(self):
+        result = tea.toggle_content("- [x] buy milk\n")
+        assert result == "- [ ] buy milk\n"
+
+    # Passes non-todo lines through unchanged.
+    def test_non_todo_unchanged(self):
+        content = "## Tasks\n\nSome text\n"
+        assert tea.toggle_content(content) == content
+
+    # Handles mixed lines.
+    def test_mixed_lines(self):
+        content = "- [ ] unchecked\n- [x] checked\nplain line\n"
+        result = tea.toggle_content(content)
+        assert result == "- [x] unchecked\n- [ ] checked\nplain line\n"
+
+    # Handles empty checkbox with no description.
+    def test_empty_checkbox(self):
+        result = tea.toggle_content("- [ ]\n")
+        assert result == "- [x]\n"
 
 
 class TestProjects:

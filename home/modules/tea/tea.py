@@ -50,23 +50,20 @@ def create_project_note(filepath, name):
     )
 
 
-def add_tasks_to_file(filepath, task_str, create_fn):
+def add_tasks_to_content(content, task_str):
     tasks = [t.strip() for t in task_str.split(",") if t.strip()]
     if not tasks:
         print("Error: no tasks provided", file=sys.stderr)
         sys.exit(1)
 
-    if not filepath.exists():
-        create_fn(filepath)
-        content = filepath.read_text()
-        task_lines = "".join(f"- [ ] {t}\n" for t in tasks)
-        content = content.replace("- [ ] \n", task_lines)
-        filepath.write_text(content)
-        for t in tasks:
-            print(f"Added: {t}")
-        return
+    if content is None:
+        return None
 
-    lines = filepath.read_text().splitlines(keepends=True)
+    task_lines_str = "".join(f"- [ ] {t}\n" for t in tasks)
+    if "- [ ] \n" in content:
+        return content.replace("- [ ] \n", task_lines_str)
+
+    lines = content.splitlines(keepends=True)
 
     tasks_idx = None
     for i, line in enumerate(lines):
@@ -100,7 +97,21 @@ def add_tasks_to_file(filepath, task_str, create_fn):
         for j, nl in enumerate(new_lines):
             lines.insert(insert_at + j, nl)
 
-    filepath.write_text("".join(lines))
+    return "".join(lines)
+
+
+def add_tasks_to_file(filepath, task_str, create_fn):
+    tasks = [t.strip() for t in task_str.split(",") if t.strip()]
+    if not tasks:
+        print("Error: no tasks provided", file=sys.stderr)
+        sys.exit(1)
+
+    if not filepath.exists():
+        create_fn(filepath)
+
+    content = filepath.read_text()
+    new_content = add_tasks_to_content(content, task_str)
+    filepath.write_text(new_content)
     for t in tasks:
         print(f"Added: {t}")
 
@@ -158,11 +169,34 @@ def add(
     ctx: typer.Context,
     task: str = typer.Argument(help="Task description"),
     context: str = typer.Option(None, "-c", "--context", help="Notes context"),
+    print_content: bool = typer.Option(
+        False,
+        "--print-content",
+        "-o",
+        help="Print resulting content to stdout",
+    ),
 ):
     ctx.ensure_object(dict)
     c = context if context is not None else ctx.obj.get("context")
     filepath = daily_filepath(c)
-    add_tasks_to_file(filepath, task, lambda fp: create_daily_note(fp, c))
+    if print_content:
+        stdin_content = sys.stdin.read()
+        if stdin_content.strip():
+            existing = stdin_content
+        else:
+            existing = None
+        if existing is None:
+            today = date.today()
+            title = today.strftime("%Y-%m-%d")
+            frontmatter = f"---\ntitle: {title}\n"
+            if c:
+                frontmatter += f"context: {c}\n"
+            frontmatter += "---\n"
+            existing = f"{frontmatter}\n## Tasks\n\n- [ ] \n\n## Notes\n\n"
+        result = add_tasks_to_content(existing, task)
+        print(result, end="")
+    else:
+        add_tasks_to_file(filepath, task, lambda fp: create_daily_note(fp, c))
 
 
 @app.command("open")
@@ -200,6 +234,25 @@ def project_add(
     name = ctx.obj["project_name"]
     filepath = project_filepath(name)
     add_tasks_to_file(filepath, task, lambda fp: create_project_note(fp, name))
+
+
+def toggle_content(content):
+    lines = content.splitlines(keepends=True)
+    result = []
+    for line in lines:
+        if "- [ ] " in line or line.rstrip().endswith("- [ ]"):
+            result.append(line.replace("- [ ]", "- [x]", 1))
+        elif "- [x] " in line or line.rstrip().endswith("- [x]"):
+            result.append(line.replace("- [x]", "- [ ]", 1))
+        else:
+            result.append(line)
+    return "".join(result)
+
+
+@app.command()
+def toggle():
+    content = sys.stdin.read()
+    print(toggle_content(content), end="")
 
 
 def main():

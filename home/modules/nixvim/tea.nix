@@ -27,12 +27,20 @@
             function()
               vim.ui.input({ prompt = "Task: " }, function(input)
                 if input == nil or input == "" then return end
-                local output = vim.fn.system("tea add " .. vim.fn.shellescape(input))
-                if vim.v.shell_error == 0 then
-                  vim.notify(output:gsub("%s+$", ""), vim.log.levels.INFO)
-                else
+                local buf_content = table.concat(
+                  vim.api.nvim_buf_get_lines(0, 0, -1, false), "\n"
+                ) .. "\n"
+                local output = vim.fn.system(
+                  "tea add -o " .. vim.fn.shellescape(input),
+                  buf_content
+                )
+                if vim.v.shell_error ~= 0 then
                   vim.notify("tea add failed: " .. output, vim.log.levels.ERROR)
+                  return
                 end
+                local new_lines = vim.split(output:gsub("%s+$", ""), "\n", { plain = true })
+                vim.api.nvim_buf_set_lines(0, 0, -1, false, new_lines)
+                vim.notify("Added: " .. input, vim.log.levels.INFO)
               end)
             end'';
           mode = "n";
@@ -40,17 +48,15 @@
         }
         {
           key = "<leader>tt";
-          action.__raw = ''
-            function()
-              local line = vim.api.nvim_get_current_line()
-              if line:match("%- %[ %]") then
-                vim.api.nvim_set_current_line((line:gsub("%- %[ %]", "- [x]", 1)))
-              elseif line:match("%- %[x%]") then
-                vim.api.nvim_set_current_line((line:gsub("%- %[x%]", "- [ ]", 1)))
-              end
-            end'';
+          action = ":.!tea toggle<CR>";
           mode = "n";
           options.desc = "Toggle markdown todo";
+        }
+        {
+          key = "<leader>tt";
+          action = ":!tea toggle<CR>";
+          mode = "v";
+          options.desc = "Toggle markdown todos";
         }
       ];
     };
