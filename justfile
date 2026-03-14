@@ -1,11 +1,10 @@
-# Run all checks in parallel (default recipe)
+# Run all checks (default recipe)
 check:
-    parallel --halt now,fail=1 ::: \
-        'just fmt' \
-        'just lint' \
-        'just eval' \
-        'just tea-lint' \
-        'just tea-fmt-check'
+    just fmt
+    just lint
+    just eval
+    just tea-lint
+    just tea-fmt-check
 
 # Format all nix files
 fmt:

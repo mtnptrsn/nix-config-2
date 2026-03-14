@@ -8,7 +8,6 @@ pkgs.mkShell {
     pkgs.nixfmt
     pkgs.statix
     pkgs.ruff
-    pkgs.parallel
     (pkgs.python3.withPackages (ps: [
       ps.pytest
       ps.typer
