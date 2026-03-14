@@ -15,6 +15,11 @@
       plugins.friendly-snippets.enable = true;
       plugins.blink-cmp = {
         enable = true;
+        settings.enabled.__raw = ''
+          function()
+            return vim.bo.buftype ~= "prompt"
+          end
+        '';
         settings.sources.default = [
           "lsp"
           "path"
