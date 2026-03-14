@@ -6,7 +6,18 @@
 }:
 let
   cfg = config.modules.tea;
-  teaScript = builtins.replaceStrings [ "@notesDir@" ] [ cfg.notesDir ] (builtins.readFile ./tea.py);
+  defaultContext = if cfg.defaultContext != null then cfg.defaultContext else "";
+  teaScript =
+    builtins.replaceStrings
+      [
+        "@notesDir@"
+        "@defaultContext@"
+      ]
+      [
+        cfg.notesDir
+        defaultContext
+      ]
+      (builtins.readFile ./tea.py);
   tea = pkgs.writers.writePython3Bin "tea" { libraries = [ pkgs.python3Packages.typer ]; } teaScript;
 in
 {
@@ -16,6 +27,11 @@ in
       type = lib.types.str;
       default = "~/Notes";
       description = "Directory where notes are stored";
+    };
+    defaultContext = lib.mkOption {
+      type = lib.types.nullOr lib.types.str;
+      default = null;
+      description = "Default context for daily notes";
     };
   };
 

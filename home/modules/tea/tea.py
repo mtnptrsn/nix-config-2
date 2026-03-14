@@ -6,6 +6,7 @@ from pathlib import Path
 import typer
 
 NOTES_DIR = os.path.expanduser("@notesDir@")
+DEFAULT_CONTEXT = "@defaultContext@" or None
 
 
 def daily_filepath(context):
@@ -129,18 +130,27 @@ app.add_typer(project_app, name="project")
 def default(
     ctx: typer.Context,
     context: str = typer.Option(None, "-c", "--context", help="Notes context"),
+    print_path: bool = typer.Option(
+        False,
+        "--print-path",
+        "-p",
+        help="Print path instead of opening editor",
+    ),
 ):
     ctx.ensure_object(dict)
-    if ctx.obj.get("context") is None and context is not None:
+    if context is not None:
         ctx.obj["context"] = context
     elif "context" not in ctx.obj:
-        ctx.obj["context"] = context
+        ctx.obj["context"] = DEFAULT_CONTEXT
 
     if ctx.invoked_subcommand is None:
         filepath = daily_filepath(ctx.obj["context"])
         if not filepath.exists():
             create_daily_note(filepath, ctx.obj["context"])
-        os.execvp("nvim", ["nvim", str(filepath)])
+        if print_path:
+            print(filepath)
+        else:
+            os.execvp("nvim", ["nvim", str(filepath)])
 
 
 @app.command()
