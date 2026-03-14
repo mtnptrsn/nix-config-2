@@ -61,6 +61,14 @@
             group = "Yank";
           }
           {
+            __unkeyed-1 = "<leader>t";
+            group = "Tea";
+          }
+          {
+            __unkeyed-1 = "<leader>tm";
+            group = "Markdown";
+          }
+          {
             __unkeyed-1 = "<leader>9";
             group = "99";
           }

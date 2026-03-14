@@ -18,6 +18,7 @@ in
     ./ui.nix
     ./general.nix
     ./ai.nix
+    ./tea.nix
   ];
 
   options.modules.nixvim.enable = lib.mkEnableOption "nixvim";
