@@ -23,6 +23,19 @@
             end
           end,
         })
+
+        function _G.open_remote_lines(start_line, end_line)
+          local dir = vim.fn.shellescape(vim.fn.fnamemodify(vim.fn.expand("%"), ":p:h"))
+          local remote = vim.fn.system("git -C " .. dir .. " remote get-url origin"):gsub("%s+$", "")
+          local base = remote:gsub("^git@([^:]+):", "https://%1/"):gsub("%.git$", "")
+          local branch = vim.fn.system("git -C " .. dir .. " rev-parse HEAD"):gsub("%s+$", "")
+          local root = vim.fn.system("git -C " .. dir .. " rev-parse --show-toplevel"):gsub("%s+$", "")
+          local filepath = vim.fn.fnamemodify(vim.fn.expand("%"), ":p"):sub(#root + 2)
+          local url = base .. "/blob/" .. branch .. "/" .. filepath .. "#L" .. start_line
+          if start_line ~= end_line then url = url .. "-L" .. end_line end
+          vim.ui.open(url)
+          vim.notify(url)
+        end
       '';
 
       keymaps = [
@@ -46,7 +59,17 @@
           mode = "n";
           options.desc = "Toggle Fugitive tab";
         }
-        # Open selected lines in browser on the remote git host (GitHub/GitLab)
+        # Open current/selected lines in browser on the remote git host (GitHub/GitLab)
+        {
+          key = "<leader>go";
+          action.__raw = ''
+            function()
+              local line = vim.fn.line(".")
+              _G.open_remote_lines(line, line)
+            end'';
+          mode = "n";
+          options.desc = "Open line on remote";
+        }
         {
           key = "<leader>go";
           action.__raw = ''
@@ -54,15 +77,8 @@
               local start_line = vim.fn.line("v")
               local end_line = vim.fn.line(".")
               if start_line > end_line then start_line, end_line = end_line, start_line end
-              local remote = vim.fn.system("git -C " .. vim.fn.shellescape(vim.fn.fnamemodify(vim.fn.expand("%"), ":p:h")) .. " remote get-url origin"):gsub("%s+$", "")
-              local base = remote:gsub("^git@([^:]+):", "https://%1/"):gsub("%.git$", "")
-              local branch = vim.fn.system("git -C " .. vim.fn.shellescape(vim.fn.fnamemodify(vim.fn.expand("%"), ":p:h")) .. " rev-parse HEAD"):gsub("%s+$", "")
-              local root = vim.fn.system("git -C " .. vim.fn.shellescape(vim.fn.fnamemodify(vim.fn.expand("%"), ":p:h")) .. " rev-parse --show-toplevel"):gsub("%s+$", "")
-              local filepath = vim.fn.fnamemodify(vim.fn.expand("%"), ":p"):sub(#root + 2)
-              local url = base .. "/blob/" .. branch .. "/" .. filepath .. "#L" .. start_line .. "-L" .. end_line
-              vim.ui.open(url)
+              _G.open_remote_lines(start_line, end_line)
               vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<Esc>", true, false, true), "n", false)
-              vim.notify(url)
             end'';
           mode = "v";
           options.desc = "Open lines on remote";
