@@ -31,6 +31,13 @@
           mode = "n";
           options.desc = "Show references";
         }
+        # List all symbols in the current buffer via Telescope
+        {
+          key = "<leader>lS";
+          action = "<cmd>Telescope lsp_document_symbols<cr>";
+          mode = "n";
+          options.desc = "Document symbols";
+        }
         # Show definition in a floating preview without leaving current position
         {
           key = "gp";
