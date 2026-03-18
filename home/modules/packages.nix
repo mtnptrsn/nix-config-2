@@ -18,6 +18,7 @@ in
     ++ (with pkgs; [
       # development
       gh
+      lazygit
       ripgrep
       fd
       statix
