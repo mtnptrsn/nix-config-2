@@ -14,6 +14,9 @@
       plugins.telescope = {
         enable = true;
         extensions.fzf-native.enable = true;
+        settings.defaults.file_ignore_patterns = [
+          "^.git/"
+        ];
         settings.pickers = {
           find_files = {
             hidden = true;
