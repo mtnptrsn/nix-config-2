@@ -3,5 +3,6 @@ _: {
 
   homebrew.casks = [
     "transmission"
+    "whatsapp"
   ];
 }

@@ -39,6 +39,7 @@
 
   home.packages = with pkgs; [
     stremio
+    whatsie
     wowup-cf
   ];
 

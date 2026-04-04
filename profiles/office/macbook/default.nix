@@ -13,5 +13,6 @@ _: {
 
   homebrew.casks = [
     "google-chrome"
+    "whatsapp"
   ];
 }
