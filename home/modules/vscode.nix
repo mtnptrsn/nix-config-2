@@ -18,7 +18,6 @@ in
         eamodio.gitlens
         esbenp.prettier-vscode
         dbaeumer.vscode-eslint
-        anthropic.claude-code
       ];
     };
   };
