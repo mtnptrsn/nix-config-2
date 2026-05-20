@@ -31,6 +31,9 @@
     options = "--delete-older-than 30d";
   };
 
+  # Run dynamically linked executables
+  programs.nix-ld.enable = true;
+
   services.udev.extraRules = ''
     KERNEL=="uinput", GROUP="input", MODE="0660"
   '';
