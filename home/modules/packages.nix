@@ -27,12 +27,12 @@ in
       pnpm
       just
       claude-code
-
       # utilities
       jq
       nmap
       parallel
       zoxide
+      zip
     ]);
   };
 }
