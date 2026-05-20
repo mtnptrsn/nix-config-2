@@ -7,6 +7,7 @@
     ./modules/tmux.nix
     ./modules/gnome.nix
     ./modules/git.nix
+    ./modules/lazygit.nix
     ./modules/packages.nix
     ./modules/linux-packages.nix
     ./modules/firefox.nix

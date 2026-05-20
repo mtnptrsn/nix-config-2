@@ -14,6 +14,7 @@ _: {
 
     # Version control
     git.enable = true;
+    lazygit.enable = true;
 
     # AI tools
     claude.enable = true;

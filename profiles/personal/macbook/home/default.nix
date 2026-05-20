@@ -18,6 +18,7 @@ _: {
 
     # Version control
     git.enable = true;
+    lazygit.enable = true;
 
     # Applications
     firefox.enable = true;
