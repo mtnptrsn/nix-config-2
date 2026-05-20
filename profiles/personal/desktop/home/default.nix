@@ -41,6 +41,7 @@
   home.packages = with pkgs; [
     whatsie
     wowup-cf
+    obs-studio
   ];
 
   xdg.desktopEntries.battle-net = {
