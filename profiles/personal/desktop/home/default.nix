@@ -23,6 +23,7 @@
     # Applications
     firefox.enable = true;
     dictation.enable = true;
+    tts.enable = true;
     homeassistant = {
       enable = true;
       url = "http://192.168.1.92:8123";

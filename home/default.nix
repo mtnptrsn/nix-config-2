@@ -12,6 +12,7 @@
     ./modules/linux-packages.nix
     ./modules/firefox.nix
     ./modules/dictation.nix
+    ./modules/tts.nix
     ./modules/homeassistant.nix
     ./modules/vscode.nix
     ./modules/codediff.nix

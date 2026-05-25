@@ -93,6 +93,15 @@ let
       ${kill-overlay}
       ${pkgs.sox}/bin/play -qn synth 0.3 sine 200 vol 0.1 2>/dev/null &
     fi
+
+    if [ -f "/tmp/tts.pid" ]; then
+      kill "$(cat "/tmp/tts.pid")" 2>/dev/null || true
+      rm -f "/tmp/tts.pid"
+    fi
+    if [ -f "/tmp/tts-overlay.pid" ]; then
+      kill "$(cat "/tmp/tts-overlay.pid")" 2>/dev/null || true
+      rm -f "/tmp/tts-overlay.pid"
+    fi
   '';
 in
 {
@@ -112,12 +121,6 @@ in
     ]);
 
     dconf.settings = lib.mkIf config.modules.gnome.enable {
-      "org/gnome/settings-daemon/plugins/media-keys" = {
-        custom-keybindings = [
-          "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/dictation/"
-          "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/dictation-cancel/"
-        ];
-      };
       "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/dictation" = {
         name = "Toggle dictation";
         command = "${dictate}/bin/dictate";
