@@ -38,7 +38,8 @@ in
     enable = true;
     casks = [
       "1password"
-      "discord"
+      # Temporarily disabled due to remote server issues
+      # "discord"
       "slack"
       "spotify"
       "dbeaver-community"
