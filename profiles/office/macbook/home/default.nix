@@ -14,6 +14,8 @@
     vscode.enable = true;
 
     # Terminal and shell
+    theme = "light";
+
     alacritty.enable = true;
     zsh.enable = true;
     tmux.enable = true;

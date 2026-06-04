@@ -8,7 +8,7 @@
     programs.nixvim = {
       colorschemes.catppuccin = {
         enable = true;
-        settings.flavour = "mocha";
+        settings.flavour = if config.modules.theme == "light" then "latte" else "mocha";
       };
     };
   };
