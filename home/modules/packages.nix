@@ -28,7 +28,10 @@ in
       just
       claude-code
       herdr
+      opencode
+
       # utilities
+      imagemagick
       jq
       nmap
       parallel
