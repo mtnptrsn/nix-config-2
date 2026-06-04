@@ -1,6 +1,12 @@
-_: {
+{ pkgs, ... }:
+{
   home.username = "mtnptrsn";
   home.homeDirectory = "/Users/mtnptrsn";
+
+  home.packages = with pkgs; [
+    awscli2
+    ssm-session-manager-plugin
+  ];
 
   modules = {
     # Development tools
