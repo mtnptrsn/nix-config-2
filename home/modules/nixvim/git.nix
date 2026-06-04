@@ -7,6 +7,10 @@
   config = lib.mkIf config.modules.nixvim.enable {
     programs.nixvim = {
       plugins.fugitive.enable = true;
+      plugins.gitsigns = {
+        enable = true;
+        settings.current_line_blame = true;
+      };
 
       # Force fugitive to always open in its own tab
       extraConfigLua = ''
