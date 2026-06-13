@@ -1,6 +1,9 @@
 { pkgs, ... }:
 
 {
+  # GTK3 schemas needed by Qt apps using the GTK file dialog on GNOME
+  environment.systemPackages = with pkgs; [ gtk3 ];
+
   # GNOME Desktop Environment
   services.displayManager.gdm.enable = true;
   services.displayManager.gdm.wayland = true;

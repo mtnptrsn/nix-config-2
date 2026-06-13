@@ -43,6 +43,16 @@
     whatsie
     wowup-cf
     obs-studio
+    (symlinkJoin {
+      name = "freecad";
+      paths = [ freecad ];
+      nativeBuildInputs = [ makeWrapper ];
+      postBuild = ''
+        wrapProgram $out/bin/FreeCAD \
+          --prefix XDG_DATA_DIRS : "${gtk3}/share/gsettings-schemas/${gtk3.name}" \
+          --prefix PYTHONPATH : "${python3Packages.lxml}/${python3.sitePackages}"
+      '';
+    })
   ];
 
   xdg.desktopEntries.battle-net = {
