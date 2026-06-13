@@ -33,6 +33,7 @@ in
       parallel
       zoxide
       zip
+      awscli2
     ]);
   };
 }
