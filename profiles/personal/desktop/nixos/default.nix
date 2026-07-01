@@ -6,6 +6,9 @@
     ./virtualization.nix
   ];
 
+  services.flatpak.enable = true;
+  services.flatpak.packages = [ "org.freecad.FreeCAD" ];
+
   networking.hostName = "mtnptrsn";
   networking.extraHosts = ''
     127.0.0.1 local.finch3d.com

@@ -15,6 +15,7 @@
       url = "github:nix-community/nixvim";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    nix-flatpak.url = "github:gmodena/nix-flatpak";
   };
 
   outputs =
@@ -25,6 +26,7 @@
       nix-homebrew,
       maccel,
       nixvim,
+      nix-flatpak,
       ...
     }:
     let
@@ -37,6 +39,7 @@
             ./profiles/${hostName}
             home-manager.nixosModules.home-manager
             maccel.nixosModules.default
+            nix-flatpak.nixosModules.nix-flatpak
             {
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
