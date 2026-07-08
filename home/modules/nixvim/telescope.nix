@@ -1,11 +1,16 @@
 {
   config,
   lib,
+  pkgs,
   ...
 }:
 {
   config = lib.mkIf config.modules.nixvim.enable {
     programs.nixvim = {
+      # Telescope requires plenary at runtime, but it is not pulled in
+      # automatically, so add it explicitly to the plugin pack.
+      extraPlugins = [ pkgs.vimPlugins.plenary-nvim ];
+
       plugins.telescope = {
         enable = true;
         extensions.fzf-native.enable = true;
