@@ -8,10 +8,11 @@
     alsa.enable = true;
     alsa.support32Bit = true;
     pulse.enable = true;
+    # Make the RNNoise LADSPA plugin available on the service's LADSPA_PATH
+    extraLadspaPackages = [ pkgs.rnnoise-plugin ];
   };
 
   # Noise cancellation via RNNoise smart filter on RODE NT-USB mic
-  environment.sessionVariables.LADSPA_PATH = "${pkgs.rnnoise-plugin}/lib/ladspa";
   services.pipewire.extraConfig.pipewire."99-input-denoising" = {
     "context.modules" = [
       {
