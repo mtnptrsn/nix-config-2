@@ -39,7 +39,7 @@ in
     casks = [
       "1password"
       # Temporarily disabled due to remote server issues
-      # "discord"
+      "discord"
       "slack"
       "spotify"
       "dbeaver-community"
