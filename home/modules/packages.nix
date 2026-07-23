@@ -19,6 +19,7 @@ in
       # development
       gh
       ripgrep
+      rtk
       fd
       statix
       nixfmt
