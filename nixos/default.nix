@@ -8,6 +8,7 @@
     ./audio.nix
     ./hardware.nix
     ./users.nix
+    ./tailscale.nix
   ];
 
   # Networking

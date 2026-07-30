@@ -1,6 +1,9 @@
 _: {
   networking.hostName = "office-macbook";
 
+  # VPN into the personal desktop (herdr server)
+  services.tailscale.enable = true;
+
   # Nix installer uses GID 350, but nix-darwin defaults to 30000.
   # Set explicitly to match the actual system value.
   ids.gids.nixbld = 350;
