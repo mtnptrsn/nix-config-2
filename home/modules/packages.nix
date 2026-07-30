@@ -27,6 +27,7 @@ in
       pnpm
       just
       claude-code
+      herdr
       # utilities
       jq
       nmap

@@ -31,4 +31,13 @@ _: {
     packages.enable = true;
   };
 
+  # Attach to the personal desktop's herdr server with `herdr --remote desktop`
+  programs.ssh = {
+    enable = true;
+    matchBlocks.desktop = {
+      hostname = "mtnptrsn"; # MagicDNS name over Tailscale
+      user = "mtnptrsn";
+    };
+  };
+
 }

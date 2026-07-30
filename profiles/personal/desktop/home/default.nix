@@ -45,6 +45,14 @@
     obs-studio
   ];
 
+  # Never auto-suspend; the desktop hosts the herdr server
+  dconf.settings = {
+    "org/gnome/settings-daemon/plugins/power" = {
+      sleep-inactive-ac-type = "nothing";
+      sleep-inactive-battery-type = "nothing";
+    };
+  };
+
   xdg.desktopEntries.battle-net = {
     name = "Battle.net";
     exec = "steam steam://rungameid/0";
