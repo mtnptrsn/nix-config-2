@@ -14,7 +14,7 @@
     vscode.enable = true;
 
     # Terminal and shell
-    theme = "light";
+    theme = "dark";
 
     alacritty.enable = true;
     zsh.enable = true;
