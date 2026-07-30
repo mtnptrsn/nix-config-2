@@ -13,6 +13,14 @@
   networking.extraHosts = ''
     127.0.0.1 local.finch3d.com
   '';
+
+  # Reach the finch dev servers from other tailnet devices (web 3000, admin 5555,
+  # local API 8000). Scoped to tailscale0 so nothing is exposed on the LAN.
+  networking.firewall.interfaces."tailscale0".allowedTCPPorts = [
+    3000
+    5555
+    8000
+  ];
   # herdr is a system package so it is on PATH for non-interactive SSH sessions,
   # which is how `herdr --remote` finds the server binary.
   environment.systemPackages = [
