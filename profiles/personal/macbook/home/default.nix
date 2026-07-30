@@ -11,6 +11,7 @@ _: {
     alacritty.enable = true;
     zsh.enable = true;
     tmux.enable = true;
+    herdr.enable = true;
 
     # AI tools
     claude.enable = true;

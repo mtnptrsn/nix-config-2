@@ -12,6 +12,7 @@
     alacritty.enable = true;
     zsh.enable = true;
     tmux.enable = true;
+    herdr.enable = true;
 
     # Desktop environment
     gnome.enable = true;

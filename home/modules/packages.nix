@@ -30,7 +30,6 @@ in
       pnpm
       just
       claude-code
-      herdr
       opencode
 
       # utilities
