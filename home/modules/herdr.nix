@@ -17,6 +17,7 @@ in
     # arrows move between panes.
     xdg.configFile."herdr/config.toml".text = ''
       [keys]
+      prefix = "ctrl+s"
       navigate_workspace_up = "k"
       navigate_workspace_down = "j"
       navigate_pane_up = "up"
