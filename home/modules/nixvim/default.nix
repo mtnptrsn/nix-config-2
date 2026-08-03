@@ -47,6 +47,23 @@ in
 
       # Replace default diagnostic signs with nerd font icons
       extraConfigLua = ''
+        -- herdr panes are spawned by a server with no WAYLAND_DISPLAY/DISPLAY,
+        -- so nvim finds no clipboard tool and yanks to "+ go nowhere. Use OSC 52
+        -- instead, which lands the copy on whichever machine is attached.
+        if vim.env.HERDR_ENV then
+          local osc52 = require("vim.ui.clipboard.osc52")
+          -- Paste reads the unnamed register: terminals answer OSC 52 reads
+          -- rarely (and slowly), and unnamedplus keeps "" in sync with "+.
+          local paste = function()
+            return vim.split(vim.fn.getreg('"'), "\n")
+          end
+          vim.g.clipboard = {
+            name = "OSC 52",
+            copy = { ["+"] = osc52.copy("+"), ["*"] = osc52.copy("*") },
+            paste = { ["+"] = paste, ["*"] = paste },
+          }
+        end
+
         vim.diagnostic.config({
           virtual_text = { spacing = 4, prefix = "●" },
           signs = {
