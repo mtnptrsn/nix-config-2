@@ -10,6 +10,7 @@
     ./modules/git.nix
     ./modules/lazygit.nix
     ./modules/herdr.nix
+    ./modules/capture-sync.nix
     ./modules/packages.nix
     ./modules/linux-packages.nix
     ./modules/firefox.nix

@@ -22,10 +22,12 @@
     8000
   ];
   # herdr is a system package so it is on PATH for non-interactive SSH sessions,
-  # which is how `herdr --remote` finds the server binary.
+  # which is how `herdr --remote` finds the server binary. rsync is here for the
+  # same reason: the macbook's capture-sync agent invokes it over SSH.
   environment.systemPackages = [
     pkgs.cowsay
     pkgs.herdr
+    pkgs.rsync
   ];
 
   # Always-on herdr server: never suspend, and keep user processes running

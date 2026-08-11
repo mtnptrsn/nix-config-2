@@ -21,6 +21,11 @@
     tmux.enable = true;
     herdr.enable = true;
 
+    # Screenshots and recordings sync to the desktop's ~/Captures; the
+    # desktop-side path lands in the mac clipboard, ready to paste into a
+    # herdr pane.
+    captureSync.enable = true;
+
     # Version control
     git.enable = true;
     lazygit.enable = true;
