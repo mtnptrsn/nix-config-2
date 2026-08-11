@@ -3,7 +3,8 @@
   stdenv,
   stdenvNoCC,
   fetchurl,
-  autoPatchelfHook,
+  binutils,
+  patchelf,
 }:
 let
   version = "2.2.0";
@@ -32,6 +33,8 @@ let
   target =
     targets.${stdenvNoCC.hostPlatform.system}
       or (throw "linear-cli: unsupported system ${stdenvNoCC.hostPlatform.system}");
+
+  libPath = lib.makeLibraryPath [ stdenv.cc.cc.lib ]; # libgcc_s
 in
 stdenvNoCC.mkDerivation {
   pname = "linear-cli";
@@ -44,14 +47,49 @@ stdenvNoCC.mkDerivation {
 
   sourceRoot = "linear-${target.triple}";
 
-  nativeBuildInputs = lib.optionals stdenvNoCC.isLinux [ autoPatchelfHook ];
-  buildInputs = lib.optionals stdenvNoCC.isLinux [ stdenv.cc.cc.lib ]; # libgcc_s
+  nativeBuildInputs = lib.optionals stdenvNoCC.isLinux [
+    binutils
+    patchelf
+  ];
 
-  installPhase = ''
-    runHook preInstall
-    install -Dm755 linear -t $out/bin
-    runHook postInstall
-  '';
+  # Deno appends its bundle after the ELF image and locates it by seeking back
+  # from EOF. Anything that adds bytes at the end (patchelf's relocated section
+  # headers) or rewrites the file (strip) makes the binary die with "Could not
+  # find standalone binary section", so both hooks stay off and we patch the
+  # ELF part by hand below.
+  dontStrip = true;
+  dontPatchELF = true;
+
+  installPhase =
+    ''
+      runHook preInstall
+    ''
+    + lib.optionalString stdenvNoCC.isLinux ''
+      # Split off the ELF image (everything up to the end of the section header
+      # table), patch just that, then glue the Deno bundle back on. The bundle
+      # is found relative to EOF, so growing the ELF part is harmless.
+      elfEnd=$(readelf -h linear | awk '
+        /Start of section headers/ { off = $5 }
+        /Size of section headers/ { size = $5 }
+        /Number of section headers/ { num = $5 }
+        END { print off + size * num }
+      ')
+
+      head -c "$elfEnd" linear > stub
+      tail -c "+$((elfEnd + 1))" linear > bundle
+
+      patchelf \
+        --set-interpreter ${stdenv.cc.bintools.dynamicLinker} \
+        --set-rpath ${libPath} \
+        stub
+
+      cat stub bundle > linear.patched
+      mv linear.patched linear
+    ''
+    + ''
+      install -Dm755 linear -t $out/bin
+      runHook postInstall
+    '';
 
   meta = {
     description = "linear without leaving the command line: list, start, and create PRs for linear issues";
