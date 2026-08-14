@@ -16,11 +16,19 @@
 
   # Reach the finch dev servers from other tailnet devices (web 3000, admin 5555,
   # local API 8000). Scoped to tailscale0 so nothing is exposed on the LAN.
-  networking.firewall.interfaces."tailscale0".allowedTCPPorts = [
-    3000
-    5555
-    8000
-  ];
+  # The web range covers the ports vite picks when several worktrees run at once.
+  networking.firewall.interfaces."tailscale0" = {
+    allowedTCPPorts = [
+      5555
+      8000
+    ];
+    allowedTCPPortRanges = [
+      {
+        from = 3000;
+        to = 3010;
+      }
+    ];
+  };
   # herdr is a system package so it is on PATH for non-interactive SSH sessions,
   # which is how `herdr --remote` finds the server binary. rsync is here for the
   # same reason: the macbook's capture-sync agent invokes it over SSH.
