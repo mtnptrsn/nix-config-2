@@ -41,9 +41,11 @@
   };
 
   home.packages = with pkgs; [
+    uv
     whatsie
     wowup-cf
     obs-studio
+    vlc
   ];
 
   # Never auto-suspend; the desktop hosts the herdr server
