@@ -33,6 +33,11 @@ tea-fmt:
 tea-fmt-check:
     ruff format --check home/modules/tea/
 
+# Build the garmin-mcp container image (nix does not build it; upstream is a
+# git-only Python package). Run after bumping the pinned commit in its Dockerfile.
+garmin-image:
+    docker build -t garmin-mcp:local profiles/personal/desktop/nixos/garmin-mcp/
+
 # Run pytest on tea module
 tea-test:
     pytest home/modules/tea/test_tea.py -v

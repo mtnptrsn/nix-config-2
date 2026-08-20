@@ -4,6 +4,7 @@
     ./hardware-configuration.nix
     ./cooling.nix
     ./virtualization.nix
+    ./garmin-mcp
   ];
 
   services.flatpak.enable = true;
