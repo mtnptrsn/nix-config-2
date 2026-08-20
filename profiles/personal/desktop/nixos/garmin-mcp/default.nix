@@ -6,10 +6,7 @@
 # scanners that find this hostname in Certificate Transparency logs never reach
 # the server. The tool set is also restricted to reads bar one.
 #
-# Consequence worth knowing: claude.ai's custom connector flow always attempts
-# OAuth Dynamic Client Registration and has no "no auth" option
-# (anthropics/claude-ai-mcp#402), so this server cannot be added there. It
-# works from Claude Code and Claude Desktop, which do not use that code path:
+# Clients need no credentials beyond the URL itself:
 #
 #   claude mcp add --transport http garmin https://<host>/<secret>/mcp
 #
