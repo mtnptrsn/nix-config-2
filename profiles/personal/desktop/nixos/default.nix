@@ -17,16 +17,19 @@
 
   # Reach the finch dev servers from other tailnet devices (web 3000, admin 5555,
   # local API 8000). Scoped to tailscale0 so nothing is exposed on the LAN.
-  # The web range covers the ports vite picks when several worktrees run at once.
+  # The ranges cover the ports dev servers pick when several worktrees run at once.
   networking.firewall.interfaces."tailscale0" = {
     allowedTCPPorts = [
-      5555
       8000
     ];
     allowedTCPPortRanges = [
       {
         from = 3000;
         to = 3010;
+      }
+      {
+        from = 5000;
+        to = 6000;
       }
     ];
   };
