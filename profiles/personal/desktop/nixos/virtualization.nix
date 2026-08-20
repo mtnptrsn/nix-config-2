@@ -2,8 +2,11 @@
 {
   virtualisation.libvirtd.enable = true;
   programs.virt-manager.enable = true;
-
-  users.users.mtnptrsn.extraGroups = [ "libvirtd" ];
+  virtualisation.docker.enable = true;
+  users.users.mtnptrsn.extraGroups = [
+    "libvirtd"
+    "docker"
+  ];
 
   environment.systemPackages = with pkgs; [
     qemu
