@@ -37,8 +37,16 @@
           local filepath = vim.fn.fnamemodify(vim.fn.expand("%"), ":p"):sub(#root + 2)
           local url = base .. "/blob/" .. branch .. "/" .. filepath .. "#L" .. start_line
           if start_line ~= end_line then url = url .. "-L" .. end_line end
-          vim.ui.open(url)
-          vim.notify(url)
+          if vim.env.HERDR_ENV then
+            -- A herdr pane inherits the server's env, which carries no display,
+            -- so xdg-open here goes nowhere. herdr does forward OSC 52, so the
+            -- clipboard is the one channel that reaches the attached machine.
+            vim.fn.setreg("+", url)
+            vim.notify(url .. "\n(copied)")
+          else
+            vim.ui.open(url)
+            vim.notify(url)
+          end
         end
       '';
 
