@@ -15,7 +15,10 @@ And a row counts only if it carries an amount, so a bad relocation is dropped
 rather than reported as a payment.
 
 Auth is the Keycloak cookies lifted out of Firefox: hitting a protected page
-with them completes the SSO redirect dance and lands logged in.
+with them completes the SSO redirect dance and lands logged in. The dance also
+hands back a re-issued cookie, which keepalive.py saves; remember-me on its own
+does not re-authenticate, so that is the only thing keeping the login from
+needing to be repeated by hand.
 """
 
 from __future__ import annotations
@@ -23,6 +26,7 @@ from __future__ import annotations
 import json
 import os
 import re
+from http import cookiejar
 from pathlib import Path
 
 import httpx
@@ -77,11 +81,47 @@ class SessionExpired(MatchiError):
         )
 
 
-def load_cookies(path: Path = STORAGE_STATE) -> dict[str, str]:
-    """Read the cookies firefox_cookies.py wrote.
+def _jar_cookie(record: dict) -> cookiejar.Cookie:
+    """Turn one stored cookie into a jar entry, expiry included.
+
+    httpx.Cookies.set() cannot carry an expiry, and dropping it would turn
+    every dated cookie into a session cookie on the first save -- so the file
+    would stop saying when the login runs out, and we would keep sending
+    cookies long after the far end stopped honouring them. Hence the long-hand
+    construction.
+    """
+    domain = record.get("domain") or ""
+    expires = record.get("expires") or -1
+    persistent = expires > 0
+    return cookiejar.Cookie(
+        version=0,
+        name=record["name"],
+        value=record["value"],
+        port=None,
+        port_specified=False,
+        domain=domain,
+        domain_specified=bool(domain),
+        domain_initial_dot=domain.startswith("."),
+        path=record.get("path") or "/",
+        path_specified=True,
+        secure=bool(record.get("secure", True)),
+        expires=int(expires) if persistent else None,
+        discard=not persistent,
+        comment=None,
+        comment_url=None,
+        rest={"HttpOnly": ""} if record.get("httpOnly") else {},
+    )
+
+
+def load_cookies(path: Path = STORAGE_STATE) -> httpx.Cookies:
+    """Read the cookies firefox_cookies.py or the keepalive wrote.
 
     Both the matchi.se and auth.matchi.com cookies matter: the first is the app
-    session, the second is what lets an expired one silently re-establish.
+    session, the second is what the SSO redirect needs to hand back a logged-in
+    page. Which makes a jar rather than a name-to-value dict essential here --
+    two domains are in play, a dict would flatten that away, and the redirect
+    would be sent cookies belonging to the other host. It also keeps the
+    save/load loop lossless: a domainless cookie gets written back domainless.
     """
     try:
         state = json.loads(path.read_text())
@@ -92,10 +132,55 @@ def load_cookies(path: Path = STORAGE_STATE) -> dict[str, str]:
     except json.JSONDecodeError as exc:
         raise MatchiError(f"{path} is not valid JSON: {exc}") from exc
 
-    cookies = {c["name"]: c["value"] for c in state.get("cookies", [])}
-    if not cookies:
+    jar = httpx.Cookies()
+    found = 0
+    for c in state.get("cookies", []):
+        jar.jar.set_cookie(_jar_cookie(c))
+        found += 1
+
+    if not found:
         raise MatchiError(f"{path} holds no cookies -- log in again")
-    return cookies
+    return jar
+
+
+def save_cookies(http: httpx.Client, path: Path = STORAGE_STATE) -> None:
+    """Write the live cookie jar back over the stored one.
+
+    Reaching a protected page bounces through auth.matchi.com, and Keycloak
+    re-issues KEYCLOAK_IDENTITY on the way back, so keeping the jar is the only
+    thing that can push the session past the fortnight the browser's cookie was
+    good for. Whether it actually does depends on a Keycloak setting we cannot
+    see from here -- if the session dies anyway, the keepalive unit failing is
+    the signal to log in again.
+
+    Write-then-rename, and 0600 before the rename, because this file is the
+    only credential the service holds and a crashed write must not leave a
+    half-written one behind.
+    """
+    cookies = [
+        {
+            "name": c.name,
+            "value": c.value,
+            "domain": c.domain,
+            "path": c.path or "/",
+            "expires": c.expires if c.expires is not None else -1,
+            "httpOnly": bool(c.has_nonstandard_attr("HttpOnly")),
+            "secure": bool(c.secure),
+            "sameSite": "Lax",
+        }
+        for c in http.cookies.jar
+    ]
+    # Overwriting a working cookie with a jar that cannot authenticate would
+    # cost a manual login, so refuse rather than write junk.
+    if not any(c["name"] == "KEYCLOAK_IDENTITY" for c in cookies):
+        raise MatchiError(
+            f"refusing to write {path}: the live jar holds no KEYCLOAK_IDENTITY"
+        )
+
+    tmp = path.with_suffix(".json.tmp")
+    tmp.write_text(json.dumps({"cookies": cookies}, indent=2) + "\n")
+    tmp.chmod(0o600)
+    tmp.replace(path)
 
 
 def _clean(text: str | None) -> str:
@@ -217,6 +302,10 @@ class MatchiClient:
 
     def close(self) -> None:
         self._http.close()
+
+    def save_session(self, path: Path = STORAGE_STATE) -> None:
+        """Persist the cookies this client picked up. See save_cookies."""
+        save_cookies(self._http, path)
 
     def __enter__(self) -> MatchiClient:
         return self

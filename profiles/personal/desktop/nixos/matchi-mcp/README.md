@@ -121,6 +121,24 @@ curl -sS  http://127.0.0.1:8767/readyz    # is the Matchi session still valid
 the quickest way to tell a dead session from a dead server. The fix is to log
 in again in Firefox and re-run `matchi-mcp-login`.
 
+`matchi-mcp-keepalive.timer` runs daily to put that off. The cookie the browser
+holds is good for a fortnight, and remember-me does not silently
+re-authenticate -- dropping `KEYCLOAK_IDENTITY` lands on the login screen even
+with `KEYCLOAK_REMEMBER_ME` present. But Keycloak re-issues the identity cookie
+on each SSO hop, so the keepalive fetches a protected page and writes the
+refreshed jar back. If Keycloak's remember-me window is an idle timeout that is
+the end of manual logins; if it is a hard maximum, the session still dies a
+fortnight after login and the unit starts failing:
+
+```bash
+systemctl status matchi-mcp-keepalive          # did the last refresh work
+journalctl -u matchi-mcp-keepalive --since -30d
+```
+
+Either way the keepalive is the thing that tells you, within a day, rather than
+a tool call failing when you next need it. It is also the only unit permitted
+to write `storage_state.json` -- the server keeps the state dir read-only.
+
 To rotate the secret, overwrite `funnel-path` and
 `sudo systemctl restart mcp-funnel`.
 

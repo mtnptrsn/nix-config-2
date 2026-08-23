@@ -25,6 +25,7 @@ let
   src = pkgs.runCommand "matchi-mcp-src" { } ''
     install -Dm444 ${./client.py} $out/client.py
     install -Dm444 ${./server.py} $out/server.py
+    install -Dm444 ${./keepalive.py} $out/keepalive.py
   '';
 
   pythonEnv = pkgs.python3.withPackages (ps: [
@@ -133,13 +134,51 @@ in
       Restart = "always";
       RestartSec = 10;
       ExecStart = "${pythonEnv}/bin/python ${src}/server.py";
-      # The cookie stays read-only; only scrapling's fingerprint store is
-      # writable, which is the whole reason this service can write at all.
+      # The cookie stays read-only here; refreshing it is the keepalive unit's
+      # job, so only scrapling's fingerprint store is writable, which is the
+      # whole reason this service can write at all.
       ReadOnlyPaths = [ stateDir ];
       ReadWritePaths = [ adaptiveDir ];
       MemoryMax = "384M";
       TasksMax = 64;
       SyslogIdentifier = "matchi-mcp";
+    };
+  };
+
+  # Keycloak re-issues the identity cookie on every SSO hop, so a session that
+  # keeps being used may outlive the fortnight the browser's cookie was good
+  # for. This is the only unit allowed to write the cookie, which is why the
+  # server itself keeps the state dir read-only. See keepalive.py for what is
+  # and is not known about whether this actually removes the manual login.
+  systemd.services.matchi-mcp-keepalive = {
+    description = "Refresh the Matchi SSO session cookie";
+    after = [ "network-online.target" ];
+    wants = [ "network-online.target" ];
+
+    environment = {
+      PYTHONPATH = "${src}";
+      PYTHONDONTWRITEBYTECODE = "1";
+      MATCHI_MCP_STATE_DIR = stateDir;
+    };
+
+    serviceConfig = hardening // {
+      Type = "oneshot";
+      ExecStart = "${pythonEnv}/bin/python ${src}/keepalive.py";
+      ReadWritePaths = [ stateDir ];
+      SyslogIdentifier = "matchi-mcp-keepalive";
+    };
+  };
+
+  # Daily, not weekly: if the fortnight is an idle timeout then daily keeps it
+  # alive with a wide margin, and if it is not, a daily failure surfaces the
+  # dead session within a day of it happening.
+  systemd.timers.matchi-mcp-keepalive = {
+    description = "Refresh the Matchi SSO session cookie daily";
+    wantedBy = [ "timers.target" ];
+    timerConfig = {
+      OnCalendar = "daily";
+      Persistent = true;
+      RandomizedDelaySec = "1h";
     };
   };
 
