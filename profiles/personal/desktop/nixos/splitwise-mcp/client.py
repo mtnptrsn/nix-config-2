@@ -16,6 +16,7 @@ import json
 import os
 import re
 from decimal import ROUND_DOWN, Decimal, InvalidOperation
+from http import cookiejar
 from pathlib import Path
 from typing import Any
 
@@ -267,8 +268,47 @@ def summarise_expense(expense: dict) -> str:
 # --- HTTP layer -------------------------------------------------------------
 
 
-def load_cookies(path: Path = STORAGE_STATE) -> dict[str, str]:
-    """Read the Playwright storage state login.py wrote."""
+def _jar_cookie(record: dict) -> cookiejar.Cookie:
+    """Turn one stored cookie into a jar entry, expiry included.
+
+    httpx.Cookies.set() cannot carry an expiry, and dropping it would turn
+    every dated cookie into a session cookie on the first save -- so the file
+    would stop saying when the login runs out, and we would keep sending
+    cookies long after the far end stopped honouring them. Hence the long-hand
+    construction.
+    """
+    domain = record.get("domain") or ""
+    expires = record.get("expires") or -1
+    persistent = expires > 0
+    return cookiejar.Cookie(
+        version=0,
+        name=record["name"],
+        value=record["value"],
+        port=None,
+        port_specified=False,
+        domain=domain,
+        domain_specified=bool(domain),
+        domain_initial_dot=domain.startswith("."),
+        path=record.get("path") or "/",
+        path_specified=True,
+        secure=bool(record.get("secure", True)),
+        expires=int(expires) if persistent else None,
+        discard=not persistent,
+        comment=None,
+        comment_url=None,
+        rest={"HttpOnly": ""} if record.get("httpOnly") else {},
+    )
+
+
+def load_cookies(path: Path = STORAGE_STATE) -> httpx.Cookies:
+    """Read the storage state into a jar that keeps domains and paths.
+
+    A jar rather than a name-to-value dict, because a dict flattens the domain
+    away and httpx then sends those cookies with no domain at all. That
+    round-trips badly once save_cookies is in the picture: the jar would be
+    written back domainless and the next load would drop it. Keeping the jar
+    shaped like a browser's is what makes the save/load loop lossless.
+    """
     try:
         state = json.loads(path.read_text())
     except FileNotFoundError as exc:
@@ -278,14 +318,56 @@ def load_cookies(path: Path = STORAGE_STATE) -> dict[str, str]:
     except json.JSONDecodeError as exc:
         raise SplitwiseError(f"{path} is not valid JSON: {exc}") from exc
 
-    cookies = {
-        c["name"]: c["value"]
-        for c in state.get("cookies", [])
-        if "splitwise.com" in (c.get("domain") or "")
-    }
-    if not cookies:
+    jar = httpx.Cookies()
+    found = 0
+    for c in state.get("cookies", []):
+        domain = c.get("domain") or ""
+        if "splitwise.com" not in domain:
+            continue
+        jar.jar.set_cookie(_jar_cookie(c))
+        found += 1
+
+    if not found:
         raise SplitwiseError(f"{path} holds no splitwise.com cookies -- log in again")
-    return cookies
+    return jar
+
+
+def save_cookies(http: httpx.Client, path: Path = STORAGE_STATE) -> None:
+    """Write the live cookie jar back over the stored one.
+
+    Splitwise re-issues `_splitwise_session` on every authenticated request
+    with its expiry pushed a year out, so writing the jar back is the whole
+    mechanism that keeps the stored cookie from ageing out. Without it the file
+    only ever holds what the browser had at login.
+
+    Write-then-rename, and 0600 before the rename, because this file is the
+    only credential the service holds and a crashed write must not leave a
+    half-written one behind.
+    """
+    cookies = [
+        {
+            "name": c.name,
+            "value": c.value,
+            "domain": c.domain,
+            "path": c.path or "/",
+            "expires": c.expires if c.expires is not None else -1,
+            "httpOnly": bool(c.has_nonstandard_attr("HttpOnly")),
+            "secure": bool(c.secure),
+            "sameSite": "Lax",
+        }
+        for c in http.cookies.jar
+    ]
+    # Overwriting a working cookie with a jar that cannot authenticate would
+    # cost a manual login, so refuse rather than write junk.
+    if not any("splitwise.com" in (c["domain"] or "") for c in cookies):
+        raise SplitwiseError(
+            f"refusing to write {path}: the live jar holds no splitwise.com cookies"
+        )
+
+    tmp = path.with_suffix(".json.tmp")
+    tmp.write_text(json.dumps({"cookies": cookies}, indent=2) + "\n")
+    tmp.chmod(0o600)
+    tmp.replace(path)
 
 
 class SplitwiseClient:
@@ -306,6 +388,10 @@ class SplitwiseClient:
 
     def close(self) -> None:
         self._http.close()
+
+    def save_session(self, path: Path = STORAGE_STATE) -> None:
+        """Persist the cookies this client picked up. See save_cookies."""
+        save_cookies(self._http, path)
 
     def __enter__(self) -> SplitwiseClient:
         return self

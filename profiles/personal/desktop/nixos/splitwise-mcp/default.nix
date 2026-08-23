@@ -130,7 +130,8 @@ in
       RestartSec = 10;
       ExecStart = "${pythonEnv}/bin/python ${src}/server.py";
       # Read-only: the server never writes state, it only reads the cookie and
-      # the cache. Writes are the refresh unit's job.
+      # the cache. Writes -- the cache and the refreshed cookie both -- are the
+      # refresh unit's job.
       ReadOnlyPaths = [ stateDir ];
       MemoryMax = "256M";
       TasksMax = 64;
@@ -142,8 +143,13 @@ in
   # Resolving "Ebbe" to a user id from a cache is what lets one sentence turn
   # into one write. Weekly is enough -- group membership rarely changes, and
   # this also runs by hand (and after a login) when it does.
+  #
+  # It is also the session keepalive: its requests come back with a fresh
+  # session cookie, and this is the one unit allowed to write the state dir, so
+  # it saves the cookie too. That is why the timer matters even in a week when
+  # no group changed.
   systemd.services.splitwise-mcp-refresh-cache = {
-    description = "Refresh the Splitwise group and member cache";
+    description = "Refresh the Splitwise group and member cache and session cookie";
     after = [ "network-online.target" ];
     wants = [ "network-online.target" ];
 
@@ -158,7 +164,7 @@ in
   };
 
   systemd.timers.splitwise-mcp-refresh-cache = {
-    description = "Refresh the Splitwise group and member cache weekly";
+    description = "Refresh the Splitwise cache and session cookie weekly";
     wantedBy = [ "timers.target" ];
     timerConfig = {
       OnCalendar = "weekly";

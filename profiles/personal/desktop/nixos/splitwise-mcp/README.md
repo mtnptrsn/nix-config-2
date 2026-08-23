@@ -116,7 +116,20 @@ Refresh the member cache after adding someone to a group:
 sudo systemctl start splitwise-mcp-refresh-cache
 ```
 
-A weekly timer does the same unattended.
+A weekly timer does the same unattended, and it doubles as the session
+keepalive. Splitwise returns a fresh `_splitwise_session` on every
+authenticated request with the expiry a year out, so the refresh unit writes
+the jar back over `storage_state.json`; the login should not need repeating.
+The 40-day `user_credentials` cookie is not what authenticates -- either cookie
+works on its own, and only the session one is re-issued.
+
+It is the only unit allowed to write the state dir, which is why the server
+keeps it read-only. If it stops running, the stored cookie stops being renewed,
+so a failing unit is worth noticing:
+
+```bash
+systemctl status splitwise-mcp-refresh-cache
+```
 
 To rotate the secret, overwrite `funnel-path` and
 `sudo systemctl restart mcp-funnel` (the unit runs `serve reset` first, so the

@@ -1,8 +1,14 @@
-"""Fetch groups and their members into cache.json.
+"""Fetch groups and their members into cache.json, and refresh the session.
 
 The point is that "Ebbe" resolves to a user id with no network round trip, so
 a single sentence like "badminton with Ebbe, 200 kr" turns into one write. Run
 by a weekly timer, and by hand after adding someone to a group.
+
+It doubles as the session keepalive. Splitwise hands back a fresh
+`_splitwise_session` on every authenticated request with the expiry a year out,
+so this unit -- the only one that may write the state dir -- is where the
+refreshed cookie gets saved. Weekly is comfortably inside every window
+involved, so the login should never need repeating.
 """
 
 from __future__ import annotations
@@ -56,6 +62,8 @@ def main() -> int:
     try:
         with SplitwiseClient() as client:
             cache = build_cache(client)
+            # After the requests, so the jar holds the re-issued session.
+            client.save_session()
     except SplitwiseError as exc:
         print(f"error: {exc}", file=sys.stderr)
         return 1
