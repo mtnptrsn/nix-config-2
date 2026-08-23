@@ -12,7 +12,7 @@
 #
 # The image is built out-of-band with `just garmin-image` -- nix does not build
 # it, because upstream is a git-only Python package.
-{ config, pkgs, ... }:
+{ config, ... }:
 let
   port = 8765;
   stateDir = "/var/lib/garmin-mcp";
@@ -20,7 +20,6 @@ let
   image = "garmin-mcp:local";
 
   docker = "${config.virtualisation.docker.package}/bin/docker";
-  tailscale = "${config.services.tailscale.package}/bin/tailscale";
 
   # Near-read-only allowlist. Upstream registers 110+ tools by default,
   # including ones that upload workouts, edit activities, log weight and food,
@@ -192,40 +191,8 @@ in
     };
   };
 
-  # Publishes only the secret prefix; tailscaled 404s everything else on this
-  # hostname, which is what makes the host safe to have in Certificate
-  # Transparency logs. Requires the `funnel` nodeAttr in the tailnet policy
-  # file, HTTPS certs enabled for the tailnet, and a one-time approval at the
-  # URL tailscale prints on first run.
-  #
-  # `serve reset` first so a rotated secret does not leave the old path mounted
-  # alongside the new one.
-  systemd.services.garmin-mcp-funnel = {
-    description = "Expose the Garmin MCP server over Tailscale Funnel";
-    wantedBy = [ "multi-user.target" ];
-    after = [
-      "tailscaled.service"
-      "garmin-mcp.service"
-    ];
-    requires = [ "tailscaled.service" ];
-
-    serviceConfig = {
-      Type = "oneshot";
-      RemainAfterExit = true;
-      Restart = "on-failure";
-      RestartSec = 30;
-    };
-
-    script = ''
-      if [ ! -s ${pathFile} ]; then
-        echo "${pathFile} is missing or empty -- generate it with:" >&2
-        echo "  nix run nixpkgs#openssl -- rand -hex 24 | sudo tee ${pathFile} >/dev/null" >&2
-        exit 1
-      fi
-      ${tailscale} serve reset || true
-      ${tailscale} funnel --bg --set-path="/$(cat ${pathFile})" http://127.0.0.1:${toString port}
-    '';
-
-    preStop = "${tailscale} serve reset || true";
-  };
+  # Publishing is handled by the shared nixos/mcp-funnel.nix, which serves only
+  # this secret prefix and 404s everything else on the hostname. One unit owns
+  # every funnel because `tailscale serve reset` is host-wide.
+  services.mcpFunnel.services.garmin = { inherit port pathFile; };
 }

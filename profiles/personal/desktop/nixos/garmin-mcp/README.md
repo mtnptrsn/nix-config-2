@@ -2,8 +2,9 @@
 
 A Garmin Connect MCP server, running as a docker container on loopback and
 published over Tailscale Funnel behind a secret URL path. `default.nix` holds
-the two systemd units and the near-read-only tool allowlist; `Dockerfile` pins
-the upstream commit.
+the service unit and the near-read-only tool allowlist; publishing is shared
+with the other MCPs in `nixos/mcp-funnel.nix`. `Dockerfile` pins the upstream
+commit.
 
 ## Files and state
 
@@ -31,7 +32,7 @@ All commands run from the repo root.
    sudo chmod 600 /var/lib/garmin-mcp/funnel-path
    ```
 
-   `garmin-mcp-funnel.service` fails loudly if this file is missing or empty.
+   `mcp-funnel.service` fails loudly if this file is missing or empty.
 
 3. Log in to Garmin once to seed the token cache (prompts for email, password
    and MFA code):
@@ -71,12 +72,12 @@ no OAuth anywhere, the secret path is the only credential.
 ## Operations
 
 ```bash
-systemctl status garmin-mcp garmin-mcp-funnel
+systemctl status garmin-mcp mcp-funnel
 journalctl -u garmin-mcp -f
 curl -fsS http://127.0.0.1:8765/healthz   # loopback health check
 tailscale serve status                    # which path is published
 ```
 
 To rotate the secret, overwrite `funnel-path` and
-`sudo systemctl restart garmin-mcp-funnel` (the unit runs `serve reset` first,
+`sudo systemctl restart mcp-funnel` (the unit runs `serve reset` first,
 so the old path is not left mounted alongside the new one).

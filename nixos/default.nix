@@ -9,6 +9,7 @@
     ./hardware.nix
     ./users.nix
     ./tailscale.nix
+    ./mcp-funnel.nix
   ];
 
   # Networking
