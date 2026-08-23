@@ -8,6 +8,9 @@ check:
     just splitwise-lint
     just splitwise-fmt-check
     just splitwise-test
+    just matchi-lint
+    just matchi-fmt-check
+    just matchi-test
 
 # Format all nix files
 fmt:
@@ -57,6 +60,22 @@ splitwise-fmt-check:
 splitwise-test:
     pytest profiles/personal/desktop/nixos/splitwise-mcp/test_client.py -v
 
+# Run ruff check on matchi-mcp
+matchi-lint:
+    ruff check profiles/personal/desktop/nixos/matchi-mcp/
+
+# Format matchi-mcp
+matchi-fmt:
+    ruff format profiles/personal/desktop/nixos/matchi-mcp/
+
+# Run ruff format check on matchi-mcp
+matchi-fmt-check:
+    ruff format --check profiles/personal/desktop/nixos/matchi-mcp/
+
+# Run pytest on matchi-mcp
+matchi-test:
+    pytest profiles/personal/desktop/nixos/matchi-mcp/test_client.py -v
+
 # Run pytest on tea module
 tea-test:
     pytest home/modules/tea/test_tea.py -v
@@ -69,3 +88,5 @@ fix:
     ruff check --fix home/modules/tea/
     ruff format profiles/personal/desktop/nixos/splitwise-mcp/
     ruff check --fix profiles/personal/desktop/nixos/splitwise-mcp/
+    ruff format profiles/personal/desktop/nixos/matchi-mcp/
+    ruff check --fix profiles/personal/desktop/nixos/matchi-mcp/

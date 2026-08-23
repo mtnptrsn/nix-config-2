@@ -6,6 +6,7 @@
     ./virtualization.nix
     ./garmin-mcp
     ./splitwise-mcp
+    ./matchi-mcp
   ];
 
   services.flatpak.enable = true;

@@ -14,6 +14,8 @@ pkgs.mkShell {
       # splitwise-mcp: httpx for the tests, fastmcp to run server.py by hand.
       ps.httpx
       ps.fastmcp
+      # matchi-mcp: scrapling is packaged locally, nixpkgs has no copy.
+      (ps.callPackage ./profiles/personal/desktop/nixos/matchi-mcp/scrapling.nix { })
     ]))
   ];
 }
