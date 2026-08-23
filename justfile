@@ -5,6 +5,9 @@ check:
     just eval
     just tea-lint
     just tea-fmt-check
+    just splitwise-lint
+    just splitwise-fmt-check
+    just splitwise-test
 
 # Format all nix files
 fmt:
@@ -38,6 +41,22 @@ tea-fmt-check:
 garmin-image:
     docker build -t garmin-mcp:local profiles/personal/desktop/nixos/garmin-mcp/
 
+# Run ruff check on splitwise-mcp
+splitwise-lint:
+    ruff check profiles/personal/desktop/nixos/splitwise-mcp/
+
+# Format splitwise-mcp
+splitwise-fmt:
+    ruff format profiles/personal/desktop/nixos/splitwise-mcp/
+
+# Run ruff format check on splitwise-mcp
+splitwise-fmt-check:
+    ruff format --check profiles/personal/desktop/nixos/splitwise-mcp/
+
+# Run pytest on splitwise-mcp
+splitwise-test:
+    pytest profiles/personal/desktop/nixos/splitwise-mcp/test_client.py -v
+
 # Run pytest on tea module
 tea-test:
     pytest home/modules/tea/test_tea.py -v
@@ -48,3 +67,5 @@ fix:
     statix fix .
     ruff format home/modules/tea/
     ruff check --fix home/modules/tea/
+    ruff format profiles/personal/desktop/nixos/splitwise-mcp/
+    ruff check --fix profiles/personal/desktop/nixos/splitwise-mcp/
