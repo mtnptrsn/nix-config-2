@@ -136,6 +136,7 @@ def list_recent_expenses(group: str, limit: int = 10) -> list[dict]:
             "description": e.get("description"),
             "cost": e.get("cost"),
             "currency": e.get("currency_code"),
+            "notes": e.get("details"),
             "created_by": (e.get("created_by") or {}).get("first_name"),
             "deleted": bool(e.get("deleted_at")),
             "shares": {
