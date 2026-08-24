@@ -200,6 +200,7 @@ def build_expense_params(
     date: str,
     payer_id: int,
     owed: list[tuple[int, Decimal]],
+    details: str | None = None,
 ) -> dict[str, str]:
     """Flatten an expense into the users__N__* form params the API expects.
 
@@ -231,6 +232,8 @@ def build_expense_params(
         # 18 is "General" -- no category guessing, the description carries the meaning.
         "category_id": "18",
     }
+    if details and details.strip():
+        params["details"] = details.strip()
     for i, (user_id, paid, share) in enumerate(rows):
         params[f"users__{i}__user_id"] = str(user_id)
         params[f"users__{i}__paid_share"] = f"{paid:.2f}"

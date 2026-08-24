@@ -161,6 +161,7 @@ def create_expense(
     split_between: list[str] | None = None,
     shares: dict[str, str] | None = None,
     date: str | None = None,
+    notes: str | None = None,
 ) -> dict:
     """Add an expense to a Splitwise group.
 
@@ -178,6 +179,8 @@ def create_expense(
         shares: Explicit per-person amounts, e.g. {"Ebbe": "150", "me": "50"}.
             Must sum to `amount`. Overrides split_between.
         date: Day of the expense as YYYY-MM-DD. Defaults to now.
+        notes: Free-text note stored with the expense, shown as its comment in
+            Splitwise. Optional.
     """
     cache = load_cache()
     resolved = resolve_group(cache, group)
@@ -209,6 +212,7 @@ def create_expense(
         date=normalise_date(date),
         payer_id=payer["id"],
         owed=owed,
+        details=notes,
     )
 
     with SplitwiseClient() as client:

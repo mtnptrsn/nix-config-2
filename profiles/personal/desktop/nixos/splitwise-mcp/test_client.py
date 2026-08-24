@@ -198,6 +198,13 @@ class TestBuildExpenseParams:
         with pytest.raises(SplitwiseError, match="must match"):
             self._params(owed=[(ME, Decimal("50.00")), (EBBE, Decimal("100.00"))])
 
+    def test_notes_become_the_details_field(self):
+        assert self._params(details="bokade bana 3")["details"] == "bokade bana 3"
+
+    @pytest.mark.parametrize("raw", [None, "", "   "])
+    def test_no_notes_means_no_details_field(self, raw):
+        assert "details" not in self._params(details=raw)
+
     def test_duplicate_user_is_refused(self):
         with pytest.raises(SplitwiseError, match="twice"):
             self._params(owed=[(EBBE, Decimal("100.00")), (EBBE, Decimal("100.00"))])
