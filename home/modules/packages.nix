@@ -7,6 +7,7 @@
 let
   cfg = config.modules.packages;
   cw = pkgs.writeShellScriptBin "cw" (builtins.readFile ../scripts/cw.sh);
+  killall = pkgs.writeShellScriptBin "killall" (builtins.readFile ../scripts/killall.sh);
   linear-cli = pkgs.callPackage ../pkgs/linear-cli.nix { };
 in
 {
@@ -15,6 +16,7 @@ in
   config = lib.mkIf cfg.enable {
     home.packages = [
       cw
+      killall
       linear-cli
     ]
     ++ (with pkgs; [
