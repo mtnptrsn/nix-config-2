@@ -100,6 +100,11 @@ in
       navigate_workspace_down = "j"
       navigate_pane_up = "up"
       navigate_pane_down = "down"
+
+      [ui]
+      # The sidebar auto-scales to workspace name length; raising the ceiling
+      # lets it grow wider than the stock 36 columns.
+      sidebar_max_width = 100
     '';
   };
 }
