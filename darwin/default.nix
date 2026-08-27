@@ -60,7 +60,30 @@ in
   system.defaults.NSGlobalDomain = {
     NSAutomaticWindowAnimationsEnabled = false;
     NSWindowResizeTime = 0.001;
+    NSScrollAnimationEnabled = false;
+    NSUseAnimatedFocusRing = false;
   };
+  # Kills the Mission Control / space-switch transition
+  system.defaults.universalaccess.reduceMotion = true;
+  system.defaults.CustomUserPreferences = {
+    "com.apple.dock" = {
+      workspaces-edge-delay = 0.0;
+      workspaces-swoosh-animation-off = true;
+      springboard-show-duration = 0.0;
+      springboard-hide-duration = 0.0;
+      springboard-page-duration = 0.0;
+    };
+    "com.apple.finder".DisableAllAnimations = true;
+    NSGlobalDomain = {
+      NSToolbarFullScreenAnimationDuration = 0.0;
+      NSBrowserColumnAnimationSpeedMultiplier = 0.0;
+      NSDocumentRevisionsWindowTransformAnimation = false;
+      QLPanelAnimationDuration = 0.0;
+      NSInitialToolTipDelay = 0;
+    };
+    "com.apple.Accessibility".ReduceMotionEnabled = 1;
+  };
+
   # Input
   system.defaults.NSGlobalDomain."com.apple.swipescrolldirection" = false;
 
