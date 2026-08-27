@@ -69,7 +69,7 @@ let
     (mkEventPlugin {
       id = "local.default-layout";
       name = "herdr-default-layout";
-      description = "Open every new tab as a 2x2 grid of panes";
+      description = "Open every new tab as a 2x2 grid of panes running the usual tools";
       # New workspaces and worktree checkouts open a tab of their own, so
       # tab.created covers all three without firing twice for one tab.
       events = [ "tab.created" ];
