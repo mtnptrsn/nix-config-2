@@ -1,6 +1,13 @@
-_: {
+{ pkgs, ... }:
+{
   home.username = "mtnptrsn";
   home.homeDirectory = "/Users/mtnptrsn";
+
+  home.packages = with pkgs; [
+    # Reach the desktop's herdr server over a flaky link, such as inflight wifi:
+    # `mosh desktop -- herdr`
+    mosh
+  ];
 
   modules = {
     # Development tools
@@ -26,6 +33,16 @@ _: {
 
     # Package management
     packages.enable = true;
+  };
+
+  # Attach to the personal desktop's herdr server with `herdr --remote desktop`.
+  # mosh bootstraps over ssh too, so it resolves this host as well.
+  programs.ssh = {
+    enable = true;
+    matchBlocks.desktop = {
+      hostname = "mtnptrsn"; # MagicDNS name over Tailscale
+      user = "mtnptrsn";
+    };
   };
 
 }

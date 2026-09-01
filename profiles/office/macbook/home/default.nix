@@ -6,6 +6,10 @@
   home.packages = with pkgs; [
     awscli2
     ssm-session-manager-plugin
+
+    # Reach the desktop's herdr server over a flaky link, such as inflight wifi:
+    # `mosh desktop -- herdr`
+    mosh
   ];
 
   modules = {

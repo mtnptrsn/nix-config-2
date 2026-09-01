@@ -25,6 +25,13 @@ in
   ];
   environment.variables.SUDO_ASKPASS = "${askpass}/bin/askpass";
 
+  # macOS terminals export the bare LC_CTYPE=UTF-8, which macOS accepts but
+  # Linux does not recognise as a locale name. mosh reads the client's locale
+  # vars straight out of the environment and hands them to mosh-server, which
+  # refuses to start on anything but a real UTF-8 locale. Naming the locale in
+  # full also stops the invalid value leaking into ssh sessions on the desktop.
+  environment.variables.LC_CTYPE = "en_US.UTF-8";
+
   # Fonts
   fonts.packages = [ pkgs.nerd-fonts.jetbrains-mono ];
 
