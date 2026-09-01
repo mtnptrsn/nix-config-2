@@ -46,6 +46,7 @@
     wowup-cf
     obs-studio
     vlc
+    osu-lazer-bin
   ];
 
   # Never auto-suspend; the desktop hosts the herdr server
